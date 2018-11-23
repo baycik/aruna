@@ -1,0 +1,264 @@
+{{ header }}
+<div class="pts-container">
+  <ul class="pts-breadcrumb">
+	{% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+	{% endfor %}
+  </ul>
+  <div class="successdiv">
+  {% if success %}
+  <div class="alert pts-alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>
+	{% endif %}
+   </div>
+   <div class="errordiv">
+	{% if error_warning %}
+  <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+	{% endif %}
+	</div>
+  <div class="pts-row">{{ column_left }}
+	{% if column_left and column_right %}
+    {% set class = 'pts-col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'pts-col-sm-9' %}
+    {% else %}
+    {% set class = 'pts-col-sm-12' %}
+    {% endif %}
+    <div id="pts-content" class="{{ class }}">{{ content_top }}
+	<div class="pts-pull-right">
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <div class="pts-panel-body">
+        <div class="pts-well">
+          <div class="pts-row">
+            <div class="pts-col-sm-4">
+              <div class="pts-form-group ptsnewcss">
+                <label class="pts-control-label" for="input-name">{{ entry_name }}</label>
+                <input type="text" name="filter_name" value="{{ filter_name }}" placeholder="{{ entry_name }}" id="input-name" class="pts-form-control" />
+              </div>
+              <div class="pts-form-group ptsnewcss">
+                <label class="pts-control-label" for="input-model">{{ entry_model }}</label>
+                <input type="text" name="filter_model" value="{{ filter_model }}" placeholder="{{ entry_model }}" id="input-model" class="pts-form-control" />
+              </div>
+            </div>
+            <div class="pts-col-sm-4">
+              <div class="pts-form-group">
+                <label class="pts-control-label" for="input-price">{{ entry_price }}</label>
+                <input type="text" name="filter_price" value="{{ filter_price }}" placeholder="{{ entry_price }}" id="input-price" class="pts-form-control" />
+              </div>
+              <div class="pts-form-group">
+                <label class="pts-control-label" for="input-quantity">{{ entry_quantity }}</label>
+                <input type="text" name="filter_quantity" value="{{ filter_quantity }}" placeholder="{{ entry_quantity }}" id="input-quantity" class="pts-form-control" />
+              </div>
+            </div>
+            <div class="pts-col-sm-4">
+              <div class="pts-form-group">
+                <label class="pts-control-label" for="input-status">{{ entry_status }}</label>
+                <select name="filter_status" id="input-status" class="pts-form-control">
+                  <option value="*">{{ text_all }}</option>
+                  {% if filter_status =='1' %}
+                  <option value="1" selected="selected">{{ text_enabled }}</option>
+                  {% else %}
+                  <option value="1">{{ text_enabled }}</option>
+                  {% endif %}
+                  {% if filter_status =='0' %}
+                  <option value="0" selected="selected">{{ text_disabled }}</option>
+                  {% else %}
+                  <option value="0">{{ text_disabled }}</option>
+                  {% endif %}
+                </select>
+              </div>
+              <button type="button" id="pts-button-filter" class="pts-btn pts-btn-primary pts-pull-right"><i class="fa fa-filter"></i> {{ button_filter }}</button>
+            </div>
+          </div>
+        </div>
+        <form action="" method="post" enctype="multipart/form-data" id="form-import">
+          <div class="pts-table-responsive">
+            <table class="pts-table pts-table-bordered pts-table-hover">
+              <thead>
+                <tr>
+                  <td style="width: 1px;" class="pts-text-center" colspan="3">Название категории</td>
+                  <td style="width: 1px;" class="pts-text-left"> Всего товаров </td>
+                  <td class="pts-text-left"> Комиссия </td>
+                  <td class="pts-text-left"> Конечная папка </td>
+                </tr>
+              </thead>
+              <tbody>
+				{% if categories %}
+					{% for category in categories %}
+                <tr class="x-form-row">
+                  <td class="pts-text-left">{{ category.category_lvl1 }}</td>
+                  <td class="pts-text-left">{{ category.category_lvl2 }}</td>
+                  <td class="pts-text-left">{{ category.category_lvl3 }}</td>
+                  <td class="pts-text-left">{{ category.products_total }}</td>
+                  <td class="pts-text-left">
+                        <input type="text" name="category_comission" value="{{ category_comission }}" placeholder="%" id="input-quantity" class="pts-form-control" />
+                  </td>
+                  <td class="pts-text-left">
+                        <select name="destination_category">
+                                <option value="">Пропустить</option>
+                                {% for category in destination_categories %}
+                                        <option  value="{{ category.category_id }}" {% if link.category == category.category_id %} {{ 'selected' }} {% endif %}>{{ category.category_path }}</option>
+                                {% endfor %}
+                        </select>
+                  </td>
+                  <td>
+                      <input type="hidden" name="category_lvl1" value="{{ category.category_lvl1 }}"/>
+                      <input type="hidden" name="category_lvl2" value="{{ category.category_lvl2 }}" />
+                      <input type="hidden" name="category_lvl3" value="{{ category.category_lvl3 }}" />
+                  </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td class="pts-text-center" colspan="11">{{ text_no_results }}</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+              <div>
+                  <button type="submit" id="pts-button-import" class="pts-btn pts-btn-primary pts-pull-right"><i class="fa fa-plus"></i> Импортировать </button>  
+              </div>
+          </div>
+        </form>
+        <div class="pts-row">
+          <div class="pts-col-sm-6 pts-text-left">{{ pagination }}</div>
+          <div class="pts-col-sm-6 pts-text-right">{{ results }}</div>
+        </div>
+      </div>
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+<script type="text/javascript">
+$('#pts-button-filter').on('click', function() {
+	var url = 'index.php?route=extension/account/baycik/sellersync/parse_happywear';
+/*
+	var filter_name = $('input[name=\'filter_name\']').val();
+
+	if (filter_name) {
+		url += '&filter_name=' + encodeURIComponent(filter_name);
+	}
+
+	var filter_price = $('input[name=\'filter_price\']').val();
+
+	if (filter_price) {
+		url += '&filter_price=' + encodeURIComponent(filter_price);
+	}
+
+	var filter_quantity = $('input[name=\'filter_quantity\']').val();
+
+	if (filter_quantity) {
+		url += '&filter_quantity=' + encodeURIComponent(filter_quantity);
+	}
+
+	var filter_status = $('select[name=\'filter_status\']').val();
+
+	if (filter_status != '*') {
+		url += '&filter_status=' + encodeURIComponent(filter_status);
+	}
+
+  var filter_model = $('input[name=\'filter_model\']').val();*/
+
+        location = url;
+});
+var seller_id="{{seller_id}}";
+$("#form-import").on('submit',function(e){
+    e.preventDefault();
+    var fvalue=[];
+    $("#form-import .x-form-row").each(function(index,value){
+        var item={
+            category_lvl1: $(this).find('input[name=category_lvl1]').val(),
+            category_lvl2: $(this).find('input[name=category_lvl2]').val(),
+            category_lvl3: $(this).find('input[name=category_lvl3]').val(),
+            category_comission: $(this).find('input[name=category_comission]').val().replace(/[^\d\.]/g,''),
+            destination_category: $(this).find('select[name=destination_category]').val()
+        };
+        fvalue.push(item);
+    });
+    $.post('index.php?route=extension/account/baycik/sellersync/importUserData', {data: JSON.stringify(fvalue),seller_id:seller_id}, function(ok){
+        if(ok){
+            return;
+        };
+    });
+});
+
+$('#pts-button-import').on('click', function() {
+        
+        var category_lvl1 = $('input[name=category_lvl1]').val();
+        var category_lvl2 = $('input[name=category_lvl2]').val();
+        var category_lvl3 = $('input[name=category_lvl3]').val();
+        var category_comission = $('input[name=category_comission]').val();
+        var destination_category = $('option[name=destination_category]').val();
+        //console.log(category_lvl1);
+	//var url = 'index.php?route=extension/account/baycik/sellersync/parse_happywear';
+/*
+	var filter_name = $('input[name=\'filter_name\']').val();
+
+	if (filter_name) {
+		url += '&filter_name=' + encodeURIComponent(filter_name);
+	}
+
+	var filter_price = $('input[name=\'filter_price\']').val();
+
+	if (filter_price) {
+		url += '&filter_price=' + encodeURIComponent(filter_price);
+	}
+
+	var filter_quantity = $('input[name=\'filter_quantity\']').val();
+
+	if (filter_quantity) {
+		url += '&filter_quantity=' + encodeURIComponent(filter_quantity);
+	}
+
+	var filter_status = $('select[name=\'filter_status\']').val();
+
+	if (filter_status != '*') {
+		url += '&filter_status=' + encodeURIComponent(filter_status);
+	}
+
+  var filter_model = $('input[name=\'filter_model\']').val();*/
+
+       // location = url;
+});
+</script>
+  <script type="text/javascript">
+$('input[name=\'filter_name\']').autocompletepts({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=extension/account/purpletree_multivendor/sellerproduct/autocomplete&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['product_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'filter_name\']').val(item['label']);
+	}
+});
+
+$('input[name=\'filter_model\']').autocompletepts({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=extension/account/purpletree_multivendor/sellerproduct/autocomplete&filter_model=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['model'],
+						value: item['product_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'filter_model\']').val(item['label']);
+	}
+});
+</script>
+{{ footer }}
