@@ -1,0 +1,43 @@
+<footer class="footer-container typefooter-{{typefooter ? typefooter : '1'}}">
+	{#======	FOOTER TOP	=======#}  
+	
+	{% if footer_block1 is not empty %}
+	<div class="footer-main collapse description-has-toggle" id="collapse-footer">
+	
+		{{footer_block1}}
+			
+	</div>
+	
+	<div class="description-toggle hidden-lg hidden-md">
+         <a class="showmore" data-toggle="collapse" href="#collapse-footer" aria-expanded="false" aria-controls="collapse-footer">
+            <span class="toggle-more">{{ objlang.get('show_more') }} <i class="fa fa-angle-down"></i></span> 
+            <span class="toggle-less">{{ objlang.get('show_less') }} <i class="fa fa-angle-up"></i></span>   
+		</a>        
+	</div>
+	{% endif %}
+	
+	
+	{#======	FOOTER BOTTOM	=======#} 
+	<div class="footer-bottom ">
+		<div class="container">
+			{% if soconfig.get_settings('imgpayment_status')%} 
+			<div class="col-lg-12 col-xs-12 payment-w">
+				<img class="lazyload" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="image/{{  soconfig.get_settings('imgpayment') }}"  alt="imgpayment">
+			</div>
+			{% endif %}
+		</div>
+		<div class="copyright-w">
+			<div class="container">
+				<div class="copyright">
+					{% if soconfig.get_settings('copyright') is empty %}
+						{{ powered }}
+					{% else %}
+						{{ soconfig.decode_entities(soconfig.get_settings('copyright'))|replace({'{year}': "now"|date("Y")}) }}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+
+		
+	</div>
+</footer>

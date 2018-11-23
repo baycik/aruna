@@ -1,0 +1,136 @@
+{{ header }}{{ column_left }}
+<div id="content">
+	<div class="page-header">
+    	<div class="container-fluid">
+      		<div class="pull-right">
+        		<button type="submit" form="form-so-call-for-price" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i> {{ button_save }}</button>
+        		<a class="btn btn-success1" onclick="$('#action').val('save_edit');$('#form-so-call-for-price').submit();" data-toggle="tooltip" title="{{ button_savestay }}" ><i class="fa fa-pencil-square-o"></i> {{ button_savestay }}</a>
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-danger"><i class="fa fa-reply"></i> {{ button_cancel }}</a>
+        	</div>
+			<h1>{{ heading_title }}</h1>
+      		<ul class="breadcrumb">
+        		{% for breadcrumb in breadcrumbs %}
+        			<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        		{% endfor %}
+      		</ul>
+    	</div>
+  	</div>
+  	<div class="container-fluid">
+  		{% if error_warning %}
+    		<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      			<button type="button" class="close" data-dismiss="alert">&times;</button>
+    		</div>
+    	{% endif %}
+    	{% if success %}
+    		<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}
+      			<button type="button" class="close" data-dismiss="alert">&times;</button>
+    		</div>
+    	{% endif %}
+    	<div class="panel panel-default">
+      		<div class="panel-heading">
+        		<h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      		</div>
+      		<div class="panel-body">
+      			<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-so-call-for-price" class="form-horizontal">
+      				<input type="hidden" name="action" id="action" value=""/>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="input-status">{{ entry_status }}</label>
+                        <div class="col-sm-8">
+                            <select name="module_so_call_for_price_status" id="input-status" class="form-control">
+                                {% if status %}
+                                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                                    <option value="0">{{ text_disabled }}</option>
+                                {% else %}
+                                    <option value="1">{{ text_enabled }}</option>
+                                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="input-hide_cart">{{ entry_hide_cart }}</label>
+                        <div class="col-sm-8">
+                            <select name="module_so_call_for_price_hide_cart" id="input-hide_cart" class="form-control">
+                                {% if hide_cart %}
+                                    <option value="1" selected="selected">{{ text_yes }}</option>
+                                    <option value="0">{{ text_no }}</option>
+                                {% else %}
+                                    <option value="1">{{ text_yes }}</option>
+                                    <option value="0" selected="selected">{{ text_no }}</option>
+                                {% endif %}
+                            </select>
+                            <div class="help-block">{{ entry_hide_cart_desc }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="input-replace_cart">{{ entry_replace_cart }}</label>
+                        <div class="col-sm-8">
+                            <select name="module_so_call_for_price_replace_cart" id="input-replace_cart" class="form-control">
+                                {% if replace_cart %}
+                                    <option value="1" selected="selected">{{ text_yes }}</option>
+                                    <option value="0">{{ text_no }}</option>
+                                {% else %}
+                                    <option value="1">{{ text_yes }}</option>
+                                    <option value="0" selected="selected">{{ text_no }}</option>
+                                {% endif %}
+                            </select>
+                            <div class="help-block">{{ entry_replace_cart_desc }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="input-sendmailto">{{ entry_send_mail_to }}</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="module_so_call_for_price_send_mail_to" value="{{ send_mail_to }}" id="input-sendmailto" class="form-control" />
+                            <div class="help-block">{{ entry_send_mail_to_desc }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="input-send_mail_customer">{{ entry_send_mail_customer }}</label>
+                        <div class="col-sm-8">
+                            <select name="module_so_call_for_price_send_mail_customer" id="input-send_mail_customer" class="form-control">
+                                {% if send_mail_customer %}
+                                    <option value="1" selected="selected">{{ text_yes }}</option>
+                                    <option value="0">{{ text_no }}</option>
+                                {% else %}
+                                    <option value="1">{{ text_yes }}</option>
+                                    <option value="0" selected="selected">{{ text_no }}</option>
+                                {% endif %}
+                            </select>
+                            <div class="help-block">{{ entry_send_mail_customer_desc }}</div>
+                        </div>
+                    </div>
+      			</form>
+      		</div>
+      	</div>
+  	</div>
+</div>
+<style>
+.btn-success {
+	background-color: #fff;
+	color: #000;
+	border-color: #ddd;
+}
+.btn-success1 {
+    background-color: #8fbb6c;
+    border-color: #7aae50;
+    color: #fff;
+}
+.btn-success1:hover {
+	background-color: #648e42;
+    border-color: #3d5728;
+    color: #fff;
+}
+</style>
+<script type="text/javascript">
+    /*language*/
+    $('#language').change(function(){
+        var that = $(this), opt_select = $('option:selected', that).val() , _input = $('#input-head-name-'+opt_select);
+        $('[id^="input-head-name-"]').addClass('hide');
+        _input.removeClass('hide');
+    });
+
+    $('.first-name').change(function(){
+        $('input[name="head-name"]').val($(this).val());
+    });
+</script>
+{{ footer }}

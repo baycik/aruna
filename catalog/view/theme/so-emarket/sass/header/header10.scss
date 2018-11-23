@@ -1,0 +1,317 @@
+
+
+
+//** simple and lightweight mixin library for Sass **
+//-- url : http://bourbon.io/docs ---
+@import 'bourbon/bourbon';
+
+//** Mixins for Rem Font Sizing **
+//-- url : http://hugogiraudel.com/2013/03/18/ultimate-rem-mixin/
+@import 'utilities/rem';
+
+//** Variables for responsive design in bootstrap with sass **
+//-- url : https://gist.github.com/webinfinita/11407836
+@import 'utilities/bootstrap_breakpoints';
+
+//** Makes supporting both left-to-right (LTR) and right-to-left (RTL) easy.**
+//-- url : https://github.com/tysonmatanich/directional-scss
+@import 'utilities/directional';
+
+//Mixins utilities
+@import 'utilities/theme_variables';
+@import 'utilities/utilities';
+
+/*===============================================
+    [SASS DIRECTORY ]
+    
+    [1] BLOCK HEADER
+
+    
+==============================================*/
+
+.typeheader-10{
+    display: inline-block;
+    width: 100%;
+    -webkit-box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.1);
+                -moz-box-shadow:    0px 3px 10px 0px rgba(0, 0, 0, 0.1);
+                box-shadow:         0px 3px 10px 0px rgba(0, 0, 0, 0.1);
+    @media (min-width: 992px){
+
+    }
+    background-color: #fff;
+    .container-megamenu.horizontal ul.megamenu > li > a strong img{
+        display: none;
+    }
+    // MENU ON TOP
+    &.navbar-compact{
+        .navbar-logo{
+            padding: 8px 0;
+        }
+    }
+    .header-top{
+        min-height: 40px;
+        background-color: #000;
+        padding: 0 15px;
+        .module{
+            display: table-cell;
+            margin-bottom: 0;
+        }
+        .dropdown-menu{
+            li{
+                line-height: 22px;
+            }
+        }
+    }
+    ul.top-link{list-style: none;margin:0; float: $left; 
+        .dropdown-menu{
+
+        }
+        > li{                
+            float: $left;
+            position: relative;           
+            list-style: outside none none;
+            padding-#{$right}: 20px;
+            margin-#{$right}: 20px;
+            padding-#{$left}: 0;
+            font-size: 12px;
+            i{
+                padding-#{$right}: 5px;
+            }
+            &.language{
+                min-height: 23px;
+            }
+            .btn-group{
+                display: inline;
+                
+                padding: 11px 0;
+                .btn-link{
+                    padding: 0;
+                    border: none;
+                    color: #fff;    
+                    text-transform: capitalize;       
+                    line-height: 40px;         
+                }
+            } 
+            .fa-caret-down{
+                font-size: 12px;
+            }
+            &:after {
+                background-color: rgba(255,255,255,0.2);
+                content: "";
+                height: 15px;
+                position: absolute;
+                #{$right}: 0;
+                top: 15px;
+                width: 1px;
+            }
+            >   a {
+                font-size: 12px;
+                color: #fff;
+                line-height: 40px;
+            }
+            &.account{
+                span{
+                    margin-#{$left}: 5px;
+                }
+            }
+            &.log{
+                padding-#{$right}: 0px;
+                margin-#{$right}: 0px;
+                &:after{
+                    display: none;
+                }
+            }
+     
+
+
+            &.account:hover  {
+                ul.dropdown-link {top: 34px; z-index: 9999; opacity: 1; border-top: 1px solid rgba(200, 199, 199, 0.3);}
+            }
+
+            &.language{
+                &:after{
+                    display: none;
+                }
+            }
+            &.welcome-msg{
+                line-height: 48px;
+                padding-#{$left}: 0px;
+                margin-#{$left}: 0px;
+                &:after{
+                    display: none;
+                }
+            }
+            
+        }
+        &.lang-curr{
+            .dropdown-menu {
+                #{$left}: 0;
+                #{$right}: auto;
+            }   
+        }
+    }
+
+    
+    .navbar-logo{
+        .logo{margin-top: 6px;}
+        
+    }
+    .header-bottom {
+        float: $left;
+        width: 100%;
+        padding: 45px 10px;
+    }
+    .bottom-right{
+        padding-top: 12px;
+        padding-#{$left}: 0;
+    }
+    .header-top-right{
+        .inner{
+            float: $right;
+        }
+    }
+    /*=====SEARCH ======*/
+    #sosearchpro .dropdown-menu{
+        min-width: 200px;
+    }
+    .search-header-w{
+        float: $right;
+        margin-top: 0px;
+        #sosearchpro .search .select_category{
+            display: none;
+        }
+      
+        #sosearchpro .search{            
+            padding: 0;
+            width: 230px;
+            border: none;
+            background-color: #fff;
+            border: 1px solid #7f7f7f;
+            border-radius: 0;
+            margin: 0;
+            input{
+                width: 230px;
+                border: none;
+                height: 38px;
+                line-height: 38px;
+                padding-#{$left}: 20px;
+
+            }
+            .input-group-btn{
+                position: absolute;
+                #{$right}: 0;
+                top: 1px;
+                height: 34px;
+                line-height: 34px;
+                width: 36px;
+            }
+            button{
+                background-color: #fff;
+                border-radius: 18px;
+                color: #222;
+                padding: 0;
+                width: 36px;
+                text-align: center;
+                height: 34px;
+                line-height: 34px;
+                i{
+                   margin: 0;
+                    font-size: 16px;
+                    width: 36px;
+                    height: 34px;
+                    line-height: 34px;
+                }
+                span{
+                    display: none;
+                }
+            }
+        }
+       
+    }
+
+
+    /*BLOCK CART*/
+   
+    .shopping_cart{
+        float: $right;
+        margin-#{$left}: 20px;
+        background-color: #0a0a0a;
+        border-left: 1px solid #333;
+        border-right: 1px solid #333;
+        line-height: 40px;
+        padding-#{$left}: 10px;
+        padding-#{$right}: 20px;
+        .btn-shopping-cart{
+            .shopcart{
+                .icon-c{
+                    width: 34px; height: 34px;
+                    border-radius: 50%;
+                    font-size: 14px;                    
+                    line-height: 34px; text-align: center;
+                    float: $left;
+                }
+                .shopcart-inner{
+                    float: $left;
+                    line-height: 32px;
+                    p{
+                        display: none;
+                    }
+                    .total-shopping-cart{
+                        .items_cart2,
+                        .items_cart{
+                            //display: none;
+                        }
+                        .items_carts{
+                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /*MENU MEGA*/
+    .megamenu-style-dev{
+        float: $right;        
+        .navbar-default{ background: transparent; }
+    }
+
+    .megamenu-pattern .container{
+        width: auto;
+    }
+    .container-megamenu.horizontal ul.megamenu > li{
+        margin-#{$right}: 50px;
+        > a{            
+            line-height: 100%;
+            color: #000;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 15px 0;
+            strong{
+                font-weight: 700;
+            }
+        }
+        
+        &:hover,
+        &.active,
+        &.menu_active{
+            > a{                
+
+            }
+        }
+        &.style-page{
+            > .sub-menu{
+                #{$right}: 0 !important;
+            }
+        }
+        
+    }    
+
+
+}
+
+@media (max-width: 1365px){
+
+ 
+
+}

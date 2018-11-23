@@ -1,0 +1,115 @@
+{#
+****************************************************** 
+ * @package	SO Framework for Opencart 3.x
+ * @author	http://www.opencartworks.com
+ * @license	GNU General Public License
+ * @copyright(C) 2008-2017 opencartworks.com. All rights reserved.
+ ******************************************************
+#}
+{#====  Variables url parameter ==== #}
+{% if url_thumbgallery %} {% set thumbgallery = url_thumbgallery %}
+{% else %} {% set thumbgallery = soconfig.get_settings('card_gallery') %}{% endif %}
+
+{% if url_cartinfo %} {% set cartinfo = url_cartinfo %}
+{% else %} {% set cartinfo = soconfig.get_settings('desktop_addcart_position') %}{% endif %}
+
+{#========== Product Detail - Releate Horizontal ============#}
+{% set related_col_lg = soconfig.get_settings('product_related_column_lg')  %}
+{% set related_col_md = soconfig.get_settings('product_related_column_md')  %}
+{% set related_col_sm = soconfig.get_settings('product_related_column_sm')  %}
+{% set related_col_xs = soconfig.get_settings('product_related_column_xs')  %}
+
+<div class="clearfix module related-horizontal ">
+	<h3 class="modtitle hidden"><span>{{ text_related }} </span></h3>
+	
+    <div class="related-products products-list  contentslider" data-rtl="{{direction}}" data-autoplay="no"  data-pagination="no" data-delay="4" data-speed="0.6" data-margin="30"  data-items_column0="{{related_col_lg}}" data-items_column1="{{related_col_md}}" data-items_column2="{{related_col_sm}}"
+			data-items_column3="{{related_col_xs}}" data-items_column4="1" data-arrows="yes" data-lazyload="yes" data-loop="no" data-hoverpause="yes">
+		<!-- Products list -->
+		{% for product in products %} 
+            <div class="product-layout product-grid">
+			  	<div class="product-item-container">
+					<div class="left-block">
+						<div class="product-image-container">
+							<a href="{{ product.href }} " title="{{ product.name }} ">
+								<img data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{ product.thumb }} "  title="{{ product.name }} " 
+								class="lazyload img-responsive" />
+							</a>
+						</div>
+														
+						<div class="box-label">
+							{#=======Discount Label======= #}
+							{% if soconfig.get_settings('discount_status')  %} 
+							{% if product.price  and  product.special  %} 
+								<span class="label-product label-sale">
+									 {{ product.discount }}
+								</span>
+							{% endif %} 
+							{% endif %} 
+						</div>
+
+						{#=======Show Group_cart_info ======= #}
+						{% if cartinfo == 'right' %}
+						{% set class_cart_info = 'cartinfo--right' %}
+						{% elseif cartinfo == 'bottom' %}
+							{% set class_cart_info = 'cartinfo--static' %}
+						{% elseif cartinfo == 'center' %}
+							{% set class_cart_info = 'cartinfo--center' %}
+						{% else %}
+							{% set class_cart_info = 'cartinfo--left' %}
+						{% endif %}
+
+						<div class="button-group {{class_cart_info}}">
+							{% if soconfig.get_settings('desktop_addcart_status') %}
+							<button class="addToCart btn-button" type="button" title="{{ button_cart}}" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><i class="fa fa-shopping-basket"></i><span>{{ button_cart }}</span></button>
+							{% endif %}
+							
+							<button class="wishlist btn-button" type="button" title="{{ button_wishlist}}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart-o"></i><span>{{ button_wishlist }}</span></button>
+							<button class="compare btn-button" type="button" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="fa fa-refresh"></i><span>{{ button_compare }}</span></button>
+							{% if soconfig.get_settings('quick_status') %}
+								<a class="quickview iframe-link visible-lg btn-button" title="{{ objlang.get('text_quickview')}}" data-fancybox-type="iframe"  href="{{ our_url.link('extension/soconfig/quickview','product_id='~product.product_id) }}"> <i class="fa fa-eye"></i><span>{{ objlang.get('text_quickview')}}</span> </a>
+							{% endif %} 
+							
+						</div>
+
+					</div>
+					 
+					<div class="right-block">
+							
+							{% if soconfig.get_settings('rating_status') %} 
+							<div class="ratings">
+								<div class="rating-box">
+								{% for i in 1..5 %}
+								{% if product.rating < i %} 
+									<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
+								{% else %}   
+									<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>
+								{% endif %} 
+								{% endfor %}
+
+								</div>
+							</div>
+							{% endif %} 
+
+							<h4><a href="{{ product.href }} ">{{ product.name }} </a></h4>
+
+							{% if product.price %} 
+							<div class="price">
+								{% if not product.special %} 
+									<span class="price-new">{{ product.price }} </span>
+								{% else %}   
+									<span class="price-new">{{ product.special }} </span> <span class="price-old">{{ product.price }} </span>
+								{% endif %} 
+							</div>
+							{% endif %} 
+							
+							 
+						
+						
+					</div>
+				</div>
+            </div>
+     {% endfor %} 
+    </div>
+	
+</div>
+

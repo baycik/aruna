@@ -1,0 +1,47 @@
+<form action="#" id="ajax-form-{{ product_id }}" class="contact-form-box ajax-form so-callforprice-form">
+    <fieldset>
+        <input type="hidden" name="call_for_price_product_id" value='{{ product_id }}' />
+        <h3 class="page-subheading">{{ text_form_title }}</h3>
+        <div style="display:none" class="col-xs-12 alert alert-success" id="call_for_price_success_{{ product_id }}"></div>
+        <div style="display:none" class="col-xs-12 alert alert-danger" id="call_for_price_error_{{ product_id }}"></div>
+        <div class="row clearfix">
+            <div class="col-xs-12 col-md-6">
+                <div class="form-group">
+                    <label for="name">{{ text_name }} <sup>*</sup></label>
+                    <input type="text" value="" class="form-control grey validate is_required" name="call_for_price_name" id="call_for_price_contact_name_{{ product_id }}" data-validate="isName">
+                </div>
+                <div class="form-group">
+                    <label for="email">{{ text_email_id }} <sup>*</sup></label>
+                    <input type="text" value="" class="form-control grey validate is_required" name="call_for_price_email"  id="call_for_price_contact_email_{{ product_id }}" data-validate="isEmail">
+                </div>
+                <div class="form-group">
+                    <label for="subject">{{ text_contact_number }} <sup>*</sup></label>
+                    <input type="text" value="" class="form-control grey validate is_required" name="call_for_price_telephone"  id="call_for_price_telephone_{{ product_id }}" data-validate="isPhoneNumber">
+                </div>
+                <div class="form-group">
+                    <label for="Message">{{ text_country }} <sup>*</sup></label>
+                    <select id="call_for_price_country_{{ product_id }}" name="call_for_price_country" class="form-control">
+                        <option value="">{{ text_select }}</option>
+                        {% for country in countries %}
+                        <option value="{{ country.country_id }}">{{ country.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <div class="form-group">
+                    <label for="Message">{{ text_inquiry_details }} <sup>*</sup></label>
+                    <textarea id="call_for_price_comment_{{ product_id }}" name="call_for_price_comment" class="form-control grey validate is_required inquiry_detail" data-validate="isMessage"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="submit">
+            <button id="content-send-{{ product_id }}" name="call-for-price-button" class="button btn btn-primary button-medium" type="button" onclick="sendData('{{ product_id }}');">
+                <span>{{ text_submit }}<i class="icon-chevron-right right"></i></span>
+            </button>
+            <span class="ajax-loader" id="ajax-loader-{{ product_id }}" style="display:none">
+                <img src='{{ base }}/image/catalog/so_call_for_price/loader.gif' alt="loader" />
+            </span>
+        </div>
+    </fieldset>
+</form>

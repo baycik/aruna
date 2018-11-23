@@ -1,0 +1,172 @@
+
+//** simple and lightweight mixin library for Sass **
+//-- url : http://bourbon.io/docs ---
+@import 'bourbon/bourbon';
+
+//** Mixins for Rem Font Sizing **
+//-- url : http://hugogiraudel.com/2013/03/18/ultimate-rem-mixin/
+@import 'utilities/rem';
+
+//** Variables for responsive design in bootstrap with sass **
+//-- url : https://gist.github.com/webinfinita/11407836
+@import 'utilities/bootstrap_breakpoints';
+
+//** Makes supporting both left-to-right (LTR) and right-to-left (RTL) easy.**
+//-- url : https://github.com/tysonmatanich/directional-scss
+@import 'utilities/directional';
+
+//Mixins utilities
+@import 'utilities/theme_variables';
+@import 'utilities/utilities';
+
+/* ================================================================================ */
+
+/*.footer-container{
+  margin-top: 40px;
+}*/
+.typefooter-8{
+  margin-top: 0px;
+  .footer-top{
+    padding-top: 70px;
+  }
+  .footer8-top{
+    text-align: center;
+    padding: 0 15%;
+    p{
+      font-size: 14px;
+      margin-top: 25px;
+    }
+  }
+  .socials{
+    margin-top: 20px;
+    margin-bottom: 35px;
+    display: inline-block;
+    li{
+      position: relative;
+      float: $left;
+      margin: 0 20px;
+      a{        
+        color: #ccc;
+        font-size: 30px;
+      }
+      
+    }
+  }
+
+  .footer-links{
+    li{
+      display: inline-block;
+      margin: 0 20px;
+      a{
+        color: #222;
+        text-transform: uppercase;
+        font-size: 14px; font-weight: 500;
+      }
+    }
+  }
+/*== Block policy ==*/
+.block-policy8{
+    border-top: 1px dashed #e5e5e5;
+    border-bottom: 1px dashed #e5e5e5;
+    padding: 40px 0 25px 0;
+    margin: 70px 0 20px 0;
+    display: inline-block;
+    width: 100%;
+    ul{
+        li{
+            float: $left;
+            padding: 0 15px;
+            text-align: center;
+            width: 33.333%;   
+            
+            &:last-child{
+                &:before{
+                    display: none;
+                }
+            }
+            .item-inner{
+                display: inline-block;
+                &:hover{
+                                      
+                }
+   
+                .content{
+                    position: relative;
+                    padding-top: 70px;
+                    &:before{
+                        background: url(#{$imgPath}icon/id8-promotion.png) no-repeat; 
+                        width: 100%;
+                        height: 58px;
+                        top: 0;
+                        #{$left}: 0px;
+                        position: absolute; content: "";
+                    }
+                    b{
+                        color: #222;
+                        font-weight: 500;
+                        text-transform: capitalize;
+                        font-size: 16px;
+                        &:hover{
+                            color: $linkColor;
+                        }
+                    }
+                    span{
+                        line-height: 100%;
+                        margin: 0;
+                        text-transform: capitalize;
+                        font-weight: 300;
+                        display: inline-block;
+                        width: 100%;
+                    }
+                }
+            }  
+            &.item-1{
+                .item-inner{
+                    .content{
+                        &:before{
+                            background-position: center 0px;
+                        }
+                    }
+                }
+            }
+            &.item-2{
+                .item-inner{
+                    .content{
+                        &:before{
+                            background-position: center -108px;
+                        }
+                    }
+                }
+            }
+            &.item-3{
+                .item-inner{
+                    .content{
+                        &:before{
+                            background-position: center -230px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+  /* FOOTER BOTTOM */
+  .copyright-w{
+
+  }
+  .payment-w{
+    
+  }
+  .footer-bottom{
+    background-color: #fff;
+    padding: 20px 0;
+    text-align: center;
+      .copyright{
+        color: #666;
+        margin-top: 20px;
+        
+      }
+  }
+}
+

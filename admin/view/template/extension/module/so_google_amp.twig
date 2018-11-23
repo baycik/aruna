@@ -1,0 +1,233 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  	<div class="page-header">
+    	<div class="container-fluid">
+      		<div class="pull-right">
+        		<button type="submit" form="form-so-sociallogin" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i> {{ button_save }}</button>
+        		<a class="btn btn-success" onclick="$('#action').val('save_edit');$('#form-so-googleamp').submit();" data-toggle="tooltip" title="{{ objlang.get('entry_button_save_and_edit') }}" ><i class="fa fa-pencil-square-o"></i> {{ objlang.get('entry_button_save_and_edit') }}</a>
+        		<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-danger"><i class="fa fa-reply"></i> {{ button_cancel }}</a>
+        	</div>
+			<h1>{{ heading_title_so }}</h1>
+      		<ul class="breadcrumb">
+        		{% for breadcrumb in breadcrumbs %}
+        			<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        		{% endfor %}
+      		</ul>
+    	</div>
+  	</div>
+  	<div class="container-fluid">
+    	{% if error %}
+    		<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      			<button type="button" class="close" data-dismiss="alert">&times;</button>
+    		</div>
+    	{% endif %}
+    	{% if success %}
+    		<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}
+      			<button type="button" class="close" data-dismiss="alert">&times;</button>
+    		</div>
+    	{% endif %}
+    	<div class="panel panel-default">
+      		<div class="panel-heading">
+        		<h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      		</div>
+      		<div class="panel-body">
+	   			
+    			<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-so-googleamp" class="form-horizontal">
+    				
+    				<div class="form-group"> 
+						{# Module Name #}
+						<input type="hidden" name="action" id="action" value=""/>
+						<label class="col-sm-3 control-label" for="input-name"> <b style="font-weight:bold; color:#f00">*</b> <span data-toggle="tooltip" title="{{ objlang.get('entry_name_desc') }} ">{{ objlang.get('entry_name') }}  </span></label>
+						<div class="col-sm-9">
+							<div class="col-sm-5">
+								<input type="text" name="so_google_amp[so_google_amp_name]" value="{{ name }}" placeholder="{{ objlang.get('entry_name') }} " id="input-name" class="form-control" />
+							</div>
+							{% if error.name %} 
+							<div class="text-danger col-sm-12">{{ error.name }} </div>
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="form-group"> 
+						{# Status #}
+						<label class="col-sm-3 control-label" for="input-status"><span data-toggle="tooltip" title="{{ objlang.get('entry_status_desc') }} ">{{ objlang.get('entry_status') }}  </span></label>
+						<div class="col-sm-9">
+							<div class="col-sm-4">
+								<select name="so_google_amp[so_google_amp_status]" id="input-status" class="form-control">
+									{% if status %} 
+										<option value="1" selected="selected">{{ objlang.get('text_enabled') }} </option>
+										<option value="0">{{ objlang.get('text_disabled') }} </option>
+									{% else %}   
+										<option value="1">{{ objlang.get('text_enabled') }} </option>
+										<option value="0" selected="selected">{{ objlang.get('text_disabled') }} </option>
+									 {% endif %}
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						{# <!--Logo Width -->  #}
+						<label class="col-sm-3 control-label" for="input-class_suffix">
+							<b style="font-weight:bold; color:#f00">*</b><span data-toggle="tooltip" title="{{ objlang.get('entry_logo_desc') }} ">{{ objlang.get('entry_logo') }}  </span>
+						</label>
+						<div class="col-sm-9">
+							<div class="col-sm-2">
+								<div class="input-group"><input type="text" name="so_google_amp[so_google_amp_logowidth]" value="{{ logowidth }}" placeholder="width"  class="form-control" /> <div class="input-group-addon">px</div> </div>
+								{% if error.error_width %} 
+								<div class="text-danger ">{{ error.error_width }} </div>
+								{% endif %}
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group"><input type="text" name="so_google_amp[so_google_amp_logoheight]" value="{{ logoheight }}" placeholder="height"  class="form-control" /> <div class="input-group-addon">px</div> </div>
+								{% if error.error_height %} 
+								<div class="text-danger">{{ error.error_height }} </div>
+								{% endif %}
+							</div>
+							
+						</div>
+					</div>
+
+					
+
+					<div class="form-group">
+						{# <!--Main image Width -->  #}
+						<label class="col-sm-3 control-label" for="input-class_suffix">
+							<b style="font-weight:bold; color:#f00">*</b><span data-toggle="tooltip" title="{{ objlang.get('entry_mainimage_desc') }} ">{{ objlang.get('entry_mainimage') }}  </span>
+						</label>
+						<div class="col-sm-9">
+							<div class="col-sm-2">
+								<div class="input-group"><input type="text" name="so_google_amp[so_google_amp_thumbwidth]" value="{{ thumbwidth }}" placeholder="width"  class="form-control" /> <div class="input-group-addon">px</div> </div>
+									{% if error.error_thumbwidth %} 
+									<div class="text-danger ">{{ error.error_thumbwidth }} </div>
+									{% endif %}
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group"><input type="text" name="so_google_amp[so_google_amp_thumbheight]" value="{{ thumbheight }}" placeholder="height"  class="form-control" /> <div class="input-group-addon">px</div> </div>
+								{% if error.error_thumbheight %} 
+								<div class="text-danger">{{ error.error_thumbheight }} </div>
+								{% endif %}
+							</div>
+
+							
+							
+						</div>
+					</div>
+
+
+					
+					<div class="form-group"> {# <!--use related product -->  #}
+						<label class="col-sm-3 control-label" for="input-use_cache">
+							<span data-toggle="tooltip" title="{{ objlang.get('entry_related_product_desc') }} ">{{ objlang.get('entry_related_product') }} </span>
+						</label>
+						<div class="col-sm-9">
+							<div class="col-sm-5">
+								<label class="radio-inline">
+									{% if status_relatedproduct %} 
+										<input type="radio" name="so_google_amp[so_google_amp_relatedproduct]" value="1" checked="checked" />
+										{{ objlang.get('text_yes') }} 
+									{% else %}   
+										<input type="radio" name="so_google_amp[so_google_amp_relatedproduct]" value="1" />
+										{{ objlang.get('text_yes') }} 
+									{% endif %}
+								</label>
+								<label class="radio-inline">
+									{% if not status_relatedproduct %} 
+										<input type="radio" name="so_google_amp[so_google_amp_relatedproduct]" value="0" checked="checked" />
+										{{ objlang.get('text_no') }} 
+									{% else %}   
+										<input type="radio" name="so_google_amp[so_google_amp_relatedproduct]" value="0" />
+										{{ objlang.get('text_no') }} 
+									{% endif %} 
+								</label>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-group" >
+						{# <!--Link color -->  #}
+						<label class="col-sm-3 control-label" >
+							<span data-toggle="tooltip" title="{{ objlang.get('entry_linkcolor_desc') }} ">{{ objlang.get('entry_linkcolor') }} </span>
+						</label>
+						<div class="col-sm-9">
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-addon"><i class="fa fa-paint-brush" aria-hidden="true"></i></div>
+									
+									<input type="text" style="background-color:{{linkcolor}};color:white; border:none;" type="text" id="so-colorpicker1" name="so_google_amp[so_google_amp_linkcolor]" value="{{linkcolor}}"  class="form-control" />
+								</div>
+							</div>
+							
+						</div>
+					</div>
+
+
+					<div class="form-group" >
+						{# <!--Header background color -->  #}
+						<label class="col-sm-3 control-label">
+							<span data-toggle="tooltip" title="{{ objlang.get('entry_header_bg_desc') }} ">{{ objlang.get('entry_header_bg') }} </span>
+						</label>
+						<div class="col-sm-9">
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-addon"><i class="fa fa-paint-brush" aria-hidden="true"></i></div>
+									<input type="text" style="background-color:{{headerbg}};color:white;border:none;" id="so-colorpicker2" name="so_google_amp[so_google_amp_headerbg]" value="{{headerbg}}"  class="form-control" />
+								</div>
+							</div>
+							
+						</div>
+					</div>
+
+					
+					<div class="form-group" >
+						{# <!--Button background color -->  #}
+						<label class="col-sm-3 control-label" >
+							<span data-toggle="tooltip" title="{{ objlang.get('entry_button_bg_desc') }} ">{{ objlang.get('entry_button_bg') }} </span>
+						</label>
+						<div class="col-sm-9">
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-addon"><i class="fa fa-paint-brush" aria-hidden="true"></i></div>
+									<input type="text" style="background-color:{{buttonbg}};color:white;border:none;" id="so-colorpicker3" name="so_google_amp[so_google_amp_buttonbg]" value="{{buttonbg}}"  class="form-control" />
+								</div>
+							</div>
+							
+						</div>
+					</div>
+			
+				</div>
+    		</form>
+    		<script type="text/javascript"><!--
+				$(document).ready(function(){
+					/*** Change ColorPicker ***/
+					ChangeColor("#so-colorpicker1");
+					ChangeColor("#so-colorpicker2");
+					ChangeColor("#so-colorpicker3");
+				});
+
+				function ChangeColor(class_name) {
+					$(class_name).ColorPicker({
+						
+						color: $(class_name).val(),
+						onShow: function (colpkr) {
+							$(colpkr).fadeIn(500);
+							return false;
+						},
+						onHide: function (colpkr) {
+							$(colpkr).fadeOut(500);
+							return false;
+						},
+						onChange: function (hsb, hex, rgb) {
+							$(class_name).css('backgroundColor', '#' + hex);
+							$(class_name).val('#' + hex);
+						}
+					});
+				}
+
+			//--></script>
+      	</div>
+	</div>
+</div>
+{{ footer }}

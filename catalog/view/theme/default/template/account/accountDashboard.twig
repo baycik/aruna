@@ -1,0 +1,270 @@
+{{ header }}
+<div id="account-account" class="container dashboard">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if success %}
+  <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}</div>
+  {% endif %}
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-md-9 col-sm-8' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+		<div class="dashboard--main">
+			<div class="dashboard--top">
+				<h2 style="margin-bottom:50px;">{{ text_my_dashboard }}</h2>
+				<div class="row">
+					
+					{% if modules.display_totalorder %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default boxicon--round" href="{{order}}">
+							<span class="icon_cart"> <i class="fa fa-shopping-cart" aria-hidden="true"></i> </span>
+							<h5><b>{{totalOrder}}</b> <br>{{text_totalOrder}}</h5>
+						</a>
+					</div>
+					{% endif %}
+					
+					{% if modules.display_totalwishlist %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default boxicon--round" href="{{ wishlist }}"><div class="icon-box">
+							<span class="icon_cart"> <i class="fa fa-heart" aria-hidden="true"></i> </span>
+							<h5><b>{{totalwishlist}}</b><br>{{text_totalWishlist}} </h5>
+						</div>
+						</a>
+					</div>
+					{% endif %}
+					
+					{% if modules.display_totaldownloads %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default boxicon--round" href="{{ download }}"><div class="icon-box">
+							<span class="icon_cart" aria-hidden="true"> <i class="fa fa-cloud-download" aria-hidden="true"></i></span>
+							<h5> <b>{{totalDownload}}</b><br>{{text_totalDownload}}</h5>
+						</div></a>
+					</div>
+					{% endif %}
+					
+					{% if modules.display_totaltransactions %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a  class="boxicon--default boxicon--round" href="{{ transaction }}">
+							<span class="icon_cart" aria-hidden="true"> <i class="fa fa-money" aria-hidden="true"></i></span>
+							<h5> <b>{{totalTransactions}}</b><br>{{text_totalTransactions}}</h5>
+						</a>
+					</div>
+					{% endif %}
+				</div>
+				
+				<div class="row ">
+					{% if modules.display_editaccount %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ edit }}">
+							<span class="icon_cart">  <i class="fa fa-user" aria-hidden="true"></i></span>
+							<h4>{{ text_edit }}</h4>
+						</a>
+					</div>
+					{% endif %}
+					
+					{% if modules.display_password %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ password }}">
+							<span class="icon_cart">  <i class="fa fa-key" aria-hidden="true"></i></span>
+							<h4>{{ text_password }}</h4>
+						</a>
+					</div>
+					{% endif %}
+					
+					{% if modules.display_address %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ address }}">
+							<span class="icon_cart">  <i class="fa fa-address-book" aria-hidden="true"></i></span>
+							<h4>{{ text_address }}</h4>
+						</a>
+
+					</div>
+					{% endif %}
+					
+					{% if modules.display_wishlist %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ wishlist }}">
+							<span class="icon_cart">  <i class="fa fa-heart" aria-hidden="true"></i></span>
+							<h4>{{ text_wishlist }}</h4>
+						</a>
+
+					</div>
+					{% endif %}
+					
+					{% if modules.display_orderhistory %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ order }}">
+							<span class="icon_cart">  <i class="fa fa-undo" aria-hidden="true"></i></span>
+							<h4>{{ text_order }}</h4></a>
+						</a>
+
+					</div>
+					{% endif %}
+					
+					{% if modules.display_downloads %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ download }}">
+							<span class="icon_cart">  <i class="fa fa-cloud-download" aria-hidden="true"></i></span>
+							<h4>{{ text_download }}</h4>
+						</a>
+
+					</div>
+					{% endif %}
+					
+					{% if modules.display_reward_points %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ reward }}">
+							<span class="icon_cart">  <i class="fa fa-shield" aria-hidden="true"></i></span>
+							<h4>{{ text_reward }}</h4>
+						</a>
+					</div>
+					{% endif %}
+					
+					{% if modules.display_returns %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ return }}">
+							<span class="icon_cart">  <i class="fa fa-retweet" aria-hidden="true"></i></span>
+							<h4>{{ text_return }}</h4>
+						</a>
+
+					</div>
+					{% endif %}
+					
+					{% if modules.display_transactions %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ transaction }}">
+							<span class="icon_cart">  <i class="fa fa-money" aria-hidden="true"></i></span>
+							<h4>{{ text_transaction }}</h4>
+						</a>
+					</div>
+					{% endif %}
+					
+					{% if modules.display_payments %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ recurring }}">
+							<span class="icon_cart">   <i class="fa fa-usd" aria-hidden="true"></i></span>
+							<h4>{{ text_recurring }}</h4>
+						</a>
+					</div>
+					{% endif %}
+					
+					{% if modules.display_newsletter %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ newsletter }}">
+							<span class="icon_cart">  <i class="fa fa-envelope" aria-hidden="true"></i></span>
+							<h4>{{ text_newsletter }}</h4>
+						</a>
+					</div>
+					{% endif %}
+				</div>
+				
+			 
+				<h2>{{ text_my_affiliate }}</h2>
+				<div class="row ">
+					{% if not tracking %}
+					<div class="col-md-3 col-sm-6 ">
+						<a class="boxicon--default" href="{{ affiliate }}">
+							<span class="icon_cart">   <i class="fa fa-pencil-square" aria-hidden="true"></i></span>
+							<h4>{{ text_affiliate_add }}</h4>
+						</a>
+					</div>
+					{% else %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ affiliate }}">
+							<span class="icon_cart">   <i class="fa fa-pencil-square" aria-hidden="true"></i></span>
+							<h4>{{ text_affiliate_edit }}</h4>
+						</a>
+					</div>
+					
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<a class="boxicon--default" href="{{ tracking }}">
+							<span class="icon_cart">   <i class="fa fa-pencil-square" aria-hidden="true"></i></span>
+							<h4>{{ text_tracking }}</h4>
+						</a>
+					</div>
+					{% endif %}
+				</div>
+				  
+				{% if credit_cards %}
+				  <h2>{{ text_credit_card }}</h2>
+				  <div class="row">
+					{% for credit_card in credit_cards %}
+					<div class="col-md-3 col-sm-6 col-xs-6">
+						<span class="icon_cart">   <i class="fa fa-credit-card" aria-hidden="true"></i></span>
+						<a href="{{ credit_card.href }}"> {{ credit_card.name }} </a>
+					</div>
+					{% endfor %}
+				  </div>
+				{% endif %}
+				  
+				  
+			  {{ content_bottom }}
+			</div>
+			
+			{% if modules.display_latestorder %}
+			<div class="dashboard--order">
+				<div class="panel panel-default panel--order">
+				  <div class="panel-heading">
+					{{text_latestOrders}}
+				  </div>
+				  <div class="panel-body">
+					
+					{% if orders %}
+					<div class="table-responsive">
+					<table class="table table-bordered table-hover">
+					  <thead>
+						<tr>
+						  <td class="text-right">{{ column_order_id }}</td>
+						  <td class="text-left">{{ column_customer }}</td>
+						  <td class="text-right">{{ column_product }}</td>
+						  <td class="text-left">{{ column_status }}</td>
+						  <td class="text-right">{{ column_total }}</td>
+						  <td class="text-left">{{ column_date_added }}</td>
+						  <td></td>
+						</tr>
+					  </thead>
+					  <tbody>
+					   {% for order in orders %}
+						<tr>
+						  <td class="text-right">#{{ order.order_id }}</td>
+						  <td class="text-left">{{ order.name }}</td>
+						  <td class="text-right">{{ order.products }}</td>
+						  <td class="text-left">{{ order.status }}</td>
+						  <td class="text-right">{{ order.total }}</td>
+						  <td class="text-left">{{ order.date_added }}</td>
+						  <td class="text-right"><a href="{{ order.view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-info"><i class="fa fa-eye"></i></a></td>
+						</tr>
+						{% endfor %}
+					  </tbody>
+					</table>
+				  </div>
+				  <div class="row">
+					<div class="col-sm-6 text-left">{{ pagination }}</div>
+					<div class="col-sm-6 text-right">{{ results }}</div>
+				  </div>
+				  {% else %}
+				  <p>{{ text_empty_orders }}</p>
+				{% endif %}
+					
+					
+				  </div>
+				</div>
+				
+			</div>
+			{% endif %}
+			
+		</div>
+		
+	  </div>
+	  {{ column_right }}
+    </div>
+</div>
+{{ footer }}

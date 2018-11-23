@@ -1,0 +1,253 @@
+
+//** simple and lightweight mixin library for Sass **
+//-- url : http://bourbon.io/docs ---
+@import 'bourbon/bourbon';
+
+//** Mixins for Rem Font Sizing **
+//-- url : http://hugogiraudel.com/2013/03/18/ultimate-rem-mixin/
+@import 'utilities/rem';
+
+//** Variables for responsive design in bootstrap with sass **
+//-- url : https://gist.github.com/webinfinita/11407836
+@import 'utilities/bootstrap_breakpoints';
+
+//** Makes supporting both left-to-right (LTR) and right-to-left (RTL) easy.**
+//-- url : https://github.com/tysonmatanich/directional-scss
+@import 'utilities/directional';
+
+//Mixins utilities
+@import 'utilities/theme_variables';
+@import 'utilities/utilities';
+
+/* ================================================================================ */
+
+.typefooter-15{
+  margin-top: 0px;
+  color: #353535;
+  /* GENERAL */
+  .module .modtitle{
+        color: #353535;
+        font-size: 18px;
+        line-height: 20px;
+        margin-bottom: 18px;  
+        font-weight: 600;
+        text-transform: uppercase;   
+        padding-bottom: 0px; 
+        position: relative; 
+        padding-bottom: 13px;
+        margin-top: 13px;
+        &:after{
+          content: '';
+          position: absolute;
+          width: 54px;
+          border-bottom: 4px solid $background;
+          position: absolute;
+          #{$left}: 0px;
+          bottom: 0;
+        }  
+  }
+  .footer-center{
+    padding-top: 45px;
+  }
+  .box-footer{     
+    .modcontent{
+      ul{
+        li{           
+            a{
+              border: 0 none;               
+              font-size: 14px;
+              padding: 0;       
+              font-weight: 400; 
+              line-height: 37px;  
+              position: relative;
+              display: inline-block;
+              color: #353535;
+              &:hover{
+                color: $linkColor;
+              }
+            }       
+          }
+      }
+    }
+  }
+  .box-account{
+    .modcontent a{
+      color: $linkColor;
+      &:hover{
+        text-decoration: underline;
+      }
+    }
+  }
+  .top-content{
+    text-align: center;
+    .inner{
+      width: 50%; margin: 0 auto;
+      p{
+        margin: 15px 0;
+      }
+    }
+
+  }
+
+  .footer-top{
+    padding: 18px 0;
+    > .container{
+      margin: 0 auto;
+      float: none;
+    }
+  }
+
+  .footer-middle{
+    padding-top: 42px;
+  }
+  .f15-section-style1{
+    background: $background;
+  }
+  .newsletter-footer15{
+    background: $background;
+    margin-top: 16px;
+    margin-bottom: 22px;
+      .newsletter{
+        background-color: transparent !important;
+        overflow: hidden;
+        .title-block{     
+          position: relative;
+          color: #fff;
+          float: $left;
+          width: 50%;
+          margin-top: 10px;
+          
+          .page-heading{           
+            @include rem(font-size,20px);
+            line-height: 20px;  
+            font-weight: 400;
+            text-transform: capitalize;   
+          }
+          .promotext{
+            font-size: 13px;
+            margin-top: 5px;
+          }
+        }
+        .block_content{
+          float: $left;
+          width: 50%;
+
+          form.signup{
+            display: block;
+            margin-top: 11px;
+            margin-bottom: 11px;
+            height: 38px;
+            .form-group{
+              position: relative;
+              .input-box{
+                vertical-align: top;
+                @include border-radius(0px);
+                height: 45px;
+                line-height: 45px;
+                width: calc(50% - 52px) !important;
+                float: $left;
+                display: inline-block;
+                padding: 0 5px;
+              }
+             
+              #txtname,
+              #txtemail{
+                height: 44px;
+               // line-height: 44px;
+                width: 100%;
+                box-shadow: none;
+                border: none;           
+                background-color: #fff;  
+                @include border-radius(0);
+                &::-moz-placeholder {
+                        color: #999;
+                          opacity: 1; 
+                      }
+                      &:-ms-input-placeholder { color: #999; } 
+                      &::-webkit-input-placeholder  { color: #999; } 
+                        &:focus{
+                            z-index: 0;
+                        }
+              }
+            }
+
+            .subcribe{
+              position: absolute;
+                top: 0;
+                #{$right}: 0;
+                padding-#{$left}: 10px;
+               button{           
+                border: 0 none;
+                color: #fff;
+                font-weight: 500;
+                font-size: 13px;
+                height: 45px;
+                line-height: 45px;
+                padding: 0 17px;    
+                text-transform: uppercase;
+                @include border-radius(0);
+                background: #111111;
+                &:hover{
+                  color: #fff;
+                }
+              }
+            }
+          }
+        }
+      }
+  }
+  .logo-footer{
+    margin-bottom: 25px;
+  }
+  .logo-f{
+    display: inline-block; width: 100%; margin-bottom: 18px;
+  }
+  .socials{
+    margin: 15px 0 15px 0;
+    li{
+      position: relative;
+      float: none;
+      display: inline-block;
+      margin: 0 10px;
+      &:first-child{
+        margin-#{$left}: 0;
+      }    
+      a{
+        color: #545454;
+        font-size: 17px;    
+        span{
+          display: none;
+        }    
+        &:hover{ color: $linkColor; }     
+      }
+    }
+  }
+  
+  .footer-links{
+    display: inline-block; padding: 24px 0;
+    width: 100%; 
+    border-top: 1px solid #464646;
+    li{
+      display: inline-block;
+      margin: 0 20px;
+      a{color: #fff; text-transform: uppercase; font-size: 13px;}
+    }
+  }
+  
+  
+  /* FOOTER BOTTOM */
+
+  .payment-w{
+
+  }
+  .footer-bottom{
+    margin-top: 40px;
+    margin-bottom: 15px;
+    text-align: center; 
+      .copyright{
+        margin: 30px 0;
+      }
+  }
+}
+
+

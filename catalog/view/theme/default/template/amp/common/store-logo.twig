@@ -1,0 +1,14 @@
+<div id="logo">
+	{% if logo %}
+		<a href="{{ home }}">
+		<amp-img alt="{{ name }}"
+		  src="{{ logo }}"
+		  width="{{logoWidth}}"
+		  height="{{logoHeight}}"
+		  >
+		</amp-img>
+		</a>
+	{% else %}
+		<span class="amp-header-logo-text">{{name}}</span>
+	{% endif %}
+</div>

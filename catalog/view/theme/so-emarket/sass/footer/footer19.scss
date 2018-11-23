@@ -1,0 +1,392 @@
+
+//** simple and lightweight mixin library for Sass **
+//-- url : http://bourbon.io/docs ---
+@import 'bourbon/bourbon';
+
+//** Mixins for Rem Font Sizing **
+//-- url : http://hugogiraudel.com/2013/03/18/ultimate-rem-mixin/
+@import 'utilities/rem';
+
+//** Variables for responsive design in bootstrap with sass **
+//-- url : https://gist.github.com/webinfinita/11407836
+@import 'utilities/bootstrap_breakpoints';
+
+//** Makes supporting both left-to-right (LTR) and right-to-left (RTL) easy.**
+//-- url : https://github.com/tysonmatanich/directional-scss
+@import 'utilities/directional';
+
+//Mixins utilities
+@import 'utilities/theme_variables';
+@import 'utilities/utilities';
+
+/* ================================================================================ */
+
+.layout-19 .back-to-top{
+  position: static;
+  width: 100%;
+  font-size: 16px; 
+  font-weight: 700; color: #fff;
+  background-color: $background;
+  line-height: 50px;
+  text-transform: uppercase;
+  border-radius: 0;
+  span{
+    &:after,
+    &:before{
+      display: inline-block;
+      background: url(#{$imgPath}icon/id16-icon-image.png) no-repeat -372px -27px;
+      margin: 0 20px;
+      content: '';
+      width: 11px;
+      height: 15px;
+      position: relative;
+      top: 1px;
+    }    
+  }
+  &:hover{
+    background-color: darken($background,10%);
+  }
+}
+
+.typefooter-19{
+  margin-top: 0px !important;
+  padding-top: 50px;
+  background-color: #fff; 
+  color: #666666;
+  .so-page-builder .container{
+    padding: 0;
+  }
+
+  /* GENERAL */
+  .module .modtitle{
+        color: #222;
+        font-size: 16px;
+        line-height: 20px;
+        margin-bottom: 15px;  
+        font-weight: 700;
+        text-transform: uppercase;   
+  }
+  .footer-center{
+    padding-top: 45px;
+  }
+  .box-footer{     
+    .modcontent{
+      ul{
+        li{           
+            a{
+              border: 0 none;               
+              font-size: 14px;
+              padding: 0;       
+              font-weight: 400; 
+              position: relative;
+              display: inline-block;
+              color: #666;  
+              line-height: 32px;            
+            }       
+          }
+      }
+    }
+  }
+  
+  .newsletter-footer11{
+      .newsletter{
+        .title-block{     
+          .page-heading{           
+            color: #222;
+            font-size: 16px;
+            line-height: 20px;
+            margin-bottom: 15px;  
+            font-weight: 700;
+            text-transform: uppercase;   ;
+          }
+          .promotext{
+            font-size: 14px;
+          }
+        }
+        .block_content{ margin-top: 15px;
+          form.signup{
+            display: block;
+            margin-bottom: 25px;
+            .form-group{
+              position: relative;
+              .input-box{
+                background-color: #fff;  
+                vertical-align: top;
+                border-radius: 0;
+              }
+              .subcribe{
+                position: absolute; top: 0; #{$right}: 0;
+              }
+
+              #txtemail{
+                height: 40px;
+                line-height: 40px;
+                width: 100%;
+                box-shadow: none;
+                padding: side-values(0 0 0 20px);
+                border: 1px solid #ddd;           
+                background-color: #fff; 
+                border-radius: 0; 
+                &::-moz-placeholder {
+                  color: #666;
+                    opacity: 1; 
+                }
+                &:-ms-input-placeholder { color: #666; } 
+                &::-webkit-input-placeholder  { color: #666; } 
+                &:focus{
+                    z-index: 0;
+                }
+              }
+            }
+
+            .subcribe button{     
+              font-size: 14px;
+              font-weight: 400;
+              text-transform: uppercase;      
+              height: 40px;
+              line-height: 40px;
+              padding: 0 30px;
+            }
+          }
+        }
+      }
+  }
+
+  .categories-footer{
+    margin: 0 -10px;
+    border-bottom: 1px solid #ddd;
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 30px;
+    margin-bottom: 35px;
+    .col-cate{
+      width: 20%;
+      padding: 0 10px;
+      float: $left;
+      li{
+        a{
+          display: block;
+          background-color: #fff;
+          border: 1px solid #ddd;
+          padding-#{$left}: 60px;
+          line-height: 56px;
+          margin-bottom: 20px;
+          font-size: 15px; color: #666;
+          position: relative;
+          &:before{
+              background: url(#{$imgPath}icon/id19-icon-cate.png) no-repeat 14px 8px;
+              position: absolute;
+              content: "";
+              width: 60px; height: 58px;
+              top: 0; #{$left}: 0;
+          }
+          &:hover{
+            background-color: $background; border-color: $background;
+            color: #fff;
+            &:before{
+              background-position: -50px 8px;
+            }
+          }          
+        }
+        &.item1{
+          a{
+            &:before{
+              background-position:  14px 8px;
+            }
+            &:hover:before{
+              background-position: -50px 8px;
+            }
+          }
+        }
+        &.item2{
+          a{
+            &:before{
+              background-position:  14px -70px;
+            }
+            &:hover:before{
+              background-position: -50px -70px;
+            }
+          }
+        }
+        &.item3{
+          a{
+            &:before{
+              background-position:  14px -152px;
+            }
+            &:hover:before{
+              background-position: -50px -152px;
+            }
+          }
+        }
+        &.item4{
+          a{
+            &:before{
+              background-position:  -309px 8px;
+            }
+            &:hover:before{
+              background-position: -372px 8px;
+            }
+          }
+        }
+        &.item5{
+          a{
+            &:before{
+              background-position:  -309px -70px;
+            }
+            &:hover:before{
+              background-position: -372px -70px;
+            }
+          }
+        }
+        &.item6{
+          a{
+            &:before{
+              background-position:  -309px -152px;
+            }
+            &:hover:before{
+              background-position: -372px -152px;
+            }
+          }
+        }
+        &.item7{
+          a{
+            &:before{
+              background-position:  -636px 11px;
+            }
+            &:hover:before{
+              background-position: -698px 11px;
+            }
+          }
+        }
+        &.item8{
+          a{
+            &:before{
+              background-position:  -636px -70px;
+            }
+            &:hover:before{
+              background-position: -698px -70px;
+            }
+          }
+        }
+        &.item9{
+          a{
+            &:before{
+              background-position:  -636px -152px;
+            }
+            &:hover:before{
+              background-position: -698px -152px;
+            }
+          }
+        }
+        &.item10{
+          a{
+            &:before{
+              background-position:  -958px 8px;
+            }
+            &:hover:before{
+              background-position: -1022px 8px;
+            }
+          }
+        }
+        &.item11{
+          a{
+            &:before{
+              background-position:  -958px -70px;
+            }
+            &:hover:before{
+              background-position: -1022px -70px;
+            }
+          }
+        }
+        &.item12{
+          a{
+            &:before{
+              background-position:  -958px -152px;
+            }
+            &:hover:before{
+              background-position: -1022px -152px;
+            }
+          }
+        }
+        &.item13{
+          a{
+            &:before{
+              background-position:  -1283px 11px;
+            }
+            &:hover:before{
+              background-position: -1346px 11px;
+            }
+          }
+        }
+        &.item14{
+          a{
+            &:before{
+              background-position:  -1283px -70px;
+            }
+            &:hover:before{
+              background-position: -1346px -70px;
+            }
+          }
+        }
+        &.item15{
+          a{
+            &:before{
+              background-position:  -1283px -148px;
+            }
+            &:hover:before{
+              background-position: -1346px -148px;
+            }
+          }
+        }
+
+      }
+    }
+  }
+
+
+  .content-apps{
+    a{
+      display: inline-block;
+      margin: side-values(0 20px 5px 0);
+    }
+    @media (min-width: 1200px) and (max-width: 1649px){
+      margin: 0 -5px;
+      a{
+        float: $left;
+        padding: 0 5px;
+        width: 50%;
+        margin: 0;
+      }
+    }
+  }
+  
+  .seo-struct {
+    border-top: 1px solid #ddd;  
+    padding-top: 25px; padding-bottom: 25px;
+    margin-top: 25px;
+    ul{
+      li{ display: inline-block; 
+        a{ color: #666; font-size: 13px; }
+      }
+      li:not(:last-child)::after {
+        content: '/';
+        margin: 0 10px;
+      }
+    } 
+  }
+  
+  /* FOOTER BOTTOM */
+
+  .payment-w{
+
+  }
+  .footer-bottom{
+    background-color: #2a3c52;
+    padding: 20px 0;
+      .copyright{
+        text-align: $right; color: #999999;
+      }
+  }
+}
+
+

@@ -1,0 +1,95 @@
+{#=====Get variable : Config Select Block on header=====#}
+{% set hidden_headercenter = soconfig.get_settings('toppanel_type') =='2'? 'hidden-compact' : '' %}
+{% set hidden_headerbottom = soconfig.get_settings('toppanel_type') =='1'? 'hidden-compact' : '' %}
+
+<header id="header" class=" variant typeheader-{{ typeheader ? typeheader : '1'}}">
+	{#======	HEADER TOP	=======#}  
+	<div class="header-top hidden-compact">
+		<div class="container"> 
+			<div class="row">
+				<div class="header-top-left col-lg-6 col-md-6 hidden-sm col-xs-12">
+					<div class="inner">	
+						{% if soconfig.get_settings('welcome_message_status') %}
+							<div class="hidden-sm hidden-xs welcome-msg">
+								{% if soconfig.get_settings('welcome_message') is not empty %}
+									{{ soconfig.decode_entities( soconfig.get_settings('welcome_message') ) }}
+								{% endif %} 
+							</div>
+						{% endif %}			
+						{% if soconfig.get_settings('phone_status') and soconfig.get_settings('contact_number') %}
+						<div class="telephone hidden-xs hidden-sm hidden-md" >
+							{{ soconfig.decode_entities( soconfig.get_settings('contact_number') ) }}
+						</div>
+						{% endif %}
+					</div>	
+				</div>
+				
+				<div class="header-top-right collapsed-block col-lg-6 col-md-6 col-sm-12 col-xs-12">	
+					{% if soconfig.get_settings('lang_status') %}
+					<ul class="list-inline lang-curr">
+						{% if currency %}<li class="currency"> {{ currency }}  </li> {% endif %}
+						{% if language %} <li class="language">{{ language }} </li>	{% endif %}			
+					</ul>				
+					{% endif %} 	
+													
+			        <ul class="top-link list-inline">
+						<li class="account" id="my_account"><a href="{{ account }}" title="{{ text_account }} " class="btn-xs dropdown-toggle" data-toggle="dropdown"> <span>{{ text_account }} </span> <span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu ">
+									<li><a href="{{ wishlist }}"  title="{{ text_wishlist }}">{{ text_wishlist }}</a></li>
+									<li><a href="{{ compare }}" title="{{ text_compare }}">{{ text_compare }}</a></li>
+								{% if logged %}
+						            <li><a href="{{ account }}">{{ text_account }}</a></li>
+						            <li><a href="{{ order }}">{{ text_order }}</a></li>
+						            <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
+						            <li><a href="{{ download }}">{{ text_download }}</a></li>
+						            <li><a href="{{ logout }}"><i class="fa fa-sign-out" aria-hidden="true"></i> {{ text_logout }}</a></li>
+					            {% else %}
+
+						            <li><a href="{{ register }}">{{ text_register }}</a></li>
+						            <li><a href="{{ login }}">{{ text_login }}</a></li>
+					            {% endif %}															
+							</ul>
+						</li>	
+
+						{% if soconfig.get_settings('checkout_status') %}
+							<li class="checkout hidden-sm hidden-xs"><a href="{{ checkout }} " class="btn-link" title="{{ text_checkout }} "><span >{{ text_checkout }} </span></a></li>
+						{% endif %}	
+					</ul>	
+					
+				
+				</div>
+			</div>
+		 </div>
+	</div>
+	
+	<div class="header-bottom {{hidden_headerbottom}}">
+		<div class="container"> 
+			<div class="row">			
+				<div class="navbar-logo">
+					<div class="logo">
+				   		{{soconfig.get_logo()}}
+				   	</div>
+				</div>
+				<div class="main-menu col-lg-10 col-md-10 col-sm-4 col-xs-4">	
+					{{ content_menu1 }}	
+				</div>
+				<div class="bottom-right col-lg-2 col-md-2 col-sm-8 col-xs-8">
+					
+		            <div class="shopping_cart">							
+					 	{{ cart }}
+					</div>
+					<div class="search-header-w">
+						<div class="searchw-inner">
+							<div class="icon-search hidden-lg hidden-md hidden-sm"><i class="fa fa-search"></i></div>								
+							{{ search_block }}
+						</div>
+					</div>	
+
+				</div>
+					
+				
+			</div>
+		 </div>
+	</div>	
+		
+</header>

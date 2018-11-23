@@ -1,0 +1,263 @@
+
+//** simple and lightweight mixin library for Sass **
+//-- url : http://bourbon.io/docs ---
+@import 'bourbon/bourbon';
+
+//** Mixins for Rem Font Sizing **
+//-- url : http://hugogiraudel.com/2013/03/18/ultimate-rem-mixin/
+@import 'utilities/rem';
+
+//** Variables for responsive design in bootstrap with sass **
+//-- url : https://gist.github.com/webinfinita/11407836
+@import 'utilities/bootstrap_breakpoints';
+
+//** Makes supporting both left-to-right (LTR) and right-to-left (RTL) easy.**
+//-- url : https://github.com/tysonmatanich/directional-scss
+@import 'utilities/directional';
+
+//Mixins utilities
+@import 'utilities/theme_variables';
+@import 'utilities/utilities';
+
+/* ================================================================================ */
+
+/*.footer-container{
+  margin-top: 40px;
+}*/
+.typefooter-18{
+  margin-top: 0px;
+  padding-top: 45px;
+  background-color: #1c1c1c;
+  font-size: 13px; color: #fff;
+  line-height: 20px;
+
+  /* GENERAL */
+  .module .modtitle{
+        color: #fff;
+        font-size: 18px;
+        line-height: 20px;
+        margin-bottom: 15px !important;  
+        font-weight: 600;
+        text-transform: capitalize;   
+        padding-bottom: 0px;       
+  }
+  .module{  
+    .modcontent{
+      ul{
+        li{           
+              a{
+                border: 0 none;               
+                padding: 0;                   
+                font-weight: 400; 
+                line-height: 23px;  
+                position: relative;                
+                display: inline-block;
+                transition: all 0.2s ease-in-out 0s;
+                color: #fff;
+                
+                &:hover{
+                  font-style: italic;
+                }
+              }       
+            }
+      }
+    }
+  }
+
+  .col-border{
+    border-#{$left}: 1px solid rgba(255,255,255,0.3);
+    padding-#{$left}: 30px;
+  }
+
+  .footer-top{
+    
+  }
+  .footer-middle{
+    margin-top: 45px;
+  }
+  .so-page-builder .container{
+    overflow: visible;
+  }
+  .ftop{
+    height: 30px;
+  }
+  .newsletter-footer1{
+    position: relative; top: 60px;
+    z-index: 999;
+      .newsletter{
+        background-color: transparent !important;
+        .title-block{     
+  
+          .page-heading{           
+             font-weight: 600; font-size: 18px;
+             position: relative; padding-#{$left}: 30px;
+            &:before{
+              font-family: "FontAwesome";
+              content: "\f0e0";
+              font-size: 16px;
+              position: absolute;
+              top: 0; #{$left}: 0;
+            }
+          }
+          .promotext{
+            display: none;
+          }
+        }
+        .block_content{
+ 
+          form.signup{
+            display: block;
+            margin-top: 11px;
+ 
+            .form-group{
+              position: relative;
+              .input-box{
+                background-color: #fff;  
+                vertical-align: top;
+                padding-#{$right}: 120px;
+                border-radius: 0px;
+              }
+              .subcribe{
+                position: absolute;
+                top: 0;
+                #{$right}: 0;
+              }
+
+              #txtemail{
+                height: 35px;
+                line-height: 35px;
+                width: 100%;
+                box-shadow: none;
+                padding: side-values(0 0 0 15px);
+                border: none;           
+                background-color: #fff;  
+                &::-moz-placeholder {
+                  color: #999;
+                    opacity: 1; 
+                }
+                &:-ms-input-placeholder { color: #999; } 
+                &::-webkit-input-placeholder  { color: #999; } 
+                  &:focus{
+                      z-index: 0;
+                  }
+              }
+            }
+
+            .subcribe button{           
+              border: 0 none;
+              color: #fff;
+              font-weight: 500;
+              font-size: 13px;
+              height: 35px;
+              line-height: 35px;
+              padding: 0 10px;    
+              text-transform: uppercase;
+              &:hover{
+              
+              }
+            }
+          }
+        }
+      }
+  }
+
+  .infos{
+    ul li{ line-height: 23px;
+      .fa-phone-square{ font-size: 16px; margin-#{$right}: 8px; }
+      &.e-mail{ margin-bottom: 20px; }
+    }
+  }
+  .intro-store{
+    p{
+      margin-bottom: 15px;
+    }
+    .img{
+      display: block;
+      margin-bottom: 20px;
+    }
+  }
+  .module.connect .modcontent{
+    ul{
+      display: inline-block; margin-top: 5px;
+      li{
+        display: inline-block;
+        margin-#{$right}: 10px;
+        a{
+          display: block;
+          width: 34px; height: 34px;
+          text-align: center; line-height: 36px;        
+          background-color: #fff;
+          border-radius: 100%;
+          i{
+            font-size: 16px; color: #222;
+          }
+        }      
+      }
+    } 
+    
+  }
+  .apps{ margin-top: 25px;
+    ul{ display: inline-block; margin-top: 5px;
+      li{
+        display: inline-block; margin-#{$right}: 10px;
+      }
+    }
+  }
+
+  .partners{ margin-top: 10px; padding-bottom: 20px;
+    .modcontent{ margin-top: 28px; }
+    .viewall{
+        text-align: center;
+        display: inline-block;
+        width: 100%;
+        margin-top: 30px;
+        a{
+            font-size: 12px; color: #1c1c1c;
+            background-color: #fff;
+            padding: 11px 20px;
+            text-transform: uppercase;
+            font-weight: 700; display: inline-block;
+            &:hover{
+               
+            }
+        }        
+    }
+    ul{ display: inline-block; margin-top: 15px;
+      li{
+        display: inline-block; margin-#{$right}: 10px;
+      }
+    }
+  }
+
+
+
+
+
+  /* FOOTER BOTTOM */
+  .copyright-w{
+    text-align: center;
+    margin-bottom: 12px;
+    a{ color: #fff; }
+  }
+  .payment-w{
+    text-align: center;
+  }
+  .footer-bottom{
+    background-color: #1c1c1c;
+    margin-top: 10px;
+    > .container{
+      border-top: 1px solid rgba(255,255,255,0.3);
+       padding: 28px 0;
+    }
+   
+
+   
+  }
+
+
+}
+
+
+@media (min-width: 1200px) and (max-width: 1649px){
+  
+}

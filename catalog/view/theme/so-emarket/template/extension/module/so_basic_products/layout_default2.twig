@@ -1,0 +1,118 @@
+<div class="item-wrap products-list row cf {{ class_respl0 }}">
+{% set j = 0 %}
+	{% for product in products %}
+	{% set j = j + 1 %}
+	<div class="product-layout product-grid17 item-element item-{{j}}">
+		<div class="item-inner">
+			<div class="product-item-container">
+				<div class="left-block">									
+					<div class="product-image-container {% if product_image_num  == 2 %} {{ 'second_img' }} {% endif %}	">
+						<a href="{{ product.href }}" target="{{ item_link_target }}" title= "{{ product.name }}">
+							{% if product_image_num ==2 %}
+								<img data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{ product.thumb }}" class="img-1 lazyload" alt="{{ product.name }}">
+								<img data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{ product.thumb2 }}" class="img-2 lazyload" alt="{{ product.name }}">
+							{% else %}
+								<img data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{ product.thumb }}" alt="{{ product.name }}" class="lazyload">
+							{% endif %}
+						</a>						
+					</div>
+					{% if product.special and display_sale %}
+						<span class="label label-sale">{{ text_sale }}</span>
+					{% endif %}
+					{% if product.productNew and display_new %}
+						<span class="label label-new">{{ text_new }}</span>
+					{% endif %}
+					{% if display_add_to_cart  or  display_wishlist  or  display_compare %} 
+						<div class="button-group so-quickview">
+							{% if display_add_to_cart  %} 
+							<button type="button" class="addToCart btn-button" title="{{ objlang.get('button_cart') }}" onclick="cart.add('{{ product.product_id }}');"><i class="fa fa-shopping-basket"></i>							
+							</button>
+							
+							{% endif %} 
+							{% if display_wishlist  %} 
+							<button type="button" class="wishlist btn-button" title="{{ objlang.get('button_wishlist') }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart-o"></i><span>{{ objlang.get('button_wishlist') }}</span></button>
+							{% endif %} 
+							{% if display_compare %} 
+							<button type="button" class="compare btn-button" title="{{ objlang.get('button_compare') }}" onclick="compare.add('{{ product.product_id }}');"><i class="fa fa-refresh"></i><span>{{ objlang.get('button_compare') }}</span></button>
+							{% endif %} 
+
+							<a class="hidden" data-product='{{ product.product_id }}' href="{{ product.href }}" target="{{ item_link_target }}" ></a>
+							
+						</div>
+					{% endif %} 
+												
+				</div>
+
+				<div class="right-block">
+					
+					{% if display_title %} 
+						<h4>
+							<a href="{{ product.href }}" target="{{ item_link_target }}">
+								{{ product.name_maxlength|raw }}
+							</a>
+						</h4>
+					{% endif %}
+					{% if display_description %} 
+						<div class="item-des">
+							{{ (product.description_maxlength|raw) }}
+						</div>
+					{% endif %} 
+					<div class="caption">
+						{% if display_rating %}
+							{% if product.rating %}
+								<div class="rating">
+									{% for k in 1..5 %}
+										
+										{% if product.rating < k %} 
+											<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+									 	{% else %}   
+											<span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i></span>
+										{% endif %} 
+										{% set k = k + 1 %}
+									{% endfor %} 
+								</div>
+							{% else %}  
+							<div class="rating">
+								{% for j in 1..5 %}
+									{% set j = j + 1 %}
+									<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+								{% endfor %} 													
+							</div>
+							{% endif %}	
+						{% endif %}			
+
+						{% if display_price %} 
+							<div  class="price">
+								{% if not product.special %} 
+									<span class="price-new">
+										{{ product.price }} 
+									</span>
+								{% else %}   
+									<span class="price-new">{{ product.special }} </span>&nbsp;&nbsp;
+									<span class="price-old">{{ product.price }} </span>&nbsp;
+								{% endif %} 
+								
+							</div>
+						{% endif %} 
+						
+						
+																	
+					</div>
+					
+				</div>
+									
+			</div>
+		</div>
+		<!-- End item-wrap-inner -->
+	</div>
+
+	{% set clear = 'clr1' %}
+	{% if j % 2 == 0 %} {% set clear = clear ~ ' clr2' %} {% endif %}
+	{% if j % 3 == 0 %} {% set clear = clear ~ ' clr3' %} {% endif %}
+	{% if j % 4 == 0 %} {% set clear = clear ~ ' clr4' %} {% endif %}
+	{% if j % 5 == 0 %} {% set clear = clear ~ ' clr5' %} {% endif %}
+	{% if j % 6 == 0 %} {% set clear = clear ~ ' clr6' %}	{% endif %}
+	<!-- div class="{{ clear }}"></div> -->
+{% endfor %} 		
+</div>
+			

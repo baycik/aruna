@@ -1,0 +1,20 @@
+<div class="module {{ class_suffix }}">
+	{% if disp_title_module %}
+		<h3 class="modtitle">{{ head_name }}</h3>
+	{% endif %}
+	{% if pre_text %}
+		<div class="form-group">
+			{{ pre_text }}
+		</div>
+	{% endif %}
+	<div class="modcontent">
+		<div class="so_facebook-nav so-facebook-ip" style="width: {{ width }}px; ">
+			{{ fbcontent }}
+		</div>
+	</div>
+	{% if post_text %}
+		<div class="form-group">
+			{{ post_text }}
+		</div>
+	{% endif %}
+</div>

@@ -1,0 +1,28 @@
+<div class="module {{ class_suffix }}">
+	{% if pre_text != '' %}
+		<div class="form-group">
+			{{ pre_text }}
+		</div>
+	{% endif %}
+	<div class="modcontent">
+		<div class="box so-popular-tag">
+			{% if disp_title_module %}
+			<div class="box-heading modtitle">
+				<span>{{ head_name }}</span>
+			</div>
+			{% endif %}
+			<div class="box-content">
+				{% if data %}
+					{{ data }}
+				{% else %}
+					<p>{{ text_notags }}</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	{% if post_text != '' %}
+		<div class="form-group">
+			{{ post_text }}
+		</div>
+	{% endif %}
+</div>

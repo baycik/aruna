@@ -1,0 +1,87 @@
+{#=====Get variable : Config Select Block on header=====#}
+{% set hidden_headercenter = soconfig.get_settings('toppanel_type') =='2'? 'hidden-compact' : '' %}
+{% set hidden_headerbottom = soconfig.get_settings('toppanel_type') =='1'? 'hidden-compact' : '' %}
+
+<header id="header" class=" variant typeheader-{{ typeheader ? typeheader : '1'}}">
+	{#======	HEADER TOP	=======#}  
+	
+	<div class="header-top {{hidden_headercenter}}">
+			<div class="row">		
+				<div class="top-left col-xs-4 col-sm-4 col-md-5">
+					{% if soconfig.get_settings('welcome_message_status') %}
+						
+							{% if soconfig.get_settings('welcome_message') is not empty %}
+								{{ soconfig.decode_entities( soconfig.get_settings('welcome_message') ) }}
+							{% endif %} 
+				
+					{% endif %}
+					{% if search_block %}
+						<div class="search-header-w">
+							<div class="icon-search"><i class="fa fa-search"></i><span>{{ text_search }}</span></div>	
+							<div class="searchbox">	
+							 	{{ search_block }}
+							</div>
+						</div>
+					{% endif %} 
+				</div>	
+				<div class="navbar-logo col-xs-4 col-sm-4 col-md-2">
+					<div class="logo">
+				   		{{soconfig.get_logo()}}
+				   	</div>
+				</div>
+				<div class="header-right col-xs-4 col-sm-4 col-md-5">
+				
+					<div class="custom">
+						<div class="block-cart">
+							<div class="shopping_cart">
+							 	{{cart}} 
+							</div>
+						</div>
+						<div class="setting">
+							<div class="dropdown-toggle">
+								<span class="text-account">{{text_account}}</span>
+								<i class="fa fa-caret-down" aria-hidden="true"></i>
+							</div>
+							<div class="dropdown-menu">
+
+								<div class="box-lang-cunrent">
+									{% if soconfig.get_settings('lang_status') %}
+										<div class="switcher" > {{ currency }}  </div>
+										<div class="switcher">{{ language }} </div>
+									{% endif %}
+								</div>
+								<div class="account" id="my_account1"><a href="{{account}}" title="{{text_account}}" class="btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="dropdown-toggle">{{text_account}}</span></a>
+									<ul class="dropdown">
+										<li><a href="{{ account }}">{{text_account}}</a></li>
+										<li class="wishlist"><a href="{{ wishlist }}" id="wishlist-total" class="top-link-wishlist" title="{{text_wishlist}}">{{text_wishlist}}</a></li>
+										<li class="compare"><a href="{{ compare }}" id="compare-total" class="top-link-compare" title="{{text_compare}}">{{text_compare}}</a></li>
+										{% if logged %} 
+											<li class="log logout"><a class="link-lg" href="{{ logout }} ">{{ text_logout }} </a></li>
+										{% else %}  
+											<li class="register"><a class="link-lg" href="{{ register }} ">{{ text_register }} </a></li>
+											<li class="log login"><a class="link-lg" href="{{ login }} "><span >{{ text_login }}</span > </a></li>
+										{% endif %} 
+
+									</ul>
+								</div>
+								
+							</div>
+						</div>
+
+						
+					</div>
+					
+				</div>
+			</div>
+	</div>	
+	<div class="header-bottom {{hidden_headerbottom}}">
+		<div class="container"> 
+			<div class="row">			
+				<div class="main-menu-w">	
+					{{ content_menu1 }}
+				</div>
+			</div>
+		 </div>
+	</div>	
+		
+</header>

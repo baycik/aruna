@@ -1,0 +1,334 @@
+
+//** simple and lightweight mixin library for Sass **
+//-- url : http://bourbon.io/docs ---
+@import 'bourbon/bourbon';
+
+//** Mixins for Rem Font Sizing **
+//-- url : http://hugogiraudel.com/2013/03/18/ultimate-rem-mixin/
+@import 'utilities/rem';
+
+//** Variables for responsive design in bootstrap with sass **
+//-- url : https://gist.github.com/webinfinita/11407836
+@import 'utilities/bootstrap_breakpoints';
+
+//** Makes supporting both left-to-right (LTR) and right-to-left (RTL) easy.**
+//-- url : https://github.com/tysonmatanich/directional-scss
+@import 'utilities/directional';
+
+//Mixins utilities
+@import 'utilities/theme_variables';
+@import 'utilities/utilities';
+
+/* ================================================================================ */
+
+/*.footer-container{
+  margin-top: 40px;
+}*/
+.typefooter-9{
+  margin-top: 0px;
+  .footer-top{
+    padding: 26px 0;
+  }
+  .footer-middle{
+    padding-top: 75px;
+  }
+  .module .modtitle{
+        color: #222;
+        font-size: 18px;
+        line-height: 20px;
+        margin-bottom: 10px !important;  
+        font-weight: 400;
+        text-transform: capitalize;   
+        position: relative;
+        padding-bottom: 0px;       
+  }
+  .box-footer{  
+    margin-top: 3px;  
+    .modcontent{
+      ul{
+        li{           
+              a{
+                border: 0 none;               
+                font-size: 12px;
+                padding: 0;   
+                padding-#{$left}: 0px;
+                font-weight: 400; 
+                line-height: 35px;  
+                position: relative;                
+                display: inline-block;
+                transition: all 0.2s ease-in-out 0s;
+                color: #888;
+                &:before{
+                  content: "\f111";          
+                  font-family: 'FontAwesome';
+                  font-size: 0;
+                  position: absolute;
+                  top: 2px;
+                  #{$left}: 0px;
+                  transition: all 0.2s ease-in-out 0s;
+                }
+                &:hover{
+                  padding-#{$left}: 10px;
+                  &:before{
+                    font-size: 4px;
+                  }
+                }
+              }       
+            }
+      }
+    }
+  }
+
+  .infos-footer{
+    ul.modcontent{
+      margin-top: 20px;
+      li{
+
+          line-height: 32px;
+          list-style: outside none none;
+          padding: 0; 
+          margin-bottom: 5px; 
+          i{
+            font-size: 14px;
+            padding-#{$right}: 10px;
+          }   
+          a{
+
+          }
+         
+      }
+    }
+    .socials{
+      float: $left;
+      margin-top: 25px;
+      li{
+        position: relative;
+        float: $left;
+        margin-#{$right}: 25px;
+      
+        a{
+            color: #888;
+            font-size: 18px;
+            span{
+              display: none;
+            }
+            &:hover{
+              
+            }
+        }
+        
+      }
+    }
+  }
+  
+
+  .so-instagram-gallery .instagram-items-inner{
+    .instagram-item{
+      float: $left;
+        margin-bottom: 4px;
+        padding: 0 2px;
+        position: relative;
+       
+      .img_users a{
+        border: none;
+        height: 80px;
+        &:hover{
+              img{
+                opacity: 0.8;
+              }
+            }
+        /*img{
+          border-radius: 5px;
+        }*/
+      } 
+
+    }
+  }
+  
+  .newsletter-footer9{
+    margin-top: 75px;
+    margin-bottom: 30px;
+      .newsletter{  
+        padding: 25px 0;
+        border-top: 1px dashed #ddd;   
+        border-bottom: 1px dashed #ddd;   
+        display: inline-block;
+        width: 100%;
+        .title-block{     
+          color: #fff;
+          float: $left;
+          width: 50%;
+          margin-top: 17px;
+         
+          .page-heading{           
+            font-size: 20px;
+            line-height: 20px;  
+            font-weight: 400;
+            text-transform: capitalize;   
+          }
+          .promotext{
+            font-size: 14px;
+            color: #444;
+          }
+        }
+        .block_content{
+          float: $left;
+          width: 50%;
+          form.signup{
+            display: block;
+            margin-top: 11px;
+            @media (min-width: 992px){
+              padding-#{$left}: 45px;
+            }
+            .form-group{
+              position: relative;
+              .input-box{         
+                vertical-align: top;
+                padding-#{$right}: 105px;
+                border-radius: 4px;
+              }
+              .subcribe{
+                position: absolute;
+                top: 0;
+                #{$right}: 0;
+              }
+
+              #txtemail{
+                height: 44px;
+                line-height: 44px;
+                width: 100%;
+                box-shadow: none;
+                padding: side-values(0 0 0 20px);
+                border: none;           
+                background-color: #fafafa;  
+                font-size: 14px;
+                &::-moz-placeholder {
+                        color: #888;
+                          opacity: 1; 
+                      }
+                      &:-ms-input-placeholder { color: #888; } 
+                      &::-webkit-input-placeholder  { color: #888; } 
+                        &:focus{
+                            z-index: 0;
+                        }
+              }
+            }
+
+            .subcribe button{           
+              border: 0 none;
+              color: #fff;
+              font-weight: 400;
+              font-size: 12px;
+              height: 44px;
+              line-height: 44px;
+              padding: 0 17px;    
+              text-transform: uppercase;
+              border-radius: 3px;
+              &:hover{
+                color: #fff;
+              }
+            }
+          }
+        }
+      }
+  }
+/*== Block policy ==*/
+.block-policy9{
+    margin: 0 auto;
+    ul{
+        li{
+            float: $left;
+            padding: 0 15px;  
+            width: 33.333%;   
+            
+            &:last-child{
+                &:before{
+                    display: none;
+                }
+            }
+            .item-inner{
+                display: inline-block;
+                &:hover{
+                    .content{
+                        
+                    }                    
+                }
+   
+                .content{
+                    position: relative;
+                    padding-#{$left}: 90px;
+                    &:before{
+                        background: url(#{$imgPath}icon/id9-promotion.png) no-repeat; 
+                        width: 50px;
+                        height: 50px;
+                        top: 0;
+                        #{$left}: 0px;
+                        position: absolute; content: "";
+                    }
+                    b{
+                        color: #fff;
+                        font-weight: 400;
+                        text-transform: capitalize;
+                        font-size: 14px;               
+                    }
+                    span{
+                        line-height: 100%;
+                        margin: 0;
+                        text-transform: capitalize;
+                        font-weight: 300;
+                        display: inline-block;
+                        width: 100%;
+                        color: #fff;
+                    }
+                }
+            }  
+            &.item-1{
+                .item-inner{
+                    .content{
+                        &:before{
+                            background-position: 0 3px;
+                        }
+                    }
+                }
+            }
+            &.item-2{
+                .item-inner{
+                    .content{
+                        &:before{
+                            background-position: 0 -148px;
+                        }
+                    }
+                }
+            }
+            &.item-3{
+                .item-inner{
+                    .content{
+                        &:before{
+                            background-position: 0 -305px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+  /* FOOTER BOTTOM */
+  .copyright-w{
+
+  }
+  .payment-w{
+    
+  }
+  .footer-bottom{
+    background-color: #fff;
+    padding: 20px 0;
+    text-align: center;
+      .copyright{
+        color: #666;
+        margin-top: 20px;
+        
+      }
+  }
+}
+

@@ -1,0 +1,38 @@
+<footer class="footer-container typefooter-{{typefooter ? typefooter : '1'}}">
+	{#======	FOOTER TOP	=======#}  
+	{% if footer_block6 is not empty %}
+	<div class="footer-main desc-collapse showdown" id="collapse-footer">
+		{{footer_block6}}
+			
+	</div>
+	<div class="button-toggle hidden-lg hidden-md">
+         <a class="showmore" data-toggle="collapse" href="#" aria-expanded="false" aria-controls="collapse-footer">
+            <span class="toggle-more">{{ objlang.get('show_more') }} <i class="fa fa-angle-down"></i></span> 
+            <span class="toggle-less">{{ objlang.get('show_less') }} <i class="fa fa-angle-up"></i></span>           
+		</a>        
+	</div>
+	{% endif %}
+	
+	
+	{#======	FOOTER BOTTOM	=======#} 
+	<div class="footer-bottom ">
+		<div class="container">		
+		<div class="row">
+			<div class="col-lg-6 col-md-7 col-sm-12 col-xs-12 copyright-w">	
+				<div class="copyright">
+					{% if soconfig.get_settings('copyright') is empty %}
+						{{ powered }}
+					{% else %}
+						{{ soconfig.decode_entities(soconfig.get_settings('copyright'))|replace({'{year}': "now"|date("Y")}) }}
+					{% endif %}
+				</div>	
+			</div>
+			{% if soconfig.get_settings('imgpayment_status')%} 
+			<div class="col-lg-6 col-md-5 col-sm-12 col-xs-12 payment-w">
+				<img src="image/{{  soconfig.get_settings('imgpayment') }}"  alt="imgpayment">
+			</div>
+			{% endif %}
+		</div>
+		</div>
+	</div>
+</footer>

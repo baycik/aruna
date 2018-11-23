@@ -1,0 +1,913 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  	<div class="page-header">
+    	<div class="container-fluid">
+	      	<div class="pull-right">
+				<button type="submit" form="form-featured" data-toggle="tooltip" title="{{ objlang.get('entry_button_save') }} " class="btn btn-primary"><i class="fa fa-save"></i> {{ objlang.get('entry_button_save')}}</button>
+				<a class="btn btn-success" onclick="$('#action').val('save_edit');$('#form-featured').submit();" data-toggle="tooltip" title="{{ objlang.get('entry_button_save_and_edit') }} " ><i class="fa fa-pencil-square-o"></i> {{ objlang.get('entry_button_save_and_edit')}}</a>
+				<a href="{{ cancel}} " data-toggle="tooltip" title="{{ objlang.get('entry_button_cancel') }} " class="btn btn-danger"><i class="fa fa-reply"></i>  {{ objlang.get('entry_button_cancel')}}</a>
+			</div>
+		      <h1>{{ heading_title_so }}</h1>
+		      <ul class="breadcrumb">
+		        {% for breadcrumb in breadcrumbs %}
+		        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+		        {% endfor %}
+		      </ul>
+    	</div>
+  	</div>
+  	<div class="container-fluid">
+
+    {% if error.warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error.warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+
+    {% if success %}
+		<div class="alert alert-success"><i class="fa fa-check-circle"></i>  {{ success }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		<div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_layout }}  
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+	{% endif %}
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ subheading }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-featured" class="form-horizontal">
+			
+			<div class="row">
+				<div class="col-sm-12">
+					{% set module_row = 1 %}
+					{% for key, module in modules %}  	
+					
+						<div  id="tab-module{{module_row}}" class="col-sm-12">
+							<div class="form-group"> 
+								{# Module Name #}
+								<input type="hidden" name="action" id="action" value=""/>
+								<label class="col-sm-3 control-label" for="input-name"> <b style="font-weight:bold; color:#f00">*</b> <span data-toggle="tooltip" title="{{ objlang.get('entry_name_desc') }} ">{{ objlang.get('entry_name') }}  </span></label>
+								<div class="col-sm-9">
+									<div class="col-sm-4">
+										<input type="text" name="name" value="{{ module.name }}" placeholder="{{ objlang.get('entry_name') }} " id="input-name" class="form-control" />
+									</div>
+									{% if error.name %} 
+									<div class="text-danger col-sm-12">{{ error.name }} </div>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group"> 
+								{# Status #}
+								<label class="col-sm-3 control-label" for="input-status"><span data-toggle="tooltip" title="{{ objlang.get('entry_status_desc') }} ">{{ objlang.get('entry_status') }}  </span></label>
+								<div class="col-sm-9">
+									<div class="col-sm-4">
+										<select name="status" id="input-status" class="form-control">
+											{% if module.status %} 
+												<option value="1" selected="selected">{{ objlang.get('text_enabled') }} </option>
+												<option value="0">{{ objlang.get('text_disabled') }} </option>
+											{% else %}   
+												<option value="1">{{ objlang.get('text_enabled') }} </option>
+												<option value="0" selected="selected">{{ objlang.get('text_disabled') }} </option>
+											 {% endif %}
+										</select>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								{# <!--Logo Width -->  #}
+								<label class="col-sm-3 control-label" for="input-class_suffix">
+									<b style="font-weight:bold; color:#f00">*</b><span data-toggle="tooltip" title="{{ objlang.get('entry_logo_desc') }} ">{{ objlang.get('entry_logo') }}  </span>
+								</label>
+								<div class="col-sm-9">
+									<div class="col-sm-2">
+										<div class="input-group"><input type="text" name="display_logowidth" value="{{  module.display_logowidth }}" placeholder="width"  class="form-control" /> 
+										<div class="input-group-addon">px</div> </div>
+										{% if error.error_width %} 
+										<div class="text-danger ">{{ error.error_width }} </div>
+										{% endif %}
+									</div>
+									
+									<div class="col-sm-2">
+										<div class="input-group"><input type="text" name="display_logoheight" value="{{  module.display_logoheight }}" placeholder="height"  class="form-control" /> 
+										<div class="input-group-addon">px</div> </div>
+										{% if error.error_height %} 
+										<div class="text-danger">{{ error.error_height }} </div>
+										{% endif %}
+									</div>
+									
+								</div>
+							</div>
+							
+						</div>
+						
+						<div class="tab-pane">
+							<ul class="nav nav-tabs" id="so_youtech">
+								<li>
+									<a href="#module" data-toggle="tab">
+										{{ entry_module }}
+									</a>
+								</li>
+								<li>
+									<a href="#source_option" data-toggle="tab">
+										{{ entry_source_option }}
+									</a>
+								</li>
+								
+							</ul>
+
+							<div class="tab-content">
+								<div class="tab-pane" id="module">
+									<div class="col-sm-12">
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> <span data-toggle="tooltip" title="{{ entry_display_feature_desc }}">{{ entry_display_totalorder }}</span></label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_totalorder %}
+														<input type="radio" name="display_totalorder" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_totalorder" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_totalorder %}
+														<input type="radio" name="display_totalorder" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_totalorder" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ entry_display_totalWishlist }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_totalwishlist %}
+														<input type="radio" name="display_totalwishlist" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_totalwishlist" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_totalwishlist %}
+														<input type="radio" name="display_totalwishlist" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_totalwishlist" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+											
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ entry_display_downloads }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+											
+													{% if module.display_totaldownloads %}
+														<input type="radio" name="display_totaldownloads" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_totaldownloads" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_totaldownloads %}
+														<input type="radio" name="display_totaldownloads" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_totaldownloads" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>	
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ entry_display_transactions }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_totaltransactions %}
+														<input type="radio" name="display_totaltransactions" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_totaltransactions" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_totaltransactions %}
+														<input type="radio" name="display_totaltransactions" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_totaltransactions" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ entry_display_latestorder }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_latestorder %}
+														<input type="radio" name="display_latestorder" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_latestorder" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_latestorder %}
+														<input type="radio" name="display_latestorder" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_latestorder" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									</div>
+									
+									<div class="col-sm-12">
+									<legend>Account Link Setting</legend>
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_edit_account }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_editaccount %}
+														<input type="radio" name="display_editaccount" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_editaccount" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_editaccount %}
+														<input type="radio" name="display_editaccount" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_editaccount" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_Password }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_password %}
+														<input type="radio" name="display_password" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_password" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_password %}
+														<input type="radio" name="display_password" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_password" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_address }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_address %}
+														<input type="radio" name="display_address" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_address" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_address %}
+														<input type="radio" name="display_address" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_address" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_wishlist }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_wishlist %}
+														<input type="radio" name="display_wishlist" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_wishlist" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_wishlist %}
+														<input type="radio" name="display_wishlist" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_wishlist" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_order_history }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_orderhistory %}
+														<input type="radio" name="display_orderhistory" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_orderhistory" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_orderhistory %}
+														<input type="radio" name="display_orderhistory" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_orderhistory" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_downloads }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_downloads %}
+														<input type="radio" name="display_downloads" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_downloads" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_downloads %}
+														<input type="radio" name="display_downloads" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_downloads" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_reward_points }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_reward_points %}
+														<input type="radio" name="display_reward_points" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_reward_points" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_reward_points %}
+														<input type="radio" name="display_reward_points" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_reward_points" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_returns }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_returns %}
+														<input type="radio" name="display_returns" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_returns" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_returns %}
+														<input type="radio" name="display_returns" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_returns" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_transactions }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_transactions %}
+														<input type="radio" name="display_transactions" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_transactions" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_transactions %}
+														<input type="radio" name="display_transactions" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_transactions" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_payments }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_payments %}
+														<input type="radio" name="display_payments" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_payments" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_payments %}
+														<input type="radio" name="display_payments" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_payments" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_newsletter }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_newsletter %}
+														<input type="radio" name="display_newsletter" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_newsletter" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_newsletter %}
+														<input type="radio" name="display_newsletter" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_newsletter" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									</div>
+								</div>
+						
+								<div class="tab-pane" id="source_option">
+									<legend>My Account Setting</legend>
+								
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_account_myaccount }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_account_myaccount %}
+														<input type="radio" name="display_account_myaccount" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_account_myaccount" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_account_myaccount %}
+														<input type="radio" name="display_account_myaccount" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_account_myaccount" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_edit_account }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_account_editaccount %}
+														<input type="radio" name="display_account_editaccount" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_account_editaccount" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_account_editaccount %}
+														<input type="radio" name="display_account_editaccount" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_account_editaccount" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_Password }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_account_password %}
+														<input type="radio" name="display_account_password" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_account_password" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_account_password %}
+														<input type="radio" name="display_account_password" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_account_password" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_address }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_account_address %}
+														<input type="radio" name="display_account_address" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_account_address" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_account_address %}
+														<input type="radio" name="display_account_address" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_account_address" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_wishlist }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_account_wishlist %}
+														<input type="radio" name="display_account_wishlist" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_account_wishlist" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_account_wishlist %}
+														<input type="radio" name="display_account_wishlist" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_account_wishlist" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_newsletter }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_account_newsletter %}
+														<input type="radio" name="display_account_newsletter" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_account_newsletter" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_account_newsletter %}
+														<input type="radio" name="display_account_newsletter" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_account_newsletter" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+								
+									
+									<legend>Orders Setting </legend>
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_order }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_order %}
+														<input type="radio" name="display_order" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_order" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_order %}
+														<input type="radio" name="display_order" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_order" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_downloads }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_order_download %}
+														<input type="radio" name="display_order_download" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_order_download" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_order_download %}
+														<input type="radio" name="display_order_download" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_order_download" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_payments }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_order_payments %}
+														<input type="radio" name="display_order_payments" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_order_payments" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_order_payments %}
+														<input type="radio" name="display_order_payments" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_order_payments" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_reward_points }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_order_reward %}
+														<input type="radio" name="display_order_reward" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_order_reward" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_order_reward %}
+														<input type="radio" name="display_order_reward" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_order_reward" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_returns }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_order_returns %}
+														<input type="radio" name="display_order_returns" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_order_returns" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_order_returns %}
+														<input type="radio" name="display_order_returns" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_order_returns" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+									
+									<div class="form-group ">
+										<label class="col-sm-3 control-label" for="input-display_feature"> {{ text_transactions }}</label>
+										<div class="col-sm-9">
+											<div class="col-sm-5">
+												<label class="radio-inline">
+													{% if module.display_order_transactions %}
+														<input type="radio" name="display_order_transactions" value="1" checked="checked" />
+														{{ text_yes }}
+													{% else %}
+														<input type="radio" name="display_order_transactions" value="1" />
+														{{ text_yes }}
+													{% endif %}
+												</label>
+												<label class="radio-inline">
+													{% if module.display_order_transactions %}
+														<input type="radio" name="display_order_transactions" value="0" />
+														{{ text_no }}
+													{% else %}
+														<input type="radio" name="display_order_transactions" value="0" checked="checked" />
+														{{ text_no }}
+													{% endif %}
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+						
+							</div>
+							
+						</div>
+
+						{% set module_row = module_row + 1 %}
+					{% endfor %}
+				</div>
+			</div>
+        </form>		
+      </div>
+    </div>
+  	</div>
+ 
+   <style>
+		legend{height:35px; font-size:18px;}
+   </style>
+  	<script type="text/javascript"><!--
+		if($("input[name='use_cache']:radio:checked").val() == '0'){
+			$('#input-cache_time_form').hide();
+		}else{
+			$('#input-cache_time_form').show();
+		}
+
+		$("input[name='use_cache']").change(function(){
+			val = $(this).val();
+			if(val ==0)
+			{
+				$('#input-cache_time_form').hide();
+			}else
+			{
+				$('#input-cache_time_form').show();
+			}
+		});
+
+		$('#language a:first').tab('show');
+	//--></script>
+
+	<script type="text/javascript">
+		$('#so_youtech a:first').tab('show');
+	</script>
+	<script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
+	<script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>
+	<link rel="stylesheet"  href="view/javascript/summernote/summernote.css" />
+  
+
+</div>
+{{ footer }}

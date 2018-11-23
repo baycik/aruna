@@ -1,0 +1,279 @@
+
+//** simple and lightweight mixin library for Sass **
+//-- url : http://bourbon.io/docs ---
+@import 'bourbon/bourbon';
+
+//** Mixins for Rem Font Sizing **
+//-- url : http://hugogiraudel.com/2013/03/18/ultimate-rem-mixin/
+@import 'utilities/rem';
+
+//** Variables for responsive design in bootstrap with sass **
+//-- url : https://gist.github.com/webinfinita/11407836
+@import 'utilities/bootstrap_breakpoints';
+
+//** Makes supporting both left-to-right (LTR) and right-to-left (RTL) easy.**
+//-- url : https://github.com/tysonmatanich/directional-scss
+@import 'utilities/directional';
+
+//Mixins utilities
+@import 'utilities/theme_variables';
+@import 'utilities/utilities';
+
+/* ================================================================================ */
+
+/*.footer-container{
+  margin-top: 40px;
+}*/
+.typefooter-7{
+  margin-top: 0px;
+  background-color: #22282e;
+  /* GENERAL */
+  .module .modtitle{
+        color: #fff;
+        font-size: 14px;
+        line-height: 20px;
+        margin-bottom: 15px !important;  
+        font-weight: 700;
+        text-transform: uppercase;   
+        position: relative;
+        padding-bottom: 0px;       
+  }
+  .box-footer{  
+    margin-top: 3px;  
+    .modcontent{
+      ul{
+        li{           
+              a{
+                border: 0 none;               
+                font-size: 14px;
+                padding: 0;   
+                padding-#{$left}: 0px;
+                font-weight: 400; 
+                line-height: 35px;  
+                position: relative;                
+                display: inline-block;
+                transition: all 0.2s ease-in-out 0s;
+                color: #fff;
+                &:before{
+                  content: "\f0da";
+                  @include if-rtl {
+                    content: "\f0d9";
+                  }
+                  font-family: 'FontAwesome';
+                  font-size: 0;
+                  position: absolute;
+                  top: 0;
+                  #{$left}: 10px;
+                  transition: all 0.2s ease-in-out 0s;
+                }
+                &:hover{
+                  padding-#{$left}: 25px;
+                  &:before{
+                    font-size: 14px;
+                  }
+                }
+              }       
+            }
+      }
+    }
+  }
+
+
+  .footer-top{
+    padding: 37px 0 0 0;
+    margin: 0;
+    .ftop{      
+      margin: 0;
+      padding: 0 0 35px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+  }
+  .footer-middle{
+    padding-top: 43px;
+    padding-bottom: 40px;
+  }
+  .newsletter-footer1{
+      .newsletter{
+        background-color: transparent !important;
+        .title-block{     
+          position: relative;
+          color: #fff;
+          float: $left;
+          width: 40%;
+          padding-#{$left}: 70px;
+          margin-top: 17px;
+          &:before{
+            position: absolute;
+            font-family: 'FontAwesome';
+            content: "\f1d9";
+            font-size: 40px;
+            position: absolute;
+            top: 5px ;
+            #{$left}: 0;
+          } 
+          .page-heading{           
+            @include rem(font-size,22px);
+            line-height: 20px;  
+            font-weight: 700;
+            text-transform: capitalize;   
+          }
+          .promotext{
+            font-size: 14px;
+          }
+        }
+        .block_content{
+          float: $left;
+          width: 60%;
+          form.signup{
+            display: block;
+            margin-top: 11px;
+            padding-#{$left}: 45px;
+            .form-group{
+              position: relative;
+              .input-box{
+                background-color: #fff;  
+                vertical-align: top;
+                padding-#{$right}: 120px;
+                border-radius: 4px;
+              }
+              .subcribe{
+                position: absolute;
+                top: 0;
+                #{$right}: 0;
+              }
+
+              #txtemail{
+                height: 50px;
+                line-height: 50px;
+                width: 100%;
+                box-shadow: none;
+                padding: side-values(0 0 0 20px);
+                border: none;           
+                background-color: #fff;  
+                &::-moz-placeholder {
+                        color: #999;
+                          opacity: 1; 
+                      }
+                      &:-ms-input-placeholder { color: #999; } 
+                      &::-webkit-input-placeholder  { color: #999; } 
+                        &:focus{
+                            z-index: 0;
+                        }
+              }
+            }
+
+            .subcribe button{           
+              border: 0 none;
+              color: #fff;
+              font-weight: 700;
+              font-size: 16px;
+              height: 50px;
+              line-height: 50px;
+              padding: 0 17px;    
+              text-transform: capitalize;
+              border-bottom-#{$right}-radius: 3px;
+          border-top-#{$right}-radius: 3px;
+              &:hover{
+                color: #fff;
+              }
+            }
+          }
+        }
+      }
+  }
+
+  .socials{
+    float: $right;
+    margin-top: 25px;
+    li{
+      position: relative;
+      display: inline-block;
+      padding-#{$left}: 18px;
+      margin-#{$left}: 18px;
+      &:first-child{
+        &:before{
+          display: none;
+        }
+      }
+      &:before{
+        background: rgba(255, 255, 255, 0.5) none repeat scroll 0 0;
+          content: "";
+          height: 10px;
+          position: absolute;
+          #{$left}: 0;
+          top: 8px;
+          width: 1px;
+      }
+      a{
+        color: #fff;
+          font-size: 14px;
+          text-transform: capitalize;
+          i{
+            display: inline-block;
+            font-size: 16px;
+            margin-#{$right}: 8px;
+          }
+      }
+      
+    }
+  }
+  .infos-footer{
+    ul{
+      margin-top: 20px;
+      li{
+        color: #fff;
+        background: url(#{$imgPath}icon/icon-contact-w.png) no-repeat $left top;  
+          font-size: 14px;
+          line-height: 20px;
+          list-style: outside none none;
+          padding: side-values(5px 0px 15px 35px);
+          text-transform: capitalize;
+          a{
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease 0s;
+          }
+          &.adres {
+            background-position: $left 11px;
+        }
+        &.phone {
+            background-position: $left -50px;
+        }
+        &.mail {
+            background-position: $left -98px;
+        }
+        &.timer {
+            background-position: $left -142px;
+        }
+      }
+    }
+  }
+
+
+
+
+
+  /* FOOTER BOTTOM */
+  .copyright-w{
+
+  }
+  .payment-w{
+    text-align: $right;
+  }
+  .footer-bottom{
+    background-color: #fff;
+    padding: 12px 0;
+      .copyright{
+        color: #666;
+        margin-top: 3px;
+        
+      }
+  }
+
+
+}
+
+
+@media (min-width: 1200px) and (max-width: 1649px){
+  
+}

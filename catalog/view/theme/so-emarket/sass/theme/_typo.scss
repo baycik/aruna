@@ -1,0 +1,65 @@
+
+.divider {clear: both;height: 40px;}
+.alert{border-radius: 0;
+	.fa {font-size: 20px;vertical-align: middle;margin-#{$right}:10px;}
+}
+.tab-content {
+    padding: 15px 15px 10px;margin-bottom: 20px;z-index: 2;border: 1px solid #ddd;border-top: 0px;
+}
+
+.simple-ul{margin: 0 0 15px 0; padding: 0; list-style: none;
+	li{position: relative;padding-left: 15px;margin-bottom: 5px;
+		&:before{    position: absolute;top: 0;left: 0;display: block;content:"\f105";font-family: $FontAwesome; font-size: 14px;}
+		ul {   margin: 10px 0 10px 0;padding: 0;list-style: none;
+			li:before{content: "\f111"; font-size: 7px;top:7px;}
+		} 
+	}
+}
+.decimal-list { margin: 0px 0 15px 20px;padding: 0;list-style: decimal outside;
+	li{padding-left: 0;margin-bottom: 5px;text-indent: 0;}
+}
+
+blockquote {font-size: 12px;}
+.well{border-radius: 0;}
+ul, ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+select,
+button{
+	outline: none;
+}
+select:focus, form:focus, button:focus,
+textarea:focus, input:focus{
+    outline: none;
+}
+.feature-box{ border-radius: 0;margin-bottom: 20px;
+	.feature-icon {
+		 color: $background;
+		 display: inline-block;
+		 font-size: 64px;
+		 height: 65px;
+		 text-align: center;
+		 width: 65px;
+		 float: $left;
+	}
+	.feature-content {
+		padding-#{$left}: 80px;
+  }
+}
+
+.featured-icon {
+    border-radius: 50%;
+    color: #fff;
+    background-color: $background;
+    display: inline-block;
+    font-size: 40px;
+    height: 110px;
+    line-height: 110px;
+    margin: 5px;
+    position: relative;
+    text-align: center;
+    width: 110px;
+    z-index: 1;
+}

@@ -1,0 +1,116 @@
+{#=====Get variable : Config Select Block on header=====#}
+{% set hidden_headercenter = soconfig.get_settings('toppanel_type') =='2'? 'hidden-compact' : '' %}
+{% set hidden_headerbottom = soconfig.get_settings('toppanel_type') =='1'? 'hidden-compact' : '' %}
+
+<header id="header" class=" variant typeheader-{{ typeheader ? typeheader : '1'}}">
+	{#======	HEADER TOP	=======#}  
+	<div class="header-top hidden-compact hidden">
+		<div class="container">
+			<div class="row">
+				<div class="header-top-left col-lg-7 col-md-8 col-sm-6 col-xs-4">
+					
+					{% if soconfig.get_settings('lang_status') %}
+					<ul class="top-link list-inline lang-curr">
+						{% if currency %}<li class="currency"> {{ currency }}  </li> {% endif %}
+						{% if language %} <li class="language">{{ language }} </li>	{% endif %}			
+					</ul>				
+					{% endif %}
+					
+							
+				</div>
+				<div class="header-top-right collapsed-block col-lg-5 col-md-4 col-sm-6 col-xs-8">
+					<ul class="top-link list-inline">
+						{% if logged %} 
+							<li class="log logout"><a href="{{ logout }} "> {{ text_logout }} </a></li>
+						{% else %}   
+							<li class="log login">
+								<a href="{{ login }} ">{{ text_login }} </a>
+							</li>								
+						{% endif %}
+						<li class="account" id="my_account"><a href="{{ account }}" title="{{ text_account }} " class="btn-xs dropdown-toggle" data-toggle="dropdown"> <span class="hidden-xs">{{ text_account }} </span> <span class="fa fa-caret-down"></span></a>
+							<ul class="dropdown-menu ">
+									<li><a href="{{ wishlist }}"  title="{{ text_wishlist }}">{{ text_wishlist }}</a></li>
+									<li><a href="{{ compare }}" title="{{ text_compare }}">{{ text_compare }}</a></li>
+								{% if logged %}
+						            <li><a href="{{ account }}">{{ text_account }}</a></li>
+						            <li><a href="{{ order }}">{{ text_order }}</a></li>
+						            <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
+						            <li><a href="{{ download }}">{{ text_download }}</a></li>
+						            <li><a href="{{ logout }}"><i class="fa fa-sign-out" aria-hidden="true"></i> {{ text_logout }}</a></li>
+					            {% else %}
+
+						            <li><a href="{{ register }}">{{ text_register }}</a></li>
+						            <li><a href="{{ login }}">{{ text_login }}</a></li>
+					            {% endif %}															
+							</ul>
+						</li>	
+						
+						{% if soconfig.get_settings('checkout_status') %}
+							<li class="checkout hidden-xs"><a href="{{ checkout }} " class="btn-link" title="{{ text_checkout }} "><span >{{ text_checkout }} </span></a></li>
+						{% endif %} 
+				
+					</ul>
+					 					
+					{% if soconfig.get_settings('phone_status') and soconfig.get_settings('contact_number') %}
+					<div class="telephone hidden-xs hidden-sm">
+						{{ soconfig.decode_entities( soconfig.get_settings('contact_number') ) }}
+					</div>
+					{% endif %}	
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	{#======	HEADER CENTER	=======#} 
+	<div class="header-middle {{hidden_headercenter}}">
+		<div class="container">
+			<div class="row">			
+				<div class="navbar-logo col-lg-3 col-md-2 col-sm-3 col-xs-12">
+					<div class="logo">
+				   		{{soconfig.get_logo()}}
+				   	</div>
+				</div>				
+				<div class="main-menu col-lg-5 col-md-7 col-sm-5 col-xs-12">					
+					<div class="search-header-w">
+						<div class="icon-search hidden"><i class="fa fa-search"></i></div>								
+						{{ search_block }}
+					</div>					
+				</div>
+				<div class="middle-right col-lg-4 col-md-3 col-sm-4 col-xs-12">									
+					{% if soconfig.get_settings('welcome_message_status') %}
+						<div class="hidden-md hidden-sm hidden-xs welcome-msg">
+							{% if soconfig.get_settings('welcome_message') is not empty %}
+								{{ soconfig.decode_entities( soconfig.get_settings('welcome_message') ) }}
+							{% endif %} 
+						</div>
+					{% endif %}
+						
+					<ul class="links-bottom">
+						{% if logged %}
+							<li><a href="{{ logout }}">{{ text_logout }}</a></li>
+			            {% else %}
+				            <li><a href="{{ register }}">{{ text_register }}</a></li>
+						    <li><a href="{{ login }}">{{ text_login }}</a></li>
+			            {% endif %}	
+			            <li class="shopping_cart">							
+						 	{{ cart }}
+						</li>
+			        </ul>
+			        
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="header-bottom {{hidden_headerbottom}}">
+		<div class="container">
+			
+				<div class="bottom2">
+					{{ content_menu1 }}								
+				</div>			
+			
+		</div>
+	</div>
+		
+</header>

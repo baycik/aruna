@@ -1,0 +1,4 @@
+2018-11-17 11:45:17 - PHP Notice:  Undefined index: config_name in /home/b/baycik/aruna.market/public_html/install/model/upgrade/1004.php on line 119
+2018-11-17 11:45:57 - PHP Warning:  file(/home/b/baycik/aruna.market/public_html/admin/config.php): failed to open stream: No such file or directory in /home/b/baycik/aruna.market/public_html/install/model/upgrade/1009.php on line 94
+2018-11-17 11:45:57 - PHP Warning:  Invalid argument supplied for foreach() in /home/b/baycik/aruna.market/public_html/install/model/upgrade/1009.php on line 96
+2018-11-17 11:45:57 - PHP Warning:  Invalid argument supplied for foreach() in /home/b/baycik/aruna.market/public_html/install/model/upgrade/1009.php on line 107

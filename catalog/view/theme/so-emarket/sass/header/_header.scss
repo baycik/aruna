@@ -1,0 +1,614 @@
+.id3-item{
+    display: none;
+}
+// so searchpro
+
+header #sosearchpro{
+    @include if-rtl {
+        .chosen-container-single .chosen-single div{
+            left: 0; right: auto;
+        }
+    }
+    .search .chosen-container input{
+        margin: 0; padding-#{$left}: 10px;
+    }
+    .chosen-container-active.chosen-with-drop .chosen-single div b{
+        background-position: -13px 12px
+    }
+
+    input.chosen-search-input{
+        height: 23px !important;
+        line-height: 23px;
+        border: 1px solid #efefef !important;
+    }
+     .dropdown-menu{
+        opacity: 1;
+        visibility: visible;
+        margin-top: 0;
+    }
+}
+ 
+.navbar-compact .hidden-compact{
+    display: none;
+}
+
+
+header{
+    .navbar-default{
+        background-color: transparent;
+        .megamenu-wrapper{
+            background-color: transparent;
+        }
+    }
+    ul.megamenu > li > a{
+        text-shadow: unset;
+    }
+}
+
+
+
+.shopping_cart .fa-check-circle{
+    display: none;
+}
+#header #sosearchpro.so-search .searchbox .select_category select:hover{
+    cursor: pointer;
+}
+.dropdown-menu.shoppingcart-box .table{
+    margin-bottom: 0;
+    .btn-danger{
+        background-color: transparent;
+        i{
+            color: #666;
+        }
+        &:hover{
+            i{
+                color: $linkColor;
+            }
+        }
+    }
+}
+
+header #sosearchpro .dropdown-menu{
+    border-radius: 0;
+}
+
+header ul.top-link > li.language .btn-link img{
+    margin-top: -1px;
+}
+
+
+
+/*============ HEADER  ==================*/
+.common-home .horizontal  ul.megamenu > li.home > a{
+    background: transparent;
+    color: $linkColor;
+}
+
+.container-megamenu.horizontal{
+    ul.megamenu > li.home > a,
+    ul.megamenu > li.active > a, 
+    ul.megamenu > li:hover > a{
+        background-color: transparent;
+        color: $linkColor;
+    }
+    .subcategory li a{@include linkGray();}
+}
+.header-top .header-top-left .welcome-msg .owl2-carousel .owl2-stage-outer{ direction: ltr; }
+.mega-horizontal .navbar-default{border: none;background: transparent;}
+@media (max-width: 991px){
+    .responsive ul.megamenu > li.click:before,
+    .responsive ul.megamenu > li.hover:before {
+        #{$right}: 0;
+        #{$left}: auto;
+    }
+    .responsive ul.megamenu > li.active .close-menu{
+        #{$right}: 0;
+        #{$left}: auto;
+    }
+}
+
+.header-bottom .content_menu .container{overflow: visible;}
+.btn-shopping-cart {
+    .dropdown-menu{
+        min-width: 320px;        
+        .cart_product_name{@include linkGray();}
+        .empty{
+            padding: 15px;
+            margin: 0;
+    
+        }
+    }
+    .table>tbody>tr>td{border: none;border-bottom: 1px solid $gray-lighter;vertical-align: middle;}
+    .checkout{padding: 0 20px 10px;}
+    .added_items{padding: 10px;}
+}   
+
+
+
+.megamenu-style-dev{position: relative;
+    .vertical{
+        ul.megamenu{position: absolute; width: 100%; background: #222; z-index: 99;
+            > li > a{font-size: 11px;}
+        } 
+        .vertical ul.megamenu > li{margin: 0; border-right: 0; background: #222;
+            strong i{display: none;}
+                    >a {padding-left: 15px;padding-right: 12px; color: #fff;
+                                    &:hover{color: #fff;}
+            }
+            &.css-menu{
+                .sub-menu .content{padding: 0;}
+                .hover-menu .menu >ul{padding: 0; margin: 0;
+                    li{
+                        border-bottom: 1px solid #eee;
+                        &:hover{background: #eee;
+                            > a{color: $linkColor;}
+                        }
+                        a{line-height: 37px;
+                            b{line-height: 37px; font-size: 16px;margin: 0 20px;}
+                        }
+                        &:last-child{border: none;}
+                    }
+                    ul{padding: 0; left: 100%;margin: 0;box-shadow: none;border: 1px solid #eee;min-width: 200px;
+                        &:before, &:after{display: none;}
+                    }
+                } 
+            }
+            &.item-style3{
+                        .sub-menu .content{padding-right: 0;}
+            }
+            &.with-sub-menu{
+                > a:after{content: "\f105";color: #fff;font-family: Fontawesome; font-size: 13px; float: right; margin: 0;}
+                
+                &:hover > a:after{position: static; border-color: transparent;}
+                
+            }
+            &:hover{background-color: #444;
+                >a{color: #fff;}
+            }
+            &.active > a{background: transparent !important;}
+            
+            &.style1 .content:after{
+            }       
+            .sub-menu .content{border-top: 1px solid #ddd;
+                .banner{margin-top: -21px; margin-bottom: -22px; margin-right: -1px;}
+                .static-menu .menu ul a.main-menu{padding: 0;}
+            }
+        }
+        ul.megamenu .sub-menu .content .static-menu .menu ul {padding-bottom: 0;
+            li >a{line-height: inherit; padding-bottom: 0; border-bottom: none; min-height: auto;
+                 &:hover{color: $linkColor;}
+            }
+            ul a{padding: 0;
+                 &:hover{color: $linkColor;} 
+            }
+        }
+    }
+}
+.container-megamenu.vertical #menuHeading .megamenuToogle-pattern .container{
+    background-color: $background;
+}
+/*======================================================*/
+header ul.top-link > li .btn-group .btn-link:hover,
+header ul.top-link > li > a:hover{
+    color: $linkColor;
+}
+
+.common-home .typeheader-1 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-1 .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+.typeheader-1 .container-megamenu.horizontal ul.megamenu > li.active > a, 
+.typeheader-1 .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+    color: $linkColor;
+}
+
+.typeheader-1 #sosearchpro .search button{
+    background-color: $background;
+    &:hover{
+        background-color: darken($background,10%);
+    }
+}
+.typeheader-1 .shopping_cart .btn-shopping-cart .top_cart .icon-c{
+    background-color: $background;
+}
+.typeheader-1 .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_carts,
+.typeheader-1 .signin-w ul li a:hover{
+    color: $linkColor;
+}
+.typeheader-1 .wishlist-comp li a.top-link-wishlist:hover:before,
+.typeheader-1 .wishlist-comp li a:hover i{
+    color: $linkColor;
+}
+// header 2
+.common-home .typeheader-2 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-2 .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+.typeheader-2 .container-megamenu.horizontal ul.megamenu > li.active > a, 
+.typeheader-2 .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+    color: $linkColor;
+}
+
+.typeheader-2 #sosearchpro .search button{
+    background-color: $background;
+    &:hover{
+        background-color: darken($background,10%);
+    }
+}
+.typeheader-2 .shopping_cart .btn-shopping-cart .top_cart .icon-c{
+    background-color: $background;
+}
+.typeheader-2 .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_carts,
+.typeheader-2 .signin-w ul li a:hover{
+    color: $linkColor;
+}
+.typeheader-2 .wishlist-comp li a.top-link-wishlist:hover:before,
+.typeheader-2 .wishlist-comp li a:hover i{
+    color: $linkColor;
+}
+
+
+// header 3
+.typeheader-3 .wishlist-comp li a:hover,
+.typeheader-3 .wishlist-comp li a:hover i,
+.typeheader-3 .signin-w a{
+    color: $linkColor;
+}
+.typeheader-3 .header-bottom{
+    background-color: $background;
+}
+.typeheader-3 .shopping_cart{
+    background-color: darken($background,11%);
+}
+
+// header 4
+.typeheader-4{
+    background-color: darken($background,15%);
+}
+.typeheader-4 .shopping_cart{
+    background-color: $background;
+}
+.typeheader-4 .shopping_cart .btn-shopping-cart .top_cart .icon-c{
+    background-color: darken($background,5%);
+}
+.typeheader-4 ul.top-link > li:hover:before{
+    color: $linkColor;
+}
+// header 5
+.typeheader-5 .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+.typeheader-5 .container-megamenu.horizontal ul.megamenu > li.active > a, 
+.typeheader-5 .container-megamenu.horizontal ul.megamenu > li.menu_active > a,
+.common-home .typeheader-5 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-5 #sosearchpro .search button,
+.typeheader-5 .shopping_cart{
+    background-color: $background;
+}
+.typeheader-5 #sosearchpro .search button:hover{
+    background-color: darken($background,5%);
+}
+.typeheader-5 .container-megamenu.vertical #menuHeading .megamenuToogle-pattern .container{
+    background-color: $background;
+}
+.typeheader-5 ul.top-link > li:hover:before{
+    color: $linkColor;
+}
+.typeheader-5 .wishlist-btn a.top-link-wishlist:hover:before,
+.typeheader-5 .container-megamenu.vertical .vertical-wrapper ul.megamenu > li > a:hover{
+    color: $linkColor;
+}
+
+// header 6
+.typeheader-6 .search-header-w #sosearchpro .search button{
+    background-color: $background;
+    &:hover{
+        background-color: darken($background,5%);
+    }
+}
+.typeheader-6 .search-header-w .icon-search:hover i{
+    color: $linkColor;
+}
+.common-home .typeheader-6 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-6 .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+.typeheader-6 .container-megamenu.horizontal ul.megamenu > li.active > a, 
+.typeheader-6 .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+    color: $linkColor;
+}
+
+// header 7
+.typeheader-7 .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_cart,
+.typeheader-7 .shopping_cart .btn-shopping-cart .top_cart .icon-c,
+.typeheader-7 .container-megamenu.vertical #menuHeading .megamenuToogle-pattern .container{
+    background-color: $background;
+}
+.typeheader-7 #sosearchpro .search button{
+    background-color: $background;
+    &:hover{
+        background-color: darken($background,10%);
+    }
+}
+.typeheader-7 .login-w li a:hover{
+    color: $linkColor;
+}
+.typeheader-7 .container-megamenu.vertical #menuHeading .megamenuToogle-pattern .container{
+    background-color: $background;
+}
+.common-home .typeheader-7 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-7 .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+.typeheader-7 .container-megamenu.horizontal ul.megamenu > li.active > a, 
+.typeheader-7 .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+    color: $linkColor;
+}
+
+
+.typeheader-8 .shopping_cart .btn-shopping-cart .shopcart .icon-c{
+    background-color: $background;
+}
+.typeheader-8 .search-header-w #sosearchpro .search button:hover{
+    color: $linkColor;
+}
+
+.common-home .typeheader-8 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-8 .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+.typeheader-8 .container-megamenu.horizontal ul.megamenu > li.active > a, 
+.typeheader-8 .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+    color: $linkColor;
+}
+
+
+.common-home .typeheader-9 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-9 .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+.typeheader-9 .container-megamenu.horizontal ul.megamenu > li.active > a, 
+.typeheader-9 .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+    color: $linkColor;
+}
+.typeheader-9 .header-top{
+    background-color: $background;
+}
+.typeheader-9 .shopping_cart .btn-shopping-cart .shopcart .shopcart-inner .total-shopping-cart .items_cart, 
+.typeheader-9 .shopping_cart .btn-shopping-cart .shopcart .shopcart-inner .total-shopping-cart .items_cart2{
+    color: $linkColor;
+}
+.typeheader-9 .search-header-w .icon-search:hover i{
+    color: $linkColor;
+}
+
+.common-home .typeheader-10 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-10 .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+.typeheader-10 .container-megamenu.horizontal ul.megamenu > li.active > a, 
+.typeheader-10 .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+    color: $linkColor;
+}
+.typeheader-10 .shopping_cart .btn-shopping-cart .shopcart .shopcart-inner .total-shopping-cart,
+.typeheader-10 .shopping_cart .btn-shopping-cart .shopcart .icon-c,
+.typeheader-10 .search-header-w #sosearchpro .search button:hover{
+    color: $linkColor;
+}
+
+// header 11
+.common-home .typeheader-11 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-11 .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+.typeheader-11 .container-megamenu.horizontal ul.megamenu > li.active > a, 
+.typeheader-11 .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+    color: $linkColor;
+}
+
+.typeheader-11 #sosearchpro .search button{
+    background-color: $background;
+    &:hover{
+        background-color: darken($background,10%);
+    }
+}
+.typeheader-11 .header-top,
+.typeheader-11 .shopping_cart .btn-shopping-cart .top_cart .icon-c{
+    background-color: $background;
+}
+.typeheader-11 .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_carts{
+    color: $linkColor;
+}
+.typeheader-11 ul.top-link > li .btn-group .btn-link:hover, 
+.typeheader-11 ul.top-link > li > a:hover{
+    color: darken($background,30%);
+}
+
+// header 12
+.typeheader-12 .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_cart,
+.typeheader-12 .navbar-logo{
+    background-color: $background;
+}
+
+.common-home .typeheader-12 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+    &:after{
+        background-color: $background;
+    }
+}
+.typeheader-12 .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+.typeheader-12 .container-megamenu.horizontal ul.megamenu > li.active > a, 
+.typeheader-12 .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+    color: $linkColor;
+    &:after{
+        background-color: $background;
+    }
+}
+
+// header 13
+.typeheader-13 .shopping_cart .btn-shopping-cart .top_cart .icon-c{
+    background-color: $background;
+}
+
+
+// header 14
+.typeheader-14 .container-megamenu.horizontal ul.megamenu > li > a:after,
+.typeheader-14 .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_cart{
+    background-color: $background;
+}
+
+// header 16
+.common-home .typeheader-16 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-16{
+    .welcome-msg span{
+        color: $linkColor;
+        border-color: $background;
+    }
+
+    .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+    .container-megamenu.horizontal ul.megamenu > li.active > a, 
+    .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+        color: $linkColor;
+    }
+   /* .header-bottom{
+        background-color: $background;
+    }*/
+    #sosearchpro .search button{
+        background-color: $background;
+        &:hover{
+            background-color: darken($background,10%);
+        }
+    }
+   
+    .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_carts,
+    .signin-w ul li a:hover{
+        color: $linkColor;
+    }
+    .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_carts{
+        color: $linkColor;
+    }
+    .sublinks-block ul li a:hover{
+        color: $linkColor;
+    }
+
+}
+
+.typeheader-17{
+    .custom-lnk li a:hover,
+    .custom-lnk li a:hover span,
+    ul.top-link > li .btn-group .btn-link:hover,
+    ul.top-link > li > a:hover{
+        color: $linkColor;
+    }
+    .header-bottom{
+        background-color: $background;
+    }
+
+    #sosearchpro .search{
+        border: 2px solid $background;
+    }
+    #sosearchpro .search button{
+        background-color: $background;
+        &:hover{
+            background-color: darken($background,10%);
+        }
+    }
+    .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_cart{
+        background-color: $background;
+    }
+    
+}
+
+
+.typeheader-18{
+    .container-megamenu.horizontal ul.megamenu > li > a,
+    .header-middle .middle-right ul li a:hover{
+        color: $linkColor;
+    }
+
+}
+
+// header 19
+.common-home .typeheader-19 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-19{
+    .welcome-msg span{
+        color: $linkColor;
+        border-color: $background;
+    }
+
+    .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+    .container-megamenu.horizontal ul.megamenu > li.active > a, 
+    .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+        color: $linkColor;
+    }
+    #sosearchpro .search button{
+        background-color: $background;
+        &:hover{
+            background-color: darken($background,10%);
+        }
+    }
+    .signin-link li a:hover,.mycompare a:hover,
+    .container-megamenu.horizontal ul.megamenu > li > a:hover{
+        color: $linkColor;
+    }
+}
+
+
+// header 20
+.common-home .typeheader-20 .container-megamenu.horizontal ul.megamenu > li.home > a{
+    color: $linkColor;
+}
+.typeheader-20{
+    .welcome-msg span{
+        color: $linkColor;
+        border-color: $background;
+    }
+    .search-header-w .icon-search{
+        background-color: $background;
+    }
+
+    .container-megamenu.horizontal ul.megamenu > li:hover > a, 
+    .container-megamenu.horizontal ul.megamenu > li.active > a, 
+    .container-megamenu.horizontal ul.megamenu > li.menu_active > a{
+        color: $linkColor;
+    }
+
+    #sosearchpro .search button{       
+        &:hover{
+            color: $linkColor;
+        }
+    }
+   
+    .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_carts,
+    .signin-w ul li a:hover{
+        color: $linkColor;
+    }
+    .shopping_cart .btn-shopping-cart .top_cart .shopcart-inner .total-shopping-cart .items_carts{
+        color: $linkColor;
+    }
+   
+}
+
+// color responsive
+@media (max-width: 991px){
+    .typeheader-2 .header-bottom{
+        background-color: $background;
+    }
+    body .typeheader-3 .header-bottom{
+        background-color: $background;
+    }
+    .megamenu-style-dev .navbar-default .vertical .vertical-wrapper ul.megamenu > li > a:hover strong,
+    .megamenu-style-dev .navbar-default .horizontal .megamenu-wrapper ul.megamenu > li > a:hover{
+        color: $linkColor !important;
+    } 
+}
+@media (max-width: 991px){
+    .typeheader-4 .header-bottom{
+        background-color: darken($background,5%);
+    }
+}
+

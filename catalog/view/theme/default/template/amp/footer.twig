@@ -1,0 +1,51 @@
+<footer class="amp-footer" role="contentinfo">
+ 
+   
+      {% if informations %}
+      <article data-section-type="footer-webPages">
+        <h5 class="amp-footer-heading">{{ text_information }}</h5>
+        <ul class="amp-footer-list">
+         {% for information in informations %}
+          <li><a href="{{ information.href }}">{{ information.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </article>
+      {% endif %}
+	  
+       <article data-section-type="footer-webPages">
+        <h5>{{ text_service }}</h5>
+         <ul class="amp-footer-list">
+          <li><a href="{{ contact }}">{{ text_contact }}</a></li>
+          <li><a href="{{ return }}">{{ text_return }}</a></li>
+          <li><a href="{{ sitemap }}">{{ text_sitemap }}</a></li>
+        </ul>
+      </article>
+	  
+      <article data-section-type="footer-webPages">
+        <h5>{{ text_extra }}</h5>
+         <ul class="amp-footer-list">
+          <li><a href="{{ manufacturer }}">{{ text_manufacturer }}</a></li>
+          <li><a href="{{ voucher }}">{{ text_voucher }}</a></li>
+          <li><a href="{{ affiliate }}">{{ text_affiliate }}</a></li>
+          <li><a href="{{ special }}">{{ text_special }}</a></li>
+        </ul>
+      </article>
+	  
+     <article data-section-type="footer-webPages">
+		<h5>{{ text_account }}</h5>
+        <ul class="amp-footer-list">
+          <li><a href="{{ account }}">{{ text_account }}</a></li>
+          <li><a href="{{ order }}">{{ text_order }}</a></li>
+          <li><a href="{{ wishlist }}">{{ text_wishlist }}</a></li>
+          <li><a href="{{ newsletter }}">{{ text_newsletter }}</a></li>
+        </ul>
+      </article>
+    
+    <hr>
+	<article>
+    <p>{{ powered }}</p>
+	</article>
+</footer>
+
+</body>
+</html>

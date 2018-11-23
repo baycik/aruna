@@ -1,0 +1,201 @@
+
+//** simple and lightweight mixin library for Sass **
+//-- url : http://bourbon.io/docs ---
+@import 'bourbon/bourbon';
+
+//** Mixins for Rem Font Sizing **
+//-- url : http://hugogiraudel.com/2013/03/18/ultimate-rem-mixin/
+@import 'utilities/rem';
+
+//** Variables for responsive design in bootstrap with sass **
+//-- url : https://gist.github.com/webinfinita/11407836
+@import 'utilities/bootstrap_breakpoints';
+
+//** Makes supporting both left-to-right (LTR) and right-to-left (RTL) easy.**
+//-- url : https://github.com/tysonmatanich/directional-scss
+@import 'utilities/directional';
+
+//Mixins utilities
+@import 'utilities/theme_variables';
+@import 'utilities/utilities';
+
+/* ================================================================================ */
+
+.layout-16 .back-to-top{
+  position: static;
+  width: 100%;
+  font-size: 16px; 
+  font-weight: 700; color: #fff;
+  background-color: #0b79bf;
+  line-height: 46px;
+  text-transform: uppercase;
+  border-radius: 0;
+  span{
+    &:after,
+    &:before{
+      display: inline-block;
+      background: url(#{$imgPath}icon/id16-icon-image.png) no-repeat -372px -27px;
+      margin: 0 20px;
+      content: '';
+      width: 11px;
+      height: 15px;
+      position: relative;
+      top: 1px;
+    }    
+  }
+  &:hover{
+    opacity: 0.8;
+  }
+}
+
+.typefooter-16{
+  margin-top: 0px !important;
+  padding-top: 60px;
+  background-color: #2f4e6d; 
+  color: #bec5cd;
+  .container{
+    padding: 0 15px;
+  }
+
+
+  /* GENERAL */
+  .module .modtitle{
+        color: #fff;
+        font-size: 16px;
+        line-height: 20px;
+        margin-bottom: 15px;  
+        font-weight: 700;
+        text-transform: uppercase;   
+  }
+  .footer-center{
+    padding-top: 45px;
+  }
+  .box-footer{     
+    .modcontent{
+      ul{
+        li{           
+            a{
+              border: 0 none;               
+              font-size: 14px;
+              padding: 0;       
+              font-weight: 400; 
+              position: relative;
+              display: inline-block;
+              color: #bec5cd;  
+              line-height: 32px;            
+            }       
+          }
+      }
+    }
+  }
+  
+  .newsletter-footer11{
+      .newsletter{
+        .title-block{     
+          .page-heading{           
+            color: #fff;
+            font-size: 16px;
+            line-height: 20px;
+            margin-bottom: 15px;  
+            font-weight: 700;
+            text-transform: uppercase;   ;
+          }
+          .promotext{
+            font-size: 14px;
+          }
+        }
+        .block_content{ margin-top: 15px;
+          form.signup{
+            display: block;
+            margin-bottom: 25px;
+            .form-group{
+              position: relative;
+              .input-box{
+                background-color: rgba(255,255,255,0.2);  
+                vertical-align: top;
+                border-radius: 0;
+              }
+              .subcribe{
+                position: absolute; top: 0; #{$right}: 0;
+              }
+
+              #txtemail{
+                height: 40px;
+                line-height: 40px;
+                width: 100%;
+                box-shadow: none;
+                padding: side-values(0 0 0 20px);
+                border: none;    
+                border-radius: 0;       
+                background-color: rgba(255,255,255,0.2);  
+                &::-moz-placeholder {
+                  color: #fff;
+                    opacity: 1; 
+                }
+                &:-ms-input-placeholder { color: #fff; } 
+                &::-webkit-input-placeholder  { color: #fff; } 
+                &:focus{
+                    z-index: 0;
+                }
+              }
+            }
+
+            .subcribe button{     
+              font-size: 14px;
+              font-weight: 400;
+              text-transform: uppercase;      
+              height: 40px;
+              line-height: 40px;
+              padding: 0 30px;
+            }
+          }
+        }
+      }
+  }
+
+  .content-apps{
+    a{
+      display: inline-block;
+      margin: side-values(0 20px 5px 0);
+    }
+    @media (min-width: 1200px) and (max-width: 1649px){
+      margin: 0 -5px;
+      a{
+        float: $left;
+        padding: 0 5px;
+        width: 50%;
+        margin: 0;
+      }
+    }
+  }
+  
+  .seo-struct {
+    border-top: 1px solid rgba(255,255,255,0.2);  
+    padding-top: 25px; padding-bottom: 25px;
+    margin-top: 25px;
+    ul{
+      li{ display: inline-block; 
+        a{ color: #bec5cd; font-size: 13px; }
+      }
+      li:not(:last-child)::after {
+        content: '/';
+        margin: 0 10px;
+      }
+    } 
+  }
+  
+  /* FOOTER BOTTOM */
+
+  .payment-w{
+
+  }
+  .footer-bottom{
+    background-color: #fff;
+    padding: 20px 0;
+      .copyright{
+        text-align: $right; color: #999;
+      }
+  }
+}
+
+
