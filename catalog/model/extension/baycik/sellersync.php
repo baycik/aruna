@@ -1,5 +1,10 @@
 <?php
 class ModelExtensionBaycikSellersync extends Model{
+    public function __construct($registry) {
+	parent::__construct($registry);
+	$this->language_id=(int)$this->config->get('config_language_id');
+    }    
+    
     public function getSellerSyncSites(){
         
     }
@@ -25,7 +30,7 @@ class ModelExtensionBaycikSellersync extends Model{
                 category_lvl1 = @col1,    
                 category_lvl2 = @col2,      
                 category_lvl3 = @col4,      
-                product_name = '', 
+                product_name = CONCAT(@col4,' ',@col7,' ',@col5), 
                 model = @col3, 
                 filter1 = @col5,             
                 filter2 = @col6,             
@@ -45,7 +50,7 @@ class ModelExtensionBaycikSellersync extends Model{
             ";
         $this->db->query($sql); 
         unlink($tmpfile);
-}
+    }
     
     
     public function check_tables (){
@@ -68,13 +73,14 @@ class ModelExtensionBaycikSellersync extends Model{
     }
     
     public function importCategories ($data){
+	
         $sql = "
             SELECT 
                 bse.*,
                 product_id,
-                GROUP_CONCAT(option1 SEPARATOR ',') AS option_group1,
-                GROUP_CONCAT(price1 SEPARATOR ',') AS price_group1,
-                MIN(price1) AS min_price
+                GROUP_CONCAT(option1 SEPARATOR '|') AS option_group1,
+                GROUP_CONCAT(price1 SEPARATOR '|') AS price_group1,
+                MIN(price1) AS price
             FROM
                 ".DB_PREFIX ."baycik_sync_entries AS bse
                 LEFT JOIN 
@@ -84,123 +90,140 @@ class ModelExtensionBaycikSellersync extends Model{
                     AND category_lvl2 = '$data->category_lvl2'
                     AND category_lvl3 = '$data->category_lvl3'
             GROUP BY model
+	    
+	    LIMIT 5
             ";
         $rows = $this->db->query($sql);
         foreach ($rows->rows as $row){
+	    $product=$this->composeProductObject($row,$data->category_comission, $data->destination_category_id);
             if($row['product_id']){
-               $this->importProductUpdate($this->composeProductObject($row, $data->destination_category)); 
+		$product['product_id']=$row['product_id'];
+		$this->importProductUpdate($product); //is this right???
             } else {
-               $this->importProductAdd($this->composeProductObject($row, $data->destination_category)); 
+               $this->importProductAdd($product); 
             }
-            
         }
+	return true;
     }
     
-    private function composeProductObject($row,$dest_category){
-        $options_option_group = explode(',', $row['option_group1']);
-        $options_price_group = explode(',', $row['price_group1']);
-        
-        
-        $product_option_value=[];
-        foreach ($options_option_group as $i=>$option){
-            
-            $product_option_value[]=[
-                    'product_option_value_id' => '',
-                    'option_value_id' => '48',
-                    'quantity' => '0',
-                    'subtract' => '0',
-                    'price' => $options_price_group[$i]- $row['min_price'],
-                    'price_prefix' => '+',
-                    'points' => 0,
-                    'points_prefix' => '+',
-                    'weight' => 0.00000000,
-                    'weight_prefix' => '+'
-                ];
-        }
-        
-        $product_description = array(
-            [],
-            [],
-            [ 
-            'name'=> $row['category_lvl3'].' '.$row['manufacturer'].' '.$row['filter1'].' '.$row['filter2'],
+    
+    private $optionsCache=[];
+    private function composeProductOptionsObject($option_id,$option_type,$option_value,$price=0,$option_price='',$category_comission=0){
+        $product_option = [
+            'option_id' => $option_id,
+            'product_option_id' => '',
+            'product_option_value' => '',
+            'type' => $option_type,
+            'value' => '',
+            'required' => 1   
+        ];
+	if ($product_option['type'] == 'select' || $product_option['type'] == 'radio' || $product_option['type'] == 'checkbox' || $product_option['type'] == 'image'){
+	    $option_value = explode('|', $option_value);
+	    $option_prices = explode('|', $option_price);
+	    $product_option_values=[];
+	    foreach ($option_value as $i=>$value){
+		if( !isset($this->optionsCache[$value]) ){
+		    $sql="SELECT *
+			FROM
+			    ".DB_PREFIX ."option_value_description ovd
+			WHERE 
+			    option_id='$option_id' 
+			    AND ovd.name='$value' 
+			    AND ovd.language_id='$this->language_id' 
+			LIMIT 1";
+		    $option_query=$this->db->query($sql);
+		    $this->optionsCache[$value]=$option_query->row;
+		}
+		if( !$this->optionsCache[$value] ){
+		    continue;
+		}
+		$product_option_values[]=[
+		    'product_option_value_id' => '',
+		    'option_value_id' => $this->optionsCache[$value]['option_value_id'],
+		    'quantity' => '0',
+		    'subtract' => '0',
+		    'price' => round( ($option_prices[$i]- $price)*$category_comission,2),
+		    'price_prefix' => '+',
+		    'points' => 0,
+		    'points_prefix' => '+',
+		    'weight' => 0.00000000,
+		    'weight_prefix' => '+'
+		];
+	    }
+	    $product_option['product_option_value']=$product_option_values;
+	} else {
+	    $product_option['value']=$option_value;
+	}
+	return $product_option;
+    }
+    private function composeProductObject($row,$category_comission,$destination_category_id){
+	////////////////////////////////
+	//OPTIONS SECTION
+	////////////////////////////////
+	
+	//especially for happywear
+	$option_id=11;//'Размер'
+	$option_type='select';
+	$product_option=$this->composeProductOptionsObject($option_id,$option_type,$row['option_group1'],$row['price'],$row['price_group1'],$category_comission);
+	////////////////////////////////
+	//DESCRIPTION SECTION
+	////////////////////////////////
+        $product_description = [
+	    $this->language_id=>[ 
+            'name'=> $row['product_name'],
             'description'=> $row['description'],
             'meta_title'=> $row['category_lvl3'].' '.$row['manufacturer'],
-            'meta_description'=> '',
-            'meta_keyword'=> '',
+            'meta_description'=> $row['description'],
+            'meta_keyword'=> $row['product_name'],
             'tag'=> '',
             ]   
-        );
-        $product_option = array(
-            [
-            'product_option_id' => '',
-            'product_option_value' => array(
-                array(
-                    'product_option_value_id' => '',
-                    'option_value_id' => '48',
-                    'quantity' => '0',
-                    'subtract' => '0',
-                    'price' => $options_price_group[2]- $row['min_price'],
-                    'price_prefix' => '+',
-                    'points' => 0,
-                    'points_prefix' => '+',
-                    'weight' => 0.00000000,
-                    'weight_prefix' => '+'
-                ),
-                array(
-                    'product_option_value_id' => '',
-                    'option_value_id' => '47',
-                    'quantity' => '0',
-                    'subtract' => '0',
-                    'price' => $options_price_group[1]-$row['min_price'],
-                    'price_prefix' => '+',
-                    'points' => 0,
-                    'points_prefix' => '+',
-                    'weight' => 0.00000000,
-                    'weight_prefix' => '+'
-                ),
-                array(
-                    'product_option_value_id' => '',
-                    'option_value_id' => '46',
-                    'quantity' => '0',
-                    'subtract' => '0',
-                    'price' => $options_price_group[0] - $row['min_price'],
-                    'price_prefix' => '+',
-                    'points' => 0,
-                    'points_prefix' => '+',
-                    'weight' => 0.00000000,
-                    'weight_prefix' => '+'
-                )
-            ),
-            'option_id' => '11',
-            'name' => 'Size',
-            'type' => 'select',
-            'value' => '',
-            'required' => 1
-            ]    
-        );
-        $product_attribute = array(
-            
-        );
-        $row['price'] = $row['min_price'];
-        $row['product_description'] = $product_description;
-        $row['product_attribute'] = array( 'attribute1' => $row['filter1'], 'attribute2' => $row['filter2']);
-        $row['product_option'] = $product_option;
-        $row['product_category'] = [$dest_category];
-        $row['product_image'] = array(
-            [
-            'product_image_id' => '',
-            'product_id' => '',
-            'image' => $row['image'],
-            'sort_order' => 0
-             ]   
-        );
-        $row['quantity'] = 1;
-        $row['stock_status_id'] = 5;
-        $row['store_id'] = 0;
-        $row['product_store'] = array(0);
-        $row['status'] = 1;
-        $row['viewed'] = 1;
-        return $row;
+        ];
+	////////////////////////////////
+	//ATTRIBUTE SECTION
+	////////////////////////////////
+	
+	
+	//TO DO attributes as options
+        $product_attribute = [];
+	////////////////////////////////
+	//COMPOSING SECTION
+	////////////////////////////////
+	$product=[
+	    'model'=>$row['model'],
+	    'sku'=>'',
+	    'upc'=>'',
+	    'ean'=>'',
+	    'jan'=>'',
+	    'isbn'=>'',
+	    'mpn'=>'',
+	    'location'=>'',
+	    'minimum'=>0,
+	    'subtract'=>'',
+	    'date_available'=>'',
+	    'manufacturer_id'=>'',
+	    'price'=>round($row['price']*$category_comission,2),
+	    'points'=>0,
+	    'weight'=>0,
+	    'weight_class_id'=>0,
+	    'length'=>0,
+	    'width'=>0,
+	    'height'=>0,
+	    'length_class_id'=>0,
+	    'tax_class_id'=>0,
+	    'sort_order'=>1,
+	    'name'=>$row['product_name'],
+	    'image'=>$row['image'],
+	    'product_description'=>$product_description,
+	    'product_attribute'=>$product_attribute,
+	    'product_option'=>[$product_option],
+	    'product_category'=>[$destination_category_id],
+	    'shipping'=>1,
+	    'quantity'=>1,
+	    'stock_status_id'=>5,
+	    'store_id'=>0,
+	    'status'=>1
+	];
+        return $product;
     }
     
     private function importRouteProduct($item,$seller_id) {

@@ -39,17 +39,18 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
                 $data['categories'] =  $categories = $this->model_extension_baycik_sellersync->check_get_cat_list();
                 $data['destination_categories'] = $this->getDestCategories();
 		//$this->getList();
-                $this->parse_happywear(1);
                 $this->response->setOutput($this->load->view('account/baycik/sellersync', $data));
             
 	}    
         
-        public function parse_happywear ($sync_id){
+        public function syncWithHappywear(){
+	    $sync_id=1;
             $tmpfile = tempnam("/tmp", "tmp_");
-            copy("W:/price-list.csv", $tmpfile);
+            copy("E:/price-list.csv", $tmpfile);
             $this->load->model('extension/baycik/sellersync');
-            $this->model_extension_baycik_sellersync->parse_happywear($sync_id, addslashes($tmpfile)); 
-}
+            $this->model_extension_baycik_sellersync->parse_happywear($sync_id, addslashes($tmpfile));
+	    return [];
+	}
         
         public function getDestCategories (){
             $list = $this->config->get('module_purpletree_multivendor_allow_category');
@@ -83,12 +84,12 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
             "category_lvl1"=>"Женщинам",
             "category_lvl2"=>"Нижнее белье",
             "category_lvl3"=>"Мини-шортики 7шт.",
-            "category_comission"=>"5",
-            "destination_category"=>"27"
+            "category_comission"=>"1.33",
+            "destination_category_id"=>"27"
             );
         public function testImport() {
-             $this->load->model('extension/baycik/sellersync');
-             $this->model_extension_baycik_sellersync->importCategories(json_decode(json_encode($this->data)));
+	    $this->load->model('extension/baycik/sellersync');
+	    return $this->model_extension_baycik_sellersync->importCategories(json_decode(json_encode($this->data)));
         }
         
         
