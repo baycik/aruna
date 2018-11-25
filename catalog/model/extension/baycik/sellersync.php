@@ -214,7 +214,7 @@ class ModelExtensionBaycikSellersync extends Model{
         }
         $this->load_admin_model('catalog/manufacturer');
         
-        $search_data=['filter_name'=>$manufacturer_name,'limit'=>1];
+        $search_data=['filter_name'=>$manufacturer_name,'limit'=>1,'start'=>0];
         $manufacturer=$this->model_catalog_manufacturer->getManufacturers($search_data);
         if( $manufacturer && isset($manufacturer[0]) ){
             return $manufacturer[0]['manufacturer_id'];
@@ -233,6 +233,25 @@ class ModelExtensionBaycikSellersync extends Model{
         return $this->model_catalog_manufacturer->addManufacturer($data);
     }
     
+    private $attributeCache=[];
+    private function composeProductAttributeObject($attribute_id,$attribute_name){
+       if( !$attribute_name ){
+            return 0;
+        }
+	if( !isset($this->attributeCache[$attribute_id]) ){
+	    $this->attributeCache[$attribute_id]=[
+		'attribute_id'=>$attribute_id,
+		'product_attribute_description'=>[
+		    $this->language_id=>[
+			'text'=>$attribute_name
+		    ]
+		]
+	    ];
+        }
+	return $this->attributeCache[$attribute_id];	
+    }
+    
+    
     
     private function composeProductObject($row,$category_comission,$destination_category_id){
 	////////////////////////////////
@@ -241,7 +260,7 @@ class ModelExtensionBaycikSellersync extends Model{
 	
 	//especially for happywear
 	$option_id=11;//'Размер'
-	$option_type='select';
+	$option_type='radio';
 	$product_option=$this->composeProductOptionsObject($option_id,$option_type,$row['option_group1'],$row['price'],$row['price_group1'],$category_comission);
 	////////////////////////////////
 	//DESCRIPTION SECTION
@@ -267,6 +286,11 @@ class ModelExtensionBaycikSellersync extends Model{
 	
 	//TO DO attributes as options
         $product_attribute = [];
+	//especially for happywear
+	$attribute_id=12;//'Страна'
+	$attribute_text=$row['origin_country'];
+	$product_attribute[]=$this->composeProductAttributeObject($attribute_id,$attribute_text);
+
 	////////////////////////////////
 	//COMPOSING SECTION
 	////////////////////////////////

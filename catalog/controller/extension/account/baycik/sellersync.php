@@ -44,9 +44,9 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
 	}    
         
         private $data = array(
-            "category_lvl1"=>"Женщинам",
-            "category_lvl2"=>"Нижнее белье",
-            "category_lvl3"=>"Мини-шортики 7шт.",
+            "category_lvl1"=>"Одежда",
+            "category_lvl2"=>"Свитшоты, толстовки",
+            "category_lvl3"=>"Толстовка для мальчика",
             "category_comission"=>"1.33",
             "destination_category_id"=>"27"
             );
