@@ -43,10 +43,22 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
             
 	}    
         
+        private $data = array(
+            "category_lvl1"=>"Женщинам",
+            "category_lvl2"=>"Нижнее белье",
+            "category_lvl3"=>"Мини-шортики 7шт.",
+            "category_comission"=>"1.33",
+            "destination_category_id"=>"27"
+            );
+        public function testImport() {
+	    $this->load->model('extension/baycik/sellersync');
+	    return $this->model_extension_baycik_sellersync->importCategories(json_decode(json_encode($this->data)));
+        }
+        
         public function syncWithHappywear(){
 	    $sync_id=1;
             $tmpfile = tempnam("/tmp", "tmp_");
-            copy("E:/price-list.csv", $tmpfile);
+            copy("W:/price-list.csv", $tmpfile);
             $this->load->model('extension/baycik/sellersync');
             $this->model_extension_baycik_sellersync->parse_happywear($sync_id, addslashes($tmpfile));
 	    return [];
@@ -80,17 +92,6 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
             
         }
         
-        private $data = array(
-            "category_lvl1"=>"Женщинам",
-            "category_lvl2"=>"Нижнее белье",
-            "category_lvl3"=>"Мини-шортики 7шт.",
-            "category_comission"=>"1.33",
-            "destination_category_id"=>"27"
-            );
-        public function testImport() {
-	    $this->load->model('extension/baycik/sellersync');
-	    return $this->model_extension_baycik_sellersync->importCategories(json_decode(json_encode($this->data)));
-        }
         
         
         public function parse2 (){
