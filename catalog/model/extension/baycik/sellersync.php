@@ -72,7 +72,11 @@ class ModelExtensionBaycikSellersync extends Model{
                 option2 = '', 
                 option3 = '', 
                 url = @col10, 
-                image = @col11, 
+                image = @col11,
+                image_2 = REPLACE(@col11,'_front','_1'), 
+                image_3 = REPLACE(@col11,'_front','_2'), 
+                image_4 = REPLACE(@col11,'_front','_3'), 
+                image_5 = REPLACE(@col11,'_front','_4'), 
                 description = @col12, 
                 min_order_size = @col15, 
                 price1 = @col13, 
@@ -115,18 +119,20 @@ class ModelExtensionBaycikSellersync extends Model{
                 AND category_lvl2 = '$data->category_lvl2'
                 AND category_lvl3 = '$data->category_lvl3'
             GROUP BY model
+            LIMIT 4
             ";
         $rows = $this->db->query($sql);
         foreach ($rows->rows as $row){
 	    $product=$this->composeProductObject($row,$data->category_comission, $data->destination_category_id);
-            print_r($product);
             if($row['product_id']){
 		$product['product_id']=$row['product_id'];
 		$this->importProductUpdate($product); //is this right???
             } else {
+                
                $this->importProductAdd($product); 
             }
         }
+        //$this->reorderOptions();
 	return true;
     }
     
@@ -217,7 +223,8 @@ class ModelExtensionBaycikSellersync extends Model{
         $search_data=['filter_name'=>$manufacturer_name,'limit'=>1,'start'=>0];
         $manufacturer=$this->model_catalog_manufacturer->getManufacturers($search_data);
         if( $manufacturer && isset($manufacturer[0]) ){
-            return $manufacturer[0]['manufacturer_id'];
+            $this->manufacturerCache[$manufacturer_name]=$manufacturer[0]['manufacturer_id'];
+            return $this->manufacturerCache[$manufacturer_name];
         }
         
         $data=[
@@ -230,8 +237,40 @@ class ModelExtensionBaycikSellersync extends Model{
                 ]
             ]
         ];
-        return $this->model_catalog_manufacturer->addManufacturer($data);
+        $this->manufacturerCache[$manufacturer_name]=$this->model_catalog_manufacturer->addManufacturer($data);
+        return $this->manufacturerCache[$manufacturer_name];
     }
+    
+    private function composeProductImageObject($row){
+        return $product_image = 
+            [
+                [
+                    'product_image_id' => '',
+                    'product_id' => '',
+                    'image' => $row['image_2'],
+                    'sort_order' => '1'
+                ],
+                [
+                    'product_image_id' => '',
+                    'product_id' => '',
+                    'image' => $row['image_3'],
+                    'sort_order' => '2'
+                ],
+                [
+                    'product_image_id' => '',
+                    'product_id' => '',
+                    'image' => $row['image_4'],
+                    'sort_order' => '3'
+                ],
+                [
+                    'product_image_id' => '',
+                    'product_id' => '',
+                    'image' => $row['image_5'],
+                    'sort_order' => '4'
+                ]
+            ];
+    }
+    
     
     private $attributeCache=[];
     private function composeProductAttributeObject($attribute_id,$attribute_name){
@@ -259,7 +298,7 @@ class ModelExtensionBaycikSellersync extends Model{
 	////////////////////////////////
 	
 	//especially for happywear
-	$option_id=11;//'Размер'
+	$option_id=13;//'Размер'
 	$option_type='radio';
 	$product_option=$this->composeProductOptionsObject($option_id,$option_type,$row['option_group1'],$row['price'],$row['price_group1'],$category_comission);
 	////////////////////////////////
@@ -287,6 +326,10 @@ class ModelExtensionBaycikSellersync extends Model{
 	//TO DO attributes as options
         $product_attribute = [];
 	//especially for happywear
+	$attribute_id=12;//'Страна'
+	$attribute_text=$row['origin_country'];
+	$product_attribute[]=$this->composeProductAttributeObject($attribute_id,$attribute_text);
+        
 	$attribute_id=12;//'Страна'
 	$attribute_text=$row['origin_country'];
 	$product_attribute[]=$this->composeProductAttributeObject($attribute_id,$attribute_text);
@@ -319,6 +362,7 @@ class ModelExtensionBaycikSellersync extends Model{
 	    'sort_order'=>1,
 	    'name'=>$row['product_name'],
 	    'image'=>$row['image'],
+            'product_image'=>$this->composeProductImageObject($row),
 	    'product_description'=>$product_description,
 	    'product_attribute'=>$product_attribute,
 	    'product_option'=>[$product_option],
@@ -332,13 +376,30 @@ class ModelExtensionBaycikSellersync extends Model{
         return $product;
     }
     
+    
+    
+    
+    
     private function importRouteProduct($item,$seller_id) {
         
     }
     
+    
     public function importProductAdd($item) {
         $this->load_admin_model('catalog/product');
-        return $this->model_catalog_product->addProduct($item);
+        $product_id = $this->model_catalog_product->addProduct($item);
+        $sql="
+            INSERT INTO
+                ".DB_PREFIX ."purpletree_vendor_products
+            SET
+                id = '',
+                seller_id = '2',
+                product_id = '$product_id',
+                is_approved = '0',
+                created_at = NOW(),
+                updated_at = NOW()
+            ";
+         return $this->db->query($sql);
     }
     
     public function importProductUpdate($item) {
@@ -350,6 +411,19 @@ class ModelExtensionBaycikSellersync extends Model{
         
     }
     
+    public function reorderOptions (){
+        $sql = "
+            SET @i:=0;
+
+            UPDATE
+                 oc_option_value
+            SET sort_order=@i:=@i+1
+            WHERE option_value_id IN (SELECT option_value_id FROM
+            oc_option_value_description ORDER BY oc_option_value_description.name)
+            ";
+        $this->db->query($sql); 
+        }
+        
     
     protected function load_admin_model($route) {
         $class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $route);
