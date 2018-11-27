@@ -58,7 +58,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
         public function syncWithHappywear(){
 	    $sync_id=1;
             $tmpfile = tempnam("/tmp", "tmp_");
-            copy("W:/price-list.csv", $tmpfile);
+            copy("D:/price-list.csv", $tmpfile);
             $this->load->model('extension/baycik/sellersync');
             $this->model_extension_baycik_sellersync->parse_happywear($sync_id, addslashes($tmpfile));
 	    return [];

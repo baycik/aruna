@@ -1,29 +1,37 @@
 <?php
 $create_table="CREATE TABLE `oc_baycik_sync_entries` (
-  `sync_entry_id` INT NOT NULL AUTO_INCREMENT,
-  `sync_id` INT NULL,
-  `category_lvl1` VARCHAR(45) NULL,
-  `category_lvl2` VARCHAR(45) NULL,
-  `category_lvl3` VARCHAR(45) NULL,
-  `product_name` VARCHAR(255) NULL,
-  `model` VARCHAR(64) NULL,
-  `filter1` VARCHAR(100) NULL,
-  `filter2` VARCHAR(100) NULL,
-  `manufacturer` VARCHAR(45) NULL,
-  `origin_country` VARCHAR(45) NULL,
-  `option1` VARCHAR(45) NULL,
-  `option2` VARCHAR(45) NULL,
-  `option3` VARCHAR(45) NULL,
-  `url` VARCHAR(512) NULL,
-  `image` VARCHAR(512) NULL,
-  `description` VARCHAR(2048) NULL,
-  `min_order_size` VARCHAR(45) NULL,
-  `price1` FLOAT NULL,
-  `price2` FLOAT NULL,
-  `price3` FLOAT NULL,
-  `price4` FLOAT NULL,
-  PRIMARY KEY (`sync_entry_id`))
-ENGINE = MyISAM;
+  `sync_entry_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sync_id` int(11) DEFAULT NULL,
+  `category_lvl1` varchar(45) DEFAULT NULL,
+  `category_lvl2` varchar(45) DEFAULT NULL,
+  `category_lvl3` varchar(45) DEFAULT NULL,
+  `product_name` varchar(255) DEFAULT NULL,
+  `model` varchar(64) DEFAULT NULL,
+  `url` varchar(512) DEFAULT NULL,
+  `description` varchar(2048) DEFAULT NULL,
+  `min_order_size` varchar(45) DEFAULT NULL,
+  `manufacturer` varchar(45) DEFAULT NULL,
+  `origin_country` varchar(45) DEFAULT NULL,
+  `attribute1` varchar(100) DEFAULT NULL,
+  `attribute2` varchar(100) DEFAULT NULL,
+  `attribute3` varchar(100) DEFAULT NULL,
+  `attribute4` varchar(100) DEFAULT NULL,
+  `attribute5` varchar(100) DEFAULT NULL,
+  `option1` varchar(45) DEFAULT NULL,
+  `option2` varchar(45) DEFAULT NULL,
+  `option3` varchar(45) DEFAULT NULL,
+  `image` varchar(512) DEFAULT NULL,
+  `image1` varchar(512) DEFAULT NULL,
+  `image2` varchar(512) DEFAULT NULL,
+  `image3` varchar(512) DEFAULT NULL,
+  `image4` varchar(512) DEFAULT NULL,
+  `image5` varchar(512) DEFAULT NULL,
+  `price1` float DEFAULT NULL,
+  `price2` float DEFAULT NULL,
+  `price3` float DEFAULT NULL,
+  `price4` float DEFAULT NULL,
+  PRIMARY KEY (`sync_entry_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 ";
 
 
@@ -41,7 +49,32 @@ class ModelExtensionBaycikSellersync extends Model{
         
     }
     
-    
+    private $globalSyncConfig=[
+        'attributes'=>[
+            [
+                'attribute_group_id'=>8,
+                'field'=>'origin_country'
+            ],
+            [
+                'attribute_group_id'=>7,
+                'field'=>'attribute1'
+            ],
+            [
+                'attribute_group_id'=>9,
+                'field'=>'attribute2'
+            ]
+        ],
+        'options'=>[
+            [
+                'option_id'=>13,
+                'option_type'=>'radio',
+                'value_group_field'=>'option_group1',
+                'price_group_field'=>'price_group1',
+                'price_base_field'=>'price'
+            ]
+        ]
+    ];
+
     
    
     public function parse_happywear ($sync_id, $tmpfile){
@@ -64,23 +97,25 @@ class ModelExtensionBaycikSellersync extends Model{
                 category_lvl3 = @col4,      
                 product_name = CONCAT(@col4,' ',@col7,' ',@col5), 
                 model = CONCAT(@col3,' ',@col5), 
-                filter1 = @col5,
-                attribute_1_id = '',
-                filter2 = @col6,
-                attribute_2_id = '',
                 manufacturer = @col7,  
                 origin_country = @col8,                     
+                url = @col10, 
+                description = @col12, 
+                min_order_size = @col15, 
+                attribute1 = @col5,
+                attribute2 = @col6,
+                attribute3 = '',
+                attribute4 = '',
+                attribute5 = '',
                 option1 = @col9, 
                 option2 = '', 
                 option3 = '', 
-                url = @col10, 
                 image = @col11,
-                image_2 = REPLACE(@col11,'_front','_1'), 
-                image_3 = REPLACE(@col11,'_front','_2'), 
-                image_4 = REPLACE(@col11,'_front','_3'), 
-                image_5 = REPLACE(@col11,'_front','_4'), 
-                description = @col12, 
-                min_order_size = @col15, 
+                image1 = REPLACE(@col11,'_front','_1'), 
+                image2 = REPLACE(@col11,'_front','_2'), 
+                image3 = REPLACE(@col11,'_front','_3'), 
+                image4 = REPLACE(@col11,'_front','_4'), 
+                image5 = REPLACE(@col11,'_front','_5'), 
                 price1 = @col13, 
                 price2 = @col7, 
                 price3 = @col18, 
@@ -121,7 +156,6 @@ class ModelExtensionBaycikSellersync extends Model{
                 AND category_lvl2 = '$data->category_lvl2'
                 AND category_lvl3 = '$data->category_lvl3'
             GROUP BY model
-            LIMIT 4
             ";
         $rows = $this->db->query($sql);
         foreach ($rows->rows as $row){
@@ -134,14 +168,50 @@ class ModelExtensionBaycikSellersync extends Model{
                $this->importProductAdd($product); 
             }
         }
-        //$this->reorderOptions();
+        $this->reorderOptions();
 	return true;
     }
     
     
+    private function composeProductImageObject($row){
+        return $product_image = 
+            [
+                [
+                    'product_image_id' => '',
+                    'product_id' => '',
+                    'image' => $row['image1'],
+                    'sort_order' => '1'
+                ],
+                [
+                    'product_image_id' => '',
+                    'product_id' => '',
+                    'image' => $row['image2'],
+                    'sort_order' => '2'
+                ],
+                [
+                    'product_image_id' => '',
+                    'product_id' => '',
+                    'image' => $row['image3'],
+                    'sort_order' => '3'
+                ],
+                [
+                    'product_image_id' => '',
+                    'product_id' => '',
+                    'image' => $row['image4'],
+                    'sort_order' => '4'
+                ],
+                [
+                    'product_image_id' => '',
+                    'product_id' => '',
+                    'image' => $row['image5'],
+                    'sort_order' => '5'
+                ]
+            ];
+    }
+    
     
     private $optionsCache=[];
-    private function composeProductOptionsObject($option_id,$option_type,$option_value,$price=0,$option_price='',$category_comission=0){
+    private function getProductOption($option_id,$option_type,$option_value,$price=0,$option_price='',$category_comission=0){
         $product_option = [
             'option_id' => $option_id,
             'product_option_id' => '',
@@ -211,6 +281,18 @@ class ModelExtensionBaycikSellersync extends Model{
 	}
 	return $product_option;
     }
+    private function composeProductOptionsObject( $row,$category_comission ){
+        $product_options = [];
+        if( $this->globalSyncConfig['options'] ){
+            foreach($this->globalSyncConfig['options'] as $optionConfig){
+                $option_price=$row[$optionConfig['price_group_field']];
+                $option_value=$row[$optionConfig['value_group_field']];
+                $price=$row[$optionConfig['price_base_field']];
+                $product_options[] =$this->getProductOption($optionConfig['option_id'],$optionConfig['option_type'],$option_value,$price,$option_price,$category_comission);
+            }
+        }
+        return $product_options;
+    }
     
     private $manufacturerCache=[];
     private function composeProductManufacturer($manufacturer_name){
@@ -243,39 +325,8 @@ class ModelExtensionBaycikSellersync extends Model{
         return $this->manufacturerCache[$manufacturer_name];
     }
     
-    private function composeProductImageObject($row){
-        return $product_image = 
-            [
-                [
-                    'product_image_id' => '',
-                    'product_id' => '',
-                    'image' => $row['image_2'],
-                    'sort_order' => '1'
-                ],
-                [
-                    'product_image_id' => '',
-                    'product_id' => '',
-                    'image' => $row['image_3'],
-                    'sort_order' => '2'
-                ],
-                [
-                    'product_image_id' => '',
-                    'product_id' => '',
-                    'image' => $row['image_4'],
-                    'sort_order' => '3'
-                ],
-                [
-                    'product_image_id' => '',
-                    'product_id' => '',
-                    'image' => $row['image_5'],
-                    'sort_order' => '4'
-                ]
-            ];
-    }
-    
-    
     private $attributeCache=[];
-    private function composeProductAttributeObject($attribute_name, $attribute_group_id){
+    private function getProductAttributeId($attribute_name, $attribute_group_id){
        if( !$attribute_name ){
             return 0;
         }
@@ -286,31 +337,41 @@ class ModelExtensionBaycikSellersync extends Model{
         
         $search_data=['filter_name'=>$attribute_name,'limit'=>1,'start'=>0];
         $attribute=$this->model_catalog_attribute->getAttributes($search_data);
-        if( $attribute[0]['name'] == $attribute_name ){
-            $this->attributeCache[$attribute_name]=$attribute_name;
+        if( $attribute && isset($attribute[0]) ){
+            $this->attributeCache[$attribute_name]=$attribute[0]['attribute_id'];
             return $this->attributeCache[$attribute_name];
         }
         
-        $data=[
-            'attribute_id'=>'',
+        $newattribute=[
             'attribute_group_id' => $attribute_group_id,
             'sort_order'=>1,
-            'product_attribute_description'=>[
-                $this->language_id=>[
-                        'text' => $attribute_name
-                ]
-            ],
             'attribute_description' => [
                     $this->language_id=>[
                         'name' => $attribute_name
                 ]
             ]
         ];
-        $this->attributeCache[$attribute_name]=$this->model_catalog_attribute->addAttribute($data);
-        return $data;	
+        $this->attributeCache[$attribute_name]=$this->model_catalog_attribute->addAttribute($newattribute);
+        return $this->attributeCache[$attribute_name];	
     }
-    
-    
+    private function composeProductAttributeObject( $row ){
+        $product_attribute = [];
+        if( $this->globalSyncConfig['attributes'] ){
+            foreach($this->globalSyncConfig['attributes'] as $attributeConfig){
+                $attribute_name=$row[$attributeConfig['field']];
+                $product_attribute[] =[
+                    'attribute_id'=>$this->getProductAttributeId($attribute_name,$attributeConfig['attribute_group_id']),
+                    'product_attribute_description'=>[
+                        $this->language_id=>[
+                            'text'=>$attribute_name
+                        ]
+                    ]
+                ];
+            }
+        }
+        return $product_attribute;
+    }
+
     public function composeProductCategory($destination_category_id){
         $query = $this->db->query("
                 SELECT path_id AS category
@@ -326,14 +387,6 @@ class ModelExtensionBaycikSellersync extends Model{
     
     private function composeProductObject($row,$category_comission,$destination_category_id){
 	////////////////////////////////
-	//OPTIONS SECTION
-	////////////////////////////////
-	
-	//especially for happywear
-	$option_id=13;//'Размер'
-	$option_type='radio';
-	$product_option=$this->composeProductOptionsObject($option_id,$option_type,$row['option_group1'],$row['price'],$row['price_group1'],$category_comission);
-	////////////////////////////////
 	//DESCRIPTION SECTION
 	////////////////////////////////
         $product_description = [
@@ -346,34 +399,6 @@ class ModelExtensionBaycikSellersync extends Model{
             'tag'=> '',
             ]   
         ];
-	////////////////////////////////
-	//MANUFACTURER SECTION
-	////////////////////////////////
-        $manufacturer_id=$this->composeProductManufacturer($row['manufacturer']);
-	////////////////////////////////
-	//ATTRIBUTE SECTION
-	////////////////////////////////
-	
-	
-	//TO DO attributes as options
-        $product_attribute = [];
-	//especially for happywear
-        $attribute_group_id=7;//'Страна'
-	$attribute_name=$row['origin_country'];
-	$product_attribute[]=$this->composeProductAttributeObject($attribute_name,$attribute_group_id);
-        
-       
-        
-	$attribute_group_id=8;//'Цвет'
-	$attribute_name=$row['filter1'];
-	$product_attribute[]=$this->composeProductAttributeObject($attribute_name,$attribute_group_id);
-        
-	$attribute_group_id=9;//'Материал'
-	$attribute_name=$row['filter2'];
-	$product_attribute[]=$this->composeProductAttributeObject($attribute_name,$attribute_group_id);
-
-        
-        
 	////////////////////////////////
 	//COMPOSING SECTION
 	////////////////////////////////
@@ -389,7 +414,6 @@ class ModelExtensionBaycikSellersync extends Model{
 	    'minimum'=>0,
 	    'subtract'=>'',
 	    'date_available'=>'',
-	    'manufacturer_id'=>$manufacturer_id,
 	    'price'=>round($row['price']*$category_comission,2),
 	    'points'=>0,
 	    'weight'=>0,
@@ -402,11 +426,12 @@ class ModelExtensionBaycikSellersync extends Model{
 	    'sort_order'=>1,
 	    'name'=>$row['product_name'],
 	    'image'=>$row['image'],
-            'product_image'=>$this->composeProductImageObject($row),
+	    'manufacturer_id'=>     $this->composeProductManufacturer($row['manufacturer']),
+            'product_image'=>       $this->composeProductImageObject($row),
+	    'product_attribute'=>   $this->composeProductAttributeObject( $row ),
+	    'product_category'=>    $this->composeProductCategory($destination_category_id),
+	    'product_option'=>      $this->composeProductOptionsObject($row,$category_comission),
 	    'product_description'=>$product_description,
-	    'product_attribute'=>$product_attribute,
-	    'product_option'=>[$product_option],
-	    'product_category'=>$this->composeProductCategory($destination_category_id),
 	    'shipping'=>1,
 	    'quantity'=>1,
 	    'stock_status_id'=>5,
@@ -450,17 +475,16 @@ class ModelExtensionBaycikSellersync extends Model{
     }
     
     public function reorderOptions (){
+        $this->db->query("SET @i:=0;"); 
         $sql = "
-            SET @i:=0;
-
             UPDATE
-                 oc_option_value
+                 ".DB_PREFIX ."option_value
             SET sort_order=@i:=@i+1
             WHERE option_value_id IN (SELECT option_value_id FROM
-            oc_option_value_description ORDER BY oc_option_value_description.name)
+            ".DB_PREFIX ."option_value_description ORDER BY name)
             ";
         $this->db->query($sql); 
-        }
+    }
         
     
     protected function load_admin_model($route) {
