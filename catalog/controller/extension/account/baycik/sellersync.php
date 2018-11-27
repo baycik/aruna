@@ -17,6 +17,32 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
 		
 		$this->load->model('extension/baycik/sellersync');
 		
+                $url = '';
+                
+                $data['back'] = $this->url->link('extension/account/baycik/sellersync', '', true);
+                
+                if (isset($this->request->get['page'])) {
+			$url .= '&page=' . $this->request->get['page'];
+		}
+                
+                if (isset($this->request->get['sort'])) {
+			$sort = $this->request->get['sort'];
+		} else {
+			$sort = 'pd.name';
+		}
+
+		if (isset($this->request->get['order'])) {
+			$order = $this->request->get['order'];
+		} else {
+			$order = 'ASC';
+		}
+                
+                if (isset($this->request->get['page'])) {
+			$page = $this->request->get['page'];
+		} else {
+			$page = 1;
+		}
+                
                 $data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
@@ -28,6 +54,9 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
 			'text' => $this->language->get('heading_title'),
 			'href' => $this->url->link('extension/account/baycik/sellersync',  $url, true)
 		);
+                
+		$data['sort'] = $sort;
+		$data['order'] = $order;
                 $data['heading_title'] =  $this->language->get('heading_title');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['column_right'] = $this->load->controller('common/column_right');	
@@ -35,13 +64,47 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
-                $data['seller_id'] = $store_detail['id'];
-                $data['categories'] =  $categories = $this->model_extension_baycik_sellersync->check_get_cat_list();
+                $data['seller_id'] = $this->customer->getId();	
+                //$this->syncWithHappywear();
+                
+                $filter_data = [
+                    'filter_name'	  => '',
+                    'filter_model'	  => '',
+                    'sort'                => $sort,
+                    'order'               => $order,
+                    'start'               => ($page - 1) * $this->config->get('config_limit_admin'),
+                    'limit'               => $this->config->get('config_limit_admin'),
+                    'seller_id'		  => $this->customer->getId()	
+                ];
+                
+                $data['categories'] =  $categories = $this->model_extension_baycik_sellersync->check_get_cat_list($filter_data);
                 $data['destination_categories'] = $this->getDestCategories();
 		//$this->getList();
+                
+                
+                if (isset($this->request->get['filter_name'])) {
+			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
+		}
+
+                if (isset($this->request->get['page'])) {
+			$page = $this->request->get['page'];
+		} else {
+			$page = 1;
+		}
+                $pagination = new Pagination();
+                $pagination->total = count($data['categories']);
+		$pagination->page = $page;
+		$pagination->limit = $this->config->get('config_limit_admin');
+		$pagination->url = $this->url->link('extension/baycik/sellersync', $url . '&page={page}', true);
+                
+                $data['pagination'] = $pagination->render();
+                
+                $data['results'] = sprintf($this->language->get('text_pagination'), (count($data['categories'])) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > (count($data['categories']) - $this->config->get('config_limit_admin'))) ? count($data['categories']) : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), count($data['categories']), ceil(count($data['categories']) / $this->config->get('config_limit_admin')));
+                
+                
                 $this->response->setOutput($this->load->view('account/baycik/sellersync', $data));
             
-	}    
+	} 
         
         private $data = array(
             "category_lvl1"=>"Одежда",
@@ -126,7 +189,56 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
                 }
                 fclose($handle);
             }
-        } 
+        }
+        
+        public function autocomplete() {
+            $json = array();
+
+            if (isset($this->request->get['filter_name']) || isset($this->request->get['filter_model'])) {
+
+                    $this->load->model('extension/purpletree_multivendor/sellerproduct');
+
+                    if (isset($this->request->get['filter_name'])) {
+                            $filter_name = $this->request->get['filter_name'];
+                    } else {
+                            $filter_name = '';
+                    }
+
+                    if (isset($this->request->get['limit'])) {
+                            $limit = $this->request->get['limit'];
+                    } else {
+                            $limit = 5;
+                    }
+
+                            $seller_id = $this->customer->getId();
+
+                    $filter_data = array(
+                            'filter_name'  => $filter_name,
+                            'start'        => 0,
+                            'limit'        => $limit,
+                            'seller_id' => $seller_id
+                    );
+
+                    $results = $this->model_extension_purpletree_multivendor_sellerproduct->getProducts($filter_data);
+
+                    foreach ($results as $result) {
+                            
+
+                            $json[] = array(
+                                    'product_id' => $result['product_id'],
+                                    'name'       => strip_tags(html_entity_decode($result['name'], ENT_QUOTES, 'UTF-8')),
+                                    'model'      => $result['model'],
+                                    'option'     => $option_data,
+                                    'price'      => $result['price']
+                            );
+                    }
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+	
+        
         
         
 }

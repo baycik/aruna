@@ -452,7 +452,6 @@ class ModelExtensionBaycikSellersync extends Model{
     public function reorderOptions (){
         $sql = "
             SET @i:=0;
-
             UPDATE
                  oc_option_value
             SET sort_order=@i:=@i+1
