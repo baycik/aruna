@@ -3,7 +3,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
 	private $error = array();
 	public function index(){
 		if (!$this->customer->isLogged()) {
-			$this->session->data['redirect'] = $this->url->link('extension/account/baycik/sellersync', '', true);
+			$this->session->data['redirect'] = $this->url->link('extension/account/nihal/sellersync', '', true);
 
 			$this->response->redirect($this->url->link('account/login', '', true));
 		}
@@ -11,15 +11,15 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
 		if(!isset($store_detail['store_status'])){
 			$this->response->redirect($this->url->link('account/account', '', true));
 		}
-		$this->load->language('baycik/sellersync');
+		$this->load->language('nihal/sellersync');
 		
 		$this->document->setTitle($this->language->get('heading_title'));
 		
-                $this->load->model('extension/baycik/parse');
-                $this->load->model('extension/baycik/setup');
+                $this->load->model('extension/nihal/parse');
+                $this->load->model('extension/nihal/setup');
 		
                 
-                $data['back'] = $this->url->link('extension/account/baycik/sellersync', '', true);
+                $data['back'] = $this->url->link('extension/account/nihal/sellersync', '', true);
                 
                 if (isset($this->request->get['page'])) {
 			$url .= '&page=' . $this->request->get['page'];
@@ -54,7 +54,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('extension/account/baycik/sellersync',  $url, true)
+			'href' => $this->url->link('extension/nihal/sellersync',  $url, true)
 		);
                 
 		$data['sort'] = $sort;
@@ -79,7 +79,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
                     'seller_id'		  => $this->customer->getId()	
                 ];
                 
-                $data['categories'] =  $categories = $this->model_extension_baycik_setup->check_get_cat_list($filter_data);
+                $data['categories'] =  $categories = $this->model_extension_nihal_setup->check_get_cat_list($filter_data);
                 $data['destination_categories'] = $this->getDestCategories();
 		//$this->getList();
                 
@@ -97,14 +97,14 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
                 $pagination->total = count($data['categories']);
 		$pagination->page = $page;
 		$pagination->limit = $this->config->get('config_limit_admin');
-		$pagination->url = $this->url->link('extension/account/baycik/sellersync', $url . '&page={page}', true);
+		$pagination->url = $this->url->link('extension/nihal/sellersync', $url . '&page={page}', true);
                 
                 $data['pagination'] = $pagination->render();
                 
                 $data['results'] = sprintf($this->language->get('text_pagination'), (count($data['categories'])) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > (count($data['categories']) - $this->config->get('config_limit_admin'))) ? count($data['categories']) : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), count($data['categories']), ceil(count($data['categories']) / $this->config->get('config_limit_admin')));
                 
                 
-                $this->response->setOutput($this->load->view('account/baycik/sellersync', $data));
+                $this->response->setOutput($this->load->view('account/nihal/sellersync', $data));
             
 	} 
         
@@ -116,16 +116,16 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
             "destination_category_id"=>"27"
             );
         public function testImport() {
-	    $this->load->model('extension/baycik/import');
-	    return $this->model_extension_baycik_import->importCategories(json_decode(json_encode($this->data)));
+	    $this->load->model('extension/nihal/import');
+	    return $this->model_extension_nihal_import->importCategories(json_decode(json_encode($this->data)));
         }
         
         public function syncWithHappywear(){
 	    $sync_id=1;
             $tmpfile = tempnam("/tmp", "tmp_");
             copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile);
-            $this->load->model('extension/baycik/parse');
-            $this->model_extension_baycik_parse->parse_happywear($sync_id, addslashes($tmpfile));
+            $this->load->model('extension/nihal/parse');
+            $this->model_extension_nihal_parse->parse_happywear($sync_id, addslashes($tmpfile));
 	}
         
         public function getDestCategories (){
@@ -144,14 +144,14 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
         }
         
         public function importUserData (){
-            $this->load->model('extension/baycik/import');
+            $this->load->model('extension/nihal/import');
             $data = $this->request->post['data'];
             
             $seller_id = (int) $this->request->post['seller_id'];
             $decoded_text = html_entity_decode($data);
             $import_array = json_decode($decoded_text, true);
             foreach($import_array as $item){
-                $this->model_extension_baycik_import->importCategories(json_decode(json_encode($item)), $seller_id);
+                $this->model_extension_nihal_import->importCategories(json_decode(json_encode($item)), $seller_id);
             }
         }
         
@@ -161,7 +161,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
             if (($handle = fopen("https://happywear.ru/exchange/xml/price-list.csv", "r")) !== FALSE) {
                 header('Content-Type: text/html; charset=UTF-8');
                 $sync_id = $this->request->get['sync_id'];
-                $this->load->model('extension/baycik/sellersync');
+                $this->load->model('extension/nihal/sellersync');
                 $i=0;
                 while (($data = fgetcsv($handle, 5000, ";")) !== FALSE && $i++<1000) {
                     $row=[
@@ -183,7 +183,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
                         'min_order'=>addslashes($data[14])
                     ];
                     if( $row['model'] ){
-                        $this->model_extension_baycik_sellersync->insert_parsed_row($sync_id, $row); 
+                        $this->model_extension_nihal_sellersync->insert_parsed_row($sync_id, $row); 
                     }
 
                 }
