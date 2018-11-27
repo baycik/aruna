@@ -1,18 +1,18 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://localhost:888/aruna.market/public_html/admin/');
-define('HTTP_CATALOG', 'http://localhost:888/aruna.market/public_html/');
+define('HTTP_SERVER', 'http://localhost:888/aruna/public_html/admin/');
+define('HTTP_CATALOG', 'http://localhost:888/aruna/public_html/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://localhost:888/aruna.market/public_html/admin/');
-define('HTTPS_CATALOG', 'http://localhost:888/aruna.market/public_html/');
+define('HTTPS_SERVER', 'http://localhost:888/aruna/public_html/admin/');
+define('HTTPS_CATALOG', 'http://localhost:888/aruna/public_html/');
 
 // DIR
-define('DIR_APPLICATION', 'W:\iSellServer\www\aruna.market/public_html/admin/');
-define('DIR_SYSTEM', 'W:\iSellServer\www\aruna.market/public_html/system/');
-define('DIR_IMAGE', 'W:\iSellServer\www\aruna.market/public_html/image/');
-define('DIR_STORAGE', 'W:\iSellServer\www\aruna.market/storage/');
-define('DIR_CATALOG', 'W:\iSellServer\www\aruna.market/public_html/catalog/');
+define('DIR_APPLICATION', 'W:\iSell\www\aruna/public_html/admin/');
+define('DIR_SYSTEM', 'W:\iSell\www\aruna/public_html/system/');
+define('DIR_IMAGE', 'W:\iSell\www\aruna/public_html/image/');
+define('DIR_STORAGE', 'W:\iSell\www\aruna/storage/');
+define('DIR_CATALOG', 'W:\iSell\www\aruna/public_html/catalog/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/template/');
 define('DIR_CONFIG', DIR_SYSTEM . 'config/');
