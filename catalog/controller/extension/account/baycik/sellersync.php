@@ -15,9 +15,9 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
 		
 		$this->document->setTitle($this->language->get('heading_title'));
 		
-		$this->load->model('extension/baycik/sellersync');
+                $this->load->model('extension/baycik/parse');
+                $this->load->model('extension/baycik/setup');
 		
-                $url = '';
                 
                 $data['back'] = $this->url->link('extension/account/baycik/sellersync', '', true);
                 
@@ -28,7 +28,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
                 if (isset($this->request->get['sort'])) {
 			$sort = $this->request->get['sort'];
 		} else {
-			$sort = 'pd.name';
+			$sort = 'category_lvl1, category_lvl2, category_lvl3';
 		}
 
 		if (isset($this->request->get['order'])) {
@@ -42,6 +42,8 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
 		} else {
 			$page = 1;
 		}
+                
+                $url = '';
                 
                 $data['breadcrumbs'] = array();
 
@@ -77,7 +79,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
                     'seller_id'		  => $this->customer->getId()	
                 ];
                 
-                $data['categories'] =  $categories = $this->model_extension_baycik_sellersync->check_get_cat_list($filter_data);
+                $data['categories'] =  $categories = $this->model_extension_baycik_setup->check_get_cat_list($filter_data);
                 $data['destination_categories'] = $this->getDestCategories();
 		//$this->getList();
                 
@@ -95,7 +97,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
                 $pagination->total = count($data['categories']);
 		$pagination->page = $page;
 		$pagination->limit = $this->config->get('config_limit_admin');
-		$pagination->url = $this->url->link('extension/baycik/sellersync', $url . '&page={page}', true);
+		$pagination->url = $this->url->link('extension/account/baycik/sellersync', $url . '&page={page}', true);
                 
                 $data['pagination'] = $pagination->render();
                 
