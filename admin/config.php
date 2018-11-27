@@ -8,11 +8,11 @@ define('HTTPS_SERVER', 'http://localhost:888/aruna.market/public_html/admin/');
 define('HTTPS_CATALOG', 'http://localhost:888/aruna.market/public_html/');
 
 // DIR
-define('DIR_APPLICATION', 'W:\iSellServer\www\aruna.market/public_html/admin/');
-define('DIR_SYSTEM', 'W:\iSellServer\www\aruna.market/public_html/system/');
-define('DIR_IMAGE', 'W:\iSellServer\www\aruna.market/public_html/image/');
-define('DIR_STORAGE', 'W:\iSellServer\www\aruna.market/storage/');
-define('DIR_CATALOG', 'W:\iSellServer\www\aruna.market/public_html/catalog/');
+define('DIR_APPLICATION', 'D:\iSell\www\aruna.market/public_html/admin/');
+define('DIR_SYSTEM', 'D:\iSell\www\aruna.market/public_html/system/');
+define('DIR_IMAGE', 'D:\iSell\www\aruna.market/public_html/image/');
+define('DIR_STORAGE', 'D:\iSell\www\aruna.market/storage/');
+define('DIR_CATALOG', 'D:\iSell\www\aruna.market/public_html/catalog/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/template/');
 define('DIR_CONFIG', DIR_SYSTEM . 'config/');
