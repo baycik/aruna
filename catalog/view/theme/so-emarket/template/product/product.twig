@@ -552,7 +552,7 @@
 								                {% for attribute in attribute_group.attribute %}
 								                <li class="property-item">
 								                  <span class="propery-title">{{ attribute_group.name }}</span>
-								                  <span class="propery-des">{{ attribute.text }}</span>
+								                  <span class="propery-des">{{ attribute.name }}</span>
 								                </li>
 								                {% endfor %}
 							                 	
@@ -960,7 +960,7 @@ $('#button-review').on('click', function() {
 		$("#thumb-slider .image-additional").each(function() {
 			$(this).find("[data-index='0']").addClass('active');
 		});
-		
+		                                
 		$('.product-options li.radio').click(function(){
 			$(this).addClass(function() {
 				if($(this).hasClass("active")) return "";
