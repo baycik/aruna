@@ -30,6 +30,13 @@ jQuery(document).ready(function($) {
         }
     });
 	
+    $(function(){
+        $('img').on('error',function(){
+           $(this).parent().hide();
+           console.log('image not found. hiding...');
+           });
+      });    
+        
     $(document).on('click', '.so-close-demos-preview', function() {
         $demosPreview.removeClass('so-preview-open');
         $('body').removeClass('so-demos-open');

@@ -31,7 +31,6 @@ $(document).ready(function() {
 			element.addClass('has-error');
 		}
 	});
-
 	// Currency
 	$('#form-currency .currency-select').on('click', function(e) {
 		e.preventDefault();

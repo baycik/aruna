@@ -64,8 +64,10 @@ class ModelExtensionBaycikSellersync extends Model{
                 category_lvl3 = @col4,      
                 product_name = CONCAT(@col4,' ',@col7,' ',@col5), 
                 model = CONCAT(@col3,' ',@col5), 
-                filter1 = @col5,             
-                filter2 = @col6,             
+                filter1 = @col5,
+                attribute_1_id = '',
+                filter2 = @col6,
+                attribute_2_id = '',
                 manufacturer = @col7,  
                 origin_country = @col8,                     
                 option1 = @col9, 
@@ -273,23 +275,53 @@ class ModelExtensionBaycikSellersync extends Model{
     
     
     private $attributeCache=[];
-    private function composeProductAttributeObject($attribute_id,$attribute_name){
+    private function composeProductAttributeObject($attribute_name, $attribute_group_id){
        if( !$attribute_name ){
             return 0;
         }
-	if( !isset($this->attributeCache[$attribute_id]) ){
-	    $this->attributeCache[$attribute_id]=[
-		'attribute_id'=>$attribute_id,
-		'product_attribute_description'=>[
-		    $this->language_id=>[
-			'text'=>$attribute_name
-		    ]
-		]
-	    ];
+	if( isset($this->attributeCache[$attribute_name]) ){
+            return $this->attributeCache[$attribute_name];
         }
-	return $this->attributeCache[$attribute_id];	
+        $this->load_admin_model('catalog/attribute');
+        
+        $search_data=['filter_name'=>$attribute_name,'limit'=>1,'start'=>0];
+        $attribute=$this->model_catalog_attribute->getAttributes($search_data);
+        if( $attribute[0]['name'] == $attribute_name ){
+            $this->attributeCache[$attribute_name]=$attribute_name;
+            return $this->attributeCache[$attribute_name];
+        }
+        
+        $data=[
+            'attribute_id'=>'',
+            'attribute_group_id' => $attribute_group_id,
+            'sort_order'=>1,
+            'product_attribute_description'=>[
+                $this->language_id=>[
+                        'text' => $attribute_name
+                ]
+            ],
+            'attribute_description' => [
+                    $this->language_id=>[
+                        'name' => $attribute_name
+                ]
+            ]
+        ];
+        $this->attributeCache[$attribute_name]=$this->model_catalog_attribute->addAttribute($data);
+        return $data;	
     }
     
+    
+    public function composeProductCategory($destination_category_id){
+        $query = $this->db->query("
+                SELECT path_id AS category
+                FROM " . DB_PREFIX . "category_path
+                WHERE category_id = '" . (int)$destination_category_id . "'");
+        $categories = array();
+        foreach ($query->rows as $row ){
+            array_push($categories, $row['category']);
+        }
+        return $categories;
+    }
     
     
     private function composeProductObject($row,$category_comission,$destination_category_id){
@@ -326,14 +358,22 @@ class ModelExtensionBaycikSellersync extends Model{
 	//TO DO attributes as options
         $product_attribute = [];
 	//especially for happywear
-	$attribute_id=12;//'Страна'
-	$attribute_text=$row['origin_country'];
-	$product_attribute[]=$this->composeProductAttributeObject($attribute_id,$attribute_text);
+        $attribute_group_id=7;//'Страна'
+	$attribute_name=$row['origin_country'];
+	$product_attribute[]=$this->composeProductAttributeObject($attribute_name,$attribute_group_id);
         
-	$attribute_id=12;//'Страна'
-	$attribute_text=$row['origin_country'];
-	$product_attribute[]=$this->composeProductAttributeObject($attribute_id,$attribute_text);
+       
+        
+	$attribute_group_id=8;//'Цвет'
+	$attribute_name=$row['filter1'];
+	$product_attribute[]=$this->composeProductAttributeObject($attribute_name,$attribute_group_id);
+        
+	$attribute_group_id=9;//'Материал'
+	$attribute_name=$row['filter2'];
+	$product_attribute[]=$this->composeProductAttributeObject($attribute_name,$attribute_group_id);
 
+        
+        
 	////////////////////////////////
 	//COMPOSING SECTION
 	////////////////////////////////
@@ -366,7 +406,7 @@ class ModelExtensionBaycikSellersync extends Model{
 	    'product_description'=>$product_description,
 	    'product_attribute'=>$product_attribute,
 	    'product_option'=>[$product_option],
-	    'product_category'=>[$destination_category_id],
+	    'product_category'=>$this->composeProductCategory($destination_category_id),
 	    'shipping'=>1,
 	    'quantity'=>1,
 	    'stock_status_id'=>5,
@@ -375,8 +415,6 @@ class ModelExtensionBaycikSellersync extends Model{
 	];
         return $product;
     }
-    
-    
     
     
     
