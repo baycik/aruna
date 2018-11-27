@@ -38,16 +38,12 @@ $create_table="CREATE TABLE `oc_baycik_sync_entries` (
 
 
 
-class ModelExtensionBaycikSellersync extends Model{
+class ModelExtensionBaycikImport extends Model{
     public function __construct($registry) {
 	parent::__construct($registry);
 	$this->language_id=(int)$this->config->get('config_language_id');
         $this->store_id=(int)$this->config->get('config_store_id');
     }    
-    
-    public function getSellerSyncSites(){
-        
-    }
     
     private $globalSyncConfig=[
         'attributes'=>[
@@ -75,8 +71,6 @@ class ModelExtensionBaycikSellersync extends Model{
         ]
     ];
 
-    
-   
     public function parse_happywear ($sync_id, $tmpfile){
         $presql = "
             DELETE FROM ".DB_PREFIX ."baycik_sync_entries WHERE sync_id = '$sync_id'
@@ -124,6 +118,7 @@ class ModelExtensionBaycikSellersync extends Model{
         $this->db->query($sql); 
         unlink($tmpfile);
     }
+    
     public function check_get_cat_list (){
         $sql = "
             SELECT 
@@ -172,7 +167,6 @@ class ModelExtensionBaycikSellersync extends Model{
 	return true;
     }
     
-    
     private function composeProductImageObject($row){
         return $product_image = 
             [
@@ -208,7 +202,6 @@ class ModelExtensionBaycikSellersync extends Model{
                 ]
             ];
     }
-    
     
     private $optionsCache=[];
     private function getProductOption($option_id,$option_type,$option_value,$price=0,$option_price='',$category_comission=0){
@@ -281,6 +274,7 @@ class ModelExtensionBaycikSellersync extends Model{
 	}
 	return $product_option;
     }
+    
     private function composeProductOptionsObject( $row,$category_comission ){
         $product_options = [];
         if( $this->globalSyncConfig['options'] ){
@@ -354,6 +348,7 @@ class ModelExtensionBaycikSellersync extends Model{
         $this->attributeCache[$attribute_name]=$this->model_catalog_attribute->addAttribute($newattribute);
         return $this->attributeCache[$attribute_name];	
     }
+    
     private function composeProductAttributeObject( $row ){
         $product_attribute = [];
         if( $this->globalSyncConfig['attributes'] ){
@@ -372,7 +367,7 @@ class ModelExtensionBaycikSellersync extends Model{
         return $product_attribute;
     }
 
-    public function composeProductCategory($destination_category_id){
+    private function composeProductCategory($destination_category_id){
         $query = $this->db->query("
                 SELECT path_id AS category
                 FROM " . DB_PREFIX . "category_path
@@ -383,7 +378,6 @@ class ModelExtensionBaycikSellersync extends Model{
         }
         return $categories;
     }
-    
     
     private function composeProductObject($row,$category_comission,$destination_category_id){
 	////////////////////////////////
@@ -440,14 +434,7 @@ class ModelExtensionBaycikSellersync extends Model{
 	];
         return $product;
     }
-    
-    
-    
-    private function importRouteProduct($item,$seller_id) {
-        
-    }
-    
-    
+
     public function importProductAdd($item) {
         $this->load_admin_model('catalog/product');
         $product_id = $this->model_catalog_product->addProduct($item);
@@ -474,7 +461,7 @@ class ModelExtensionBaycikSellersync extends Model{
         
     }
     
-    public function reorderOptions (){
+    private function reorderOptions (){
         $this->db->query("SET @i:=0;"); 
         $sql = "
             UPDATE
@@ -485,9 +472,8 @@ class ModelExtensionBaycikSellersync extends Model{
             ";
         $this->db->query($sql); 
     }
-        
-    
-    protected function load_admin_model($route) {
+
+    private function load_admin_model($route) {
         $class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $route);
         $file = realpath(DIR_APPLICATION. '../admin/model/' . $route . '.php');
         if (is_file($file)) {
@@ -498,36 +484,5 @@ class ModelExtensionBaycikSellersync extends Model{
         } else {
             throw new \Exception('Error: Could not load model ' . $route . '!');
         }
-    }
-    
-    public function insert_parsed_row1 ($sync_id, $row){
-        $sql = "
-            INSERT INTO 
-                ".DB_PREFIX ."baycik_sync_entries
-            SET
-                sync_id = '$sync_id',
-                category_lvl1 = '{$row['category_lvl1']}',    
-                category_lvl2 = '{$row['category_lvl2']}',      
-                category_lvl3 = '{$row['category_lvl3']}',      
-                product_name = '{$row['product_name']}', 
-                model = '{$row['model']}', 
-                filter1 = '{$row['filter1']}',             
-                filter2 = '{$row['filter2']}',             
-                manufacturer = '{$row['manufacturer']}',  
-                origin_country = '{$row['origin_country']}',                     
-                option1 = '{$row['option1']}', 
-                option2 = '{$row['option2']}', 
-                option3 = '{$row['option3']}', 
-                url = '{$row['url']}', 
-                img = '{$row['img']}', 
-                description = '{$row['description']}', 
-                min_order_size = '{$row['min_order_size']}', 
-                price1 = '{$row['price1']}', 
-                price2 = '{$row['price2']}', 
-                price3 = '{$row['price3']}', 
-                price4 = '{$row['price4']}'
-            ";
-                
-        $this->db->query($sql); 
     }
 }

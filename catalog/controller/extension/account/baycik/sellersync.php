@@ -114,17 +114,16 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
             "destination_category_id"=>"27"
             );
         public function testImport() {
-	    $this->load->model('extension/baycik/sellersync');
-	    return $this->model_extension_baycik_sellersync->importCategories(json_decode(json_encode($this->data)));
+	    $this->load->model('extension/baycik/import');
+	    return $this->model_extension_baycik_import->importCategories(json_decode(json_encode($this->data)));
         }
         
         public function syncWithHappywear(){
 	    $sync_id=1;
             $tmpfile = tempnam("/tmp", "tmp_");
-            copy("W:/price-list.csv", $tmpfile);
-            $this->load->model('extension/baycik/sellersync');
-            $this->model_extension_baycik_sellersync->parse_happywear($sync_id, addslashes($tmpfile));
-	    return [];
+            copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile);
+            $this->load->model('extension/baycik/parse');
+            $this->model_extension_baycik_parse->parse_happywear($sync_id, addslashes($tmpfile));
 	}
         
         public function getDestCategories (){
@@ -143,16 +142,15 @@ class ControllerExtensionAccountBaycikSellersync extends Controller{
         }
         
         public function importUserData (){
-            $this->load->model('extension/baycik/sellersync');
+            $this->load->model('extension/baycik/import');
             $data = $this->request->post['data'];
             
             $seller_id = (int) $this->request->post['seller_id'];
             $decoded_text = html_entity_decode($data);
             $import_array = json_decode($decoded_text, true);
             foreach($import_array as $item){
-                $this->model_extension_baycik_sellersync->importCategories(json_decode(json_encode($item)), $seller_id);
+                $this->model_extension_baycik_import->importCategories(json_decode(json_encode($item)), $seller_id);
             }
-            
         }
         
         
