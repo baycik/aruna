@@ -106,7 +106,7 @@
 </div>
 <script type="text/javascript">
 $('#pts-button-filter').on('click', function() {
-	var url = 'index.php?route=extension/account/baycik/sellersync/';
+	var url = 'index.php?route=extension/aruna/sellersync/';
 
 	var filter_name = $('input[name=\'filter_name\']').val();
 
@@ -130,7 +130,7 @@ $("#form-import").on('submit',function(e){
         };
         fvalue.push(item);
     });
-    $.post('index.php?route=extension/account/baycik/sellersync/importUserData', {data: JSON.stringify(fvalue),seller_id:seller_id}, function(ok){
+    $.post('index.php?route=extension/aruna/sellersync/importUserData', {data: JSON.stringify(fvalue),seller_id:seller_id}, function(ok){
         if(ok){
             return;
         };
@@ -151,7 +151,7 @@ $('#pts-button-import').on('click', function() {
 $('input[name=\'filter_name\']').autocompletepts({
 	'source': function(request, response) {
 		$.ajax({
-			url: 'index.php?route=extension/account/baycik/sellersync/autocomplete&filter_name=' +  encodeURIComponent(request),
+			url: 'index.php?route=extension/aruna/sellersync/autocomplete&filter_name=' +  encodeURIComponent(request),
 			dataType: 'json',
 			success: function(json) {
 				response($.map(json, function(item) {

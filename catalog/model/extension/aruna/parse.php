@@ -1,5 +1,6 @@
 <?php
-$create_table="CREATE TABLE `oc_baycik_sync_entries` (
+
+$create_table = "CREATE TABLE `oc_baycik_sync_entries` (
   `sync_entry_id` int(11) NOT NULL AUTO_INCREMENT,
   `sync_id` int(11) DEFAULT NULL,
   `category_lvl1` varchar(45) DEFAULT NULL,
@@ -33,36 +34,38 @@ $create_table="CREATE TABLE `oc_baycik_sync_entries` (
   PRIMARY KEY (`sync_entry_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 ";
-class ModelExtensionBaycikParse extends Model{
+
+class ModelExtensionBaycikParse extends Model {
+
     public function __construct($registry) {
 	parent::__construct($registry);
-	$this->language_id=(int)$this->config->get('config_language_id');
-        $this->store_id=(int)$this->config->get('config_store_id');
-    }    
-    
-    private function load_admin_model($route) {
-        $class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $route);
-        $file = realpath(DIR_APPLICATION. '../admin/model/' . $route . '.php');
-        if (is_file($file)) {
-            include_once($file);
-            $modelName = str_replace('/', '', ucwords("Model/" . $route, "/"));
-            $proxy = new $modelName($this->registry);
-            $this->registry->set('model_' . str_replace('/', '_', (string) $route), $proxy);
-        } else {
-            throw new \Exception('Error: Could not load model ' . $route . '!');
-        }
+	$this->language_id = (int) $this->config->get('config_language_id');
+	$this->store_id = (int) $this->config->get('config_store_id');
     }
 
-    public function parse_happywear ($sync_id, $tmpfile){
-        $presql = "
-            DELETE FROM ".DB_PREFIX ."baycik_sync_entries WHERE sync_id = '$sync_id'
+    private function load_admin_model($route) {
+	$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $route);
+	$file = realpath(DIR_APPLICATION . '../admin/model/' . $route . '.php');
+	if (is_file($file)) {
+	    include_once($file);
+	    $modelName = str_replace('/', '', ucwords("Model/" . $route, "/"));
+	    $proxy = new $modelName($this->registry);
+	    $this->registry->set('model_' . str_replace('/', '_', (string) $route), $proxy);
+	} else {
+	    throw new \Exception('Error: Could not load model ' . $route . '!');
+	}
+    }
+
+    public function parse_happywear($sync_id, $tmpfile) {
+	$presql = "
+            DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id = '$sync_id'
             ";
-        $this->db->query($presql);        
-        $sql="
+	$this->db->query($presql);
+	$sql = "
             LOAD DATA INFILE 
                 '$tmpfile'
             INTO TABLE 
-                ".DB_PREFIX ."baycik_sync_entries
+                " . DB_PREFIX . "baycik_sync_entries
             CHARACTER SET 'cp1251'
             FIELDS TERMINATED BY '\;'
                 (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18)
@@ -97,7 +100,8 @@ class ModelExtensionBaycikParse extends Model{
                 price3 = @col18, 
                 price4 = ''
             ";
-        $this->db->query($sql); 
-        unlink($tmpfile);
+	$this->db->query($sql);
+	unlink($tmpfile);
     }
+
 }
