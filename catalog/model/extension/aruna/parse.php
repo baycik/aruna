@@ -35,7 +35,7 @@ $create_table = "CREATE TABLE `oc_baycik_sync_entries` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 ";
 
-class ModelExtensionBaycikParse extends Model {
+class ModelExtensionArunaParse extends Model {
 
     public function __construct($registry) {
 	parent::__construct($registry);

@@ -1,6 +1,6 @@
 <?php
 
-class ControllerExtensionAccountBaycikSellersync extends Controller {
+class ControllerExtensionArunaSellersync extends Controller {
 
     private $error = array();
 
@@ -107,7 +107,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller {
 	$data['results'] = sprintf($this->language->get('text_pagination'), (count($data['categories'])) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > (count($data['categories']) - $this->config->get('config_limit_admin'))) ? count($data['categories']) : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), count($data['categories']), ceil(count($data['categories']) / $this->config->get('config_limit_admin')));
 
 
-	$this->response->setOutput($this->load->view('aruna/sellersync', $data));
+	$this->response->setOutput($this->load->view('extension/aruna/sellersync', $data));
     }
 
     private $data = array(
@@ -124,6 +124,7 @@ class ControllerExtensionAccountBaycikSellersync extends Controller {
     }
 
     public function syncWithHappywear() {
+	set_time_limit(300);
 	$sync_id = 1;
 	$tmpfile = tempnam("/tmp", "tmp_");
 	copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile);

@@ -1,6 +1,6 @@
 <?php
 
-class ModelExtensionBaycikSetup extends Model {
+class ModelExtensionArunaSetup extends Model {
 
     public function __construct($registry) {
 	parent::__construct($registry);
