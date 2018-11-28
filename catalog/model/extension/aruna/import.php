@@ -34,69 +34,40 @@ class ModelExtensionArunaImport extends Model {
 	]
     ];
 
-    public function parse_happywear($sync_id, $tmpfile) {
-	$presql = "
-            DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id = '$sync_id'
-            ";
-	$this->db->query($presql);
-	$sql = "
-            LOAD DATA INFILE 
-                '$tmpfile'
-            INTO TABLE 
-                " . DB_PREFIX . "baycik_sync_entries
-            CHARACTER SET 'cp1251'
-            FIELDS TERMINATED BY '\;'
-                (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18)
+    public function saveCategoryPrefs ($data, $sync_id){
+        $sql = "
+            UPDATE 
+             " . DB_PREFIX . "baycik_sync_groups
             SET
-                sync_id = '$sync_id',
-                category_lvl1 = @col1,    
-                category_lvl2 = @col2,      
-                category_lvl3 = @col4,      
-                product_name = CONCAT(@col4,' ',@col7,' ',@col5), 
-                model = CONCAT(@col3,' ',@col5), 
-                manufacturer = @col7,  
-                origin_country = @col8,                     
-                url = @col10, 
-                description = @col12, 
-                min_order_size = @col15, 
-                attribute1 = @col5,
-                attribute2 = @col6,
-                attribute3 = '',
-                attribute4 = '',
-                attribute5 = '',
-                option1 = @col9, 
-                option2 = '', 
-                option3 = '', 
-                image = @col11,
-                image1 = REPLACE(@col11,'_front','_1'), 
-                image2 = REPLACE(@col11,'_front','_2'), 
-                image3 = REPLACE(@col11,'_front','_3'), 
-                image4 = REPLACE(@col11,'_front','_4'), 
-                image5 = REPLACE(@col11,'_front','_5'), 
-                price1 = @col13, 
-                price2 = @col7, 
-                price3 = @col18, 
-                price4 = ''
+                comission = ". (int) $data['category_comission']. ",
+                destination_category_id = ". (int) $data['destination_category_id']. " 
+                    
+            WHERE group_id = ". (int) $data['group_id']. " AND sync_id = '$sync_id'     
             ";
-	$this->db->query($sql);
-	unlink($tmpfile);
+        return $this->db->query($sql);
     }
-
-    public function check_get_cat_list() {
-	$sql = "
-            SELECT 
+    
+    public function getImportList($sync_id) {
+        $sql="
+            SELECT  
                 category_lvl1,
                 category_lvl2,
                 category_lvl3,
-                COUNT(DISTINCT model) AS products_total
-            FROM 
-                " . DB_PREFIX . "baycik_sync_entries
-            GROUP BY CONCAT(category_lvl1, '/', category_lvl2, '/', category_lvl3)    
+                comission,
+                destination_category_id
+            FROM
+               " . DB_PREFIX . "baycik_sync_groups
+            WHERE
+                destination_category_id IS NOT NULL
+                AND destination_category_id != 0
+                AND sync_id = '$sync_id'
             ";
-	$rows = $this->db->query($sql);
-	return $rows->rows;
+        $rows = $this->db->query($sql);
+        foreach ($rows->rows as $row){
+            $this->importCategories($row);
+        }
     }
-
+    
     public function importCategories($data) {
 	$sql = "
             SELECT 
@@ -110,14 +81,14 @@ class ModelExtensionArunaImport extends Model {
                 LEFT JOIN 
                 " . DB_PREFIX . "product USING(model)
             WHERE
-                category_lvl1 = '$data->category_lvl1'
-                AND category_lvl2 = '$data->category_lvl2'
-                AND category_lvl3 = '$data->category_lvl3'
+                category_lvl1 = '{$data['category_lvl1']}'
+                AND category_lvl2 = '{$data['category_lvl2']}'
+                AND category_lvl3 = '{$data['category_lvl3']}'
             GROUP BY model
             ";
 	$rows = $this->db->query($sql);
 	foreach ($rows->rows as $row) {
-	    $product = $this->composeProductObject($row, $data->category_comission, $data->destination_category_id);
+	    $product = $this->composeProductObject($row, $data['comission'], $data['destination_category_id']);
 	    if ($row['product_id']) {
 		$product['product_id'] = $row['product_id'];
 		$this->importProductUpdate($product); //is this right???

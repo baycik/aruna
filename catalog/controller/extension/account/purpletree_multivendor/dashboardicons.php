@@ -53,7 +53,7 @@ class ControllerExtensionAccountPurpletreeMultivendorDashboardicons extends Cont
 				$data['sellerstore'] = $this->url->link('extension/account/purpletree_multivendor/sellerstore', '', true);
 				$data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
                                 
-				$data['sellersync'] = $this->url->link('extension/account/baycik/sellersync', '', true);
+				$data['sellersync'] = $this->url->link('extension/aruna/sellersync', '', true);
                                 
 				$orderstatus = 0;
 				if(null !== $this->config->get('module_purpletree_multivendor_commission_status')) {

@@ -33,6 +33,21 @@ $create_table = "CREATE TABLE `oc_baycik_sync_entries` (
   `price4` float DEFAULT NULL,
   PRIMARY KEY (`sync_entry_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `oc_baycik_sync_groups` (
+  `group_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sync_id` int(11) DEFAULT NULL,
+  `category_path` varchar(602) DEFAULT NULL,
+  `category_lvl1` varchar(200) DEFAULT NULL,
+  `category_lvl2` varchar(200) DEFAULT NULL,
+  `category_lvl3` varchar(200) DEFAULT NULL,
+  `total_products` int(11) DEFAULT NULL,
+  `comission` int(11) DEFAULT NULL,
+  `destination_category_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`group_id`),
+  UNIQUE KEY `category_path_UNIQUE` (`category_path`,`sync_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=256 DEFAULT CHARSET=utf8 COMMENT='';
+
 ";
 
 class ModelExtensionArunaParse extends Model {
@@ -73,7 +88,7 @@ class ModelExtensionArunaParse extends Model {
                 sync_id = '$sync_id',
                 category_lvl1 = @col1,    
                 category_lvl2 = @col2,      
-                category_lvl3 = @col4,      
+                category_lvl3 = '',      
                 product_name = CONCAT(@col4,' ',@col7,' ',@col5), 
                 model = CONCAT(@col3,' ',@col5), 
                 manufacturer = @col7,  
@@ -101,7 +116,40 @@ class ModelExtensionArunaParse extends Model {
                 price4 = ''
             ";
 	$this->db->query($sql);
+        $this->groupEntriesByCategories($sync_id);
 	unlink($tmpfile);
     }
+    
+    private function groupEntriesByCategories ($sync_id){
+        if(!isset($sync_id)){
+            return;
+        }
+        $presql = "
+            UPDATE " . DB_PREFIX . "baycik_sync_groups
+            SET total_products = 0 
+            ";
+        $this->db->query($presql);
+        $sql = "
+            INSERT INTO
+                " . DB_PREFIX . "baycik_sync_groups ( sync_id, category_lvl1, category_lvl2, category_lvl3, category_path, total_products )
+            SELECT * FROM
+                (SELECT 
+                    sync_id, category_lvl1, category_lvl2, category_lvl3, CONCAT(category_lvl1,'/',category_lvl2 , '/' , category_lvl3), COUNT(DISTINCT(model)) AS tp
+                FROM 	
+                    " . DB_PREFIX . "baycik_sync_entries AS bse    
+                WHERE bse.sync_id = '$sync_id'
+                GROUP BY bse.category_lvl1, bse.category_lvl2, bse.category_lvl3) hello_vasya
+            ON DUPLICATE KEY UPDATE  total_products = tp
+            ";
+        $this->db->query($sql);
+        print_r($this->db->query($sql));
+        $clear_empty="
+            DELETE FROM 
+                " . DB_PREFIX . "baycik_sync_groups 
+            WHERE total_products=0;
+            ";
+        $this->db->query($clear_empty);
+    }
 
+    
 }

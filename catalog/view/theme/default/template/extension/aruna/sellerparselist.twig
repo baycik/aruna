@@ -1,8 +1,4 @@
 {{ header }}
-
-
-
-
 <div class="pts-container">
   <ul class="pts-breadcrumb">
 	{% for breadcrumb in breadcrumbs %}
@@ -31,20 +27,13 @@
 	<div class="pts-pull-right">
       </div>
       <h1>{{ heading_title }}</h1>
-      <button type="submit" id="button-import" class="btn btn-primary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> Импортировать </button>  
       <div class="pts-panel-body">
-          
         <div class="pts-well">
           <div class="pts-row">
             <div class="pts-col-sm-6">
               <div class="pts-form-group ptsnewcss">
-                  <form method="get" action="index.php">  
-                    <label class="pts-control-label" for="input-name">Название категории</label>
-                    <input type="text" name="filter_name" value="{{ filter_name }}" placeholder="Поиск"/>
-                    <input type="hidden" name="route" 
-                           value="extension/aruna/sellersync"/>
-                    <button class="pts-btn pts-btn-primary pts-pull-right" ><i class="fa fa-search"></i>Поиск</button>
-                  </form>
+                <label class="pts-control-label" for="input-name">Название категории</label>
+                <input type="text" name="filter_name" value="{{ filter_name }}" placeholder="Поиск" id="input-name" class="pts-form-control"/>
               </div>
             </div> 
           </div>
@@ -59,7 +48,7 @@
             <table class="pts-table pts-table-bordered pts-table-hover">
               <thead>
                 <tr>
-                  <td style="width: 1px;" class="pts-text-center" colspan="3"  >Название категории</td>
+                  <td style="width: 1px;" class="pts-text-center" {% if category.category_lvl3 %} colspan="3" {% else %} colspan="2" {% endif %} >Название категории</td>
                   <td style="width: 1px;" class="pts-text-left"> Всего товаров </td>
                   <td class="pts-text-left"> Комиссия </td>
                   <td class="pts-text-left"> Конечная папка </td>
@@ -71,8 +60,13 @@
                 <tr class="x-form-row">
                   <td class="pts-text-left">{{ category.category_lvl1 }}</td>
                   <td class="pts-text-left">{{ category.category_lvl2 }}</td>
+                  
+                  {% if category.category_lvl3 %}
                       
                   <td class="pts-text-left">{{ category.category_lvl3 }}</td>
+                  
+                  {% endif %}
+                  
                   <td class="pts-text-left">{{ category.total_products }}</td>
                   <td class="pts-text-left">
                         <input type="text" name="category_comission" value="{{ category_comission }}" placeholder="%" id="input-quantity" class="pts-form-control" />
@@ -86,7 +80,9 @@
                         </select>
                   </td>
                   <td>
-                      <input type="hidden" name="group_id" value="{{ category.group_id }}"/>
+                      <input type="hidden" name="category_lvl1" value="{{ category.category_lvl1 }}"/>
+                      <input type="hidden" name="category_lvl2" value="{{ category.category_lvl2 }}" />
+                      <input type="hidden" name="category_lvl3" value="{{ category.category_lvl3 }}" />
                   </td>
                 </tr>
                 {% endfor %}
@@ -98,20 +94,21 @@
               </tbody>
             </table>
           </div>
-          <div>
-              <button type="submit" id="button-save" class="pts-btn pts-btn-primary pts-pull-right"><i class="fa fa-plus"></i> Сохранить изменения </button> 
-          </div>
         </form>
         <div class="pts-row">
           <div class="pts-col-sm-6 pts-text-left">{{ pagination }}</div>
           <div class="pts-col-sm-6 pts-text-right">{{ results }}</div>
-            
+            <div>
+                <button type="submit" id="pts-button-import" class="pts-btn pts-btn-primary pts-pull-right"><i class="fa fa-plus"></i> Импортировать </button>  
+            </div>
         </div>
       </div>
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>
 <script type="text/javascript">
+
+$('input[name=\'filter_name\']').val('');
 
 
 var seller_id="{{seller_id}}";
@@ -120,28 +117,62 @@ $("#form-import").on('submit',function(e){
     var fvalue=[];
     $("#form-import .x-form-row").each(function(index,value){
         var item={
-            group_id: $(this).find('input[name=group_id]').val(),
+            category_lvl1: $(this).find('input[name=category_lvl1]').val(),
+            category_lvl2: $(this).find('input[name=category_lvl2]').val(),
+            category_lvl3: $(this).find('input[name=category_lvl3]').val(),
             category_comission: $(this).find('input[name=category_comission]').val().replace(/[^\d\.]/g,''),
-            destination_category_id: $(this).find('select[name=destination_category]').val()
+            destination_category: $(this).find('select[name=destination_category]').val()
         };
         fvalue.push(item);
     });
-    $.post('index.php?route=extension/aruna/sellersync/saveImportPrefs', {data: JSON.stringify(fvalue),seller_id:seller_id}, function(ok){
+    $.post('index.php?route=extension/aruna/sellersync/importUserData', {data: JSON.stringify(fvalue),seller_id:seller_id}, function(ok){
         if(ok){
             return;
         };
     });
 });
 
-$("#button-import").on('click',function(){
-   $('#spinner_icon').show();
-   $.post('index.php?route=extension/aruna/sellersync/importUserProducts', {}, function(){
+$('#pts-button-import').on('click', function() {
         
-            $('#spinner_icon').hide();   
-            console.log('hide');
-            return;
-    });
+        var category_lvl1 = $('input[name=category_lvl1]').val();
+        var category_lvl2 = $('input[name=category_lvl2]').val();
+        var category_lvl3 = $('input[name=category_lvl3]').val();
+        var category_comission = $('input[name=category_comission]').val();
+        var destination_category = $('option[name=destination_category]').val();
+  
 });
+</script>
+  <script type="text/javascript">
+$('input[name=\'filter_name\']').autocomplete({
+	source: function(request, response) {
+		$.ajax({
+			url: 'index.php?route=extension/aruna/sellersync/autocomplete&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+                                                group_id: item['group_id'],
+						label: item['name'],
+						total_products: item['total_products']
+					};
+				}));
+			}
+		});
+               
+	},
+	select: function(item) {
+		$('input[name=\'filter_name\']').val(item['label']);
+                
+                var url = 'index.php?route=extension/aruna/sellersync';
 
+                var filter_name = $('input[name=\'filter_name\']').val();
+
+                if (filter_name) {
+                        url += '&filter_name=' + encodeURIComponent(filter_name);
+                }
+                
+                location = url;
+                }
+});
 </script>
 {{ footer }}
