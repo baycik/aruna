@@ -121,7 +121,7 @@ class ModelExtensionArunaParse extends Model {
     }
     
     private function groupEntriesByCategories ($sync_id){
-        if(!isset($sync_id)){
+        if( !isset($sync_id) ){
             return;
         }
         $presql = "
@@ -142,7 +142,6 @@ class ModelExtensionArunaParse extends Model {
             ON DUPLICATE KEY UPDATE  total_products = tp
             ";
         $this->db->query($sql);
-        print_r($this->db->query($sql));
         $clear_empty="
             DELETE FROM 
                 " . DB_PREFIX . "baycik_sync_groups 

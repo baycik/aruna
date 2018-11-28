@@ -40,9 +40,9 @@ class ModelExtensionArunaSetup extends Model {
 	    $limit = "LIMIT {$filter_data['start']} , {$filter_data['limit']}";
 	}
 	/*
-	if(isset($filter_data['seller_id'])){
+	  if(isset($filter_data['seller_id'])){
 	  $where .= " AND seller_id =  '{$filter_data['seller_id']}'";
-	} */
+	  } */
 	$sql = "
                 SELECT * FROM 
                     " . DB_PREFIX . "baycik_sync_groups
@@ -53,19 +53,33 @@ class ModelExtensionArunaSetup extends Model {
 	$rows = $this->db->query($sql);
 	return $rows->rows;
     }
-    public function getCategoriesTotal ($filter_data){
-        $where = "WHERE sync_id = '{$filter_data['sync_id']}'";
-        if (isset($filter_data['filter_name'])) {
+
+    public function getCategoriesTotal($filter_data) {
+	$where = "WHERE sync_id = '{$filter_data['sync_id']}'";
+	if ( isset($filter_data['filter_name']) ) {
 	    $where .= " AND category_path LIKE '%{$filter_data['filter_name']}%'";
 	}
-
-        $sql = "
-            SELECT COUNT(*) AS num FROM 
+	$sql = "SELECT 
+		COUNT(*) AS num 
+	    FROM 
                " . DB_PREFIX . "baycik_sync_groups  
             $where
             ";
-        $row = $this->db->query($sql);
-        return $row->row['num'];        
+	$row = $this->db->query($sql);
+	return $row->row['num'];
+    }
+    
+    public function saveCategoryPrefs ($data, $sync_id){
+        $sql = "
+            UPDATE 
+             " . DB_PREFIX . "baycik_sync_groups
+            SET
+                comission = ". (int) $data['category_comission']. ",
+                destination_category_id = ". (int) $data['destination_category_id']. " 
+                    
+            WHERE group_id = ". (int) $data['group_id']. " AND sync_id = '$sync_id'     
+            ";
+        return $this->db->query($sql);
     }
 
 }

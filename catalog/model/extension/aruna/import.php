@@ -34,18 +34,6 @@ class ModelExtensionArunaImport extends Model {
 	]
     ];
 
-    public function saveCategoryPrefs ($data, $sync_id){
-        $sql = "
-            UPDATE 
-             " . DB_PREFIX . "baycik_sync_groups
-            SET
-                comission = ". (int) $data['category_comission']. ",
-                destination_category_id = ". (int) $data['destination_category_id']. " 
-                    
-            WHERE group_id = ". (int) $data['group_id']. " AND sync_id = '$sync_id'     
-            ";
-        return $this->db->query($sql);
-    }
     
     public function getImportList($sync_id) {
         $sql="
@@ -53,7 +41,7 @@ class ModelExtensionArunaImport extends Model {
                 category_lvl1,
                 category_lvl2,
                 category_lvl3,
-                comission,
+                (comission+100)/100 comission,
                 destination_category_id
             FROM
                " . DB_PREFIX . "baycik_sync_groups

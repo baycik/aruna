@@ -37,7 +37,7 @@ class ControllerExtensionArunaSellerParserList extends Controller {
 
 	$data['breadcrumbs'][] = array(
 	    'text' => $this->language->get('heading_title'),
-	    'href' => $this->url->link('extension/aruna/sellersync', $url, true)
+	    'href' => $this->url->link('extension/aruna/sellerparserlist', $url, true)
 	);
         
 	$data['heading_title'] = $this->language->get('heading_title');
