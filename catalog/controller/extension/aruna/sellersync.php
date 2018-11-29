@@ -14,30 +14,39 @@ class ControllerExtensionArunaSellersync extends Controller {
 	if (!isset($store_detail['store_status'])) {
 	    $this->response->redirect($this->url->link('account/account', '', true));
 	}
-	$this->load->language('baycik/sellersync');
+	$this->load->language('aruna/sellersync');
 
-	$this->document->setTitle($this->language->get('heading_title'));
+	$this->document->setTitle($this->language->get('heading_title_sellersync'));
 
 	$url = '';
 	$this->load->model('extension/aruna/parse');
+        
         if (isset($this->request->get['filter_name'])) {
 	    $url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 	}
 
-	if (isset($this->request->get['page'])) {
-	    $url .= '&page=' . $this->request->get['page'];
-	}
+        
 	$data = [];
 	$data['breadcrumbs'] = array();
 	$data['breadcrumbs'][] = array(
 	    'text' => $this->language->get('text_home'),
 	    'href' => $this->url->link('common/home', '', true)
 	);
+        
+        $data['breadcrumbs'][] = array(
+            'text' => $this->language->get('heading_title_dashboard'),
+            'href' => $this->url->link('extension/account/purpletree_multivendor/dashboardicons', $url, true)
+        );    
+        
 	$data['breadcrumbs'][] = array(
-	    'text' => $this->language->get('heading_title'),
+	    'text' => $this->language->get('heading_title_sellerparser'),
+	    'href' => $this->url->link('extension/aruna/sellerparserlist', $url, true)
+	);
+        
+        $data['breadcrumbs'][] = array(
+	    'text' => $this->language->get('heading_title_sellersync'),
 	    'href' => $this->url->link('extension/aruna/sellersync', $url, true)
 	);
-
 
 	if (isset($this->request->get['sort'])) {
 	    $sort = $this->request->get['sort'];
@@ -62,10 +71,12 @@ class ControllerExtensionArunaSellersync extends Controller {
 	} else {
 	    $page = 1;
 	}
+	    //$url .= '&page=' . $page;
+	
 	$data['back'] = $this->url->link('extension/aruna/sellersync', '', true);
 	$data['sort'] = $sort;
 	$data['order'] = $order;
-	$data['heading_title'] = $this->language->get('heading_title');
+	$data['heading_title'] = $this->language->get('heading_title_sellersync');
 	$data['column_left'] = $this->load->controller('common/column_left');
 	$data['column_right'] = $this->load->controller('common/column_right');
 	$data['content_top'] = $this->load->controller('common/content_top');
@@ -84,7 +95,8 @@ class ControllerExtensionArunaSellersync extends Controller {
 	];
 	$this->load->model('extension/aruna/setup');
 	$data['categories_total'] = $categories_total = $this->model_extension_aruna_setup->getCategoriesTotal($filter_data);
-	$data['categories'] = $categories = $this->model_extension_aruna_setup->check_get_cat_list($filter_data);
+	$data['categories'] = $categories = $this->model_extension_aruna_setup->getCategoryList($filter_data);
+        
 	$data['destination_categories'] = $this->getDestCategories();
 	$data['filter_name'] = $filter_name;
 

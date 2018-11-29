@@ -27,61 +27,50 @@
     {% else %}
     {% set class = 'pts-col-sm-12' %}
     {% endif %}
-    <div id="pts-content" class="{{ class }}">{{ content_top }}
-	<div class="pts-pull-right">
-      </div>
-      <h1>{{ heading_title }}</h1>
-      <button type="submit" id="button-import" class="btn btn-primary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> Импортировать </button>  
-      <div class="pts-panel-body">
-          
-        <div class="pts-well">
-          <div class="pts-row">
-            <div class="pts-col-sm-6">
-              <div class="pts-form-group ptsnewcss">
-                  <form method="get" action="index.php">  
-                    <label class="pts-control-label" for="input-name">Название категории</label>
-                    <input type="text" name="filter_name" value="{{ filter_name }}" placeholder="Поиск"/>
-                    <input type="hidden" name="route" 
-                           value="extension/aruna/sellersync"/>
-                    <button class="pts-btn pts-btn-primary pts-pull-right" ><i class="fa fa-search"></i>Поиск</button>
-                  </form>
-              </div>
-            </div> 
-          </div>
-        </div>
-            
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <button type="submit" id="button-import" class="btn btn-primary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> {{button_import}}</button>  
+
+        <div class="form-group>"   
+               
+                <div class="input-group mb-10" >
+                    <form method="get" action="index.php" style="display: flex; margin-bottom: 10px; margin-top: 10px; border: 2px solid lightgray;">  
+                        <input type="text" class="form-control" name="filter_name" value="{{ filter_name }}" placeholder="{{text_input_category}}" style="background-color:white"/>
+                        <input type="hidden" name="route" 
+                               value="extension/aruna/sellersync"/>
+                        <div class="input-group-append" >
+                          <button class="btn btn-outline-secondary" style="border-radius:0px" ><i class="fa fa-search"></i></button>
+                        </div>
+                     </form>
+                </div>           
         <form action="" method="post" enctype="multipart/form-data" id="form-import">
-                <div class="pts-form-group">
-                    <label class="pts-control-label" for="input-quantity">Комиссия по умолчанию</label>
-                <input type="text" name="filter_quantity" value="{{ filter_quantity }}" placeholder="Укажите Вашу комиссию" id="input-quantity" class="pts-form-control" />
-                </div> 
-          <div class="pts-table-responsive">
-            <table class="pts-table pts-table-bordered pts-table-hover">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
               <thead>
                 <tr>
-                  <td style="width: 1px;" class="pts-text-center" colspan="3"  >Название категории</td>
-                  <td style="width: 1px;" class="pts-text-left"> Всего товаров </td>
-                  <td class="pts-text-left"> Комиссия </td>
-                  <td class="pts-text-left"> Конечная папка </td>
+                  <td style="width: 1px;" class="text-center" colspan="3">{{text_category_name}}</td>
+                  <td style="width: 1px;" class="text-left">{{text_total_products}}</td>
+                  <td class="text-left">{{text_comission}}</td>
+                  <td class="text-left">{{text_dest_cat}}</td>
                 </tr>
               </thead>
               <tbody>
-				{% if categories %}
-					{% for category in categories %}
+        {% if categories %}
+                {% for category in categories %}
                 <tr class="x-form-row">
-                  <td class="pts-text-left">{{ category.category_lvl1 }}</td>
-                  <td class="pts-text-left">{{ category.category_lvl2 }}</td>
+                  <td class="text-left">{{ category.category_lvl1 }}</td>
+                  <td class="text-left">{{ category.category_lvl2 }}</td>
                       
-                  <td class="pts-text-left">{{ category.category_lvl3 }}</td>
-                  <td class="pts-text-left">{{ category.total_products }}</td>
-                  <td class="pts-text-left">
-                        <input type="text" name="category_comission" value="{{ category_comission }}" placeholder="%" id="input-quantity" class="pts-form-control" />
+                  <td class="text-left">{{ category.category_lvl3 }}</td>
+                  <td class="text-left">{{ category.total_products }}</td>
+                  <td class="text-left">
+                        <input style="background-color: white; border: 2px solid lightgray;"  type="text" name="category_comission" value="{{ category_comission }}" placeholder="%" id="input-quantity" class="pts-form-control" />
                   </td>
-                  <td class="pts-text-left">
-                        <select name="destination_category">
-                                <option value="">Пропустить</option>
-                                {% for category in destination_categories %}
-                                        <option  value="{{ category.category_id }}" {% if link.category == category.category_id %} {{ 'selected' }} {% endif %}>{{ category.category_path }}</option>
+                  <td class="text-left">
+                        <select name="destination_category"  style="background-color: white; border: 2px solid lightgray; width: 100%">
+                                
+                                <option value="">{{text_skip}}</option>
+                                {% for allowed_category in destination_categories %}
+                                        <option  value="{{ allowed_category.category_id }}" {% if category.destination_category_id == allowed_category.category_id %} {{ 'selected' }} {% endif %}>{{ allowed_category.category_path }}</option>
                                 {% endfor %}
                         </select>
                   </td>
@@ -92,22 +81,18 @@
                 {% endfor %}
                 {% else %}
                 <tr>
-                  <td class="pts-text-center" colspan="11">{{ text_no_results }}</td>
+                  <td class="text-center" colspan="11">{{ text_no_results }}</td>
                 </tr>
                 {% endif %}
               </tbody>
             </table>
           </div>
-          <div>
-              <button type="submit" id="button-save" class="pts-btn pts-btn-primary pts-pull-right"><i class="fa fa-plus"></i> Сохранить изменения </button> 
-          </div>
         </form>
-        <div class="pts-row">
-          <div class="pts-col-sm-6 pts-text-left">{{ pagination }}</div>
-          <div class="pts-col-sm-6 pts-text-right">{{ results }}</div>
+        <div class="row">
+          <div class="col-sm-6 pts-text-left">{{ pagination }}</div>
+          <div class="col-sm-6 pts-text-right">{{ results }}</div>
             
         </div>
-      </div>
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>
@@ -115,7 +100,7 @@
 
 
 var seller_id="{{seller_id}}";
-$("#form-import").on('submit',function(e){
+$("#form-import input,#form-import select").on('change',function(e){
     e.preventDefault();
     var fvalue=[];
     $("#form-import .x-form-row").each(function(index,value){
@@ -144,4 +129,7 @@ $("#button-import").on('click',function(){
 });
 
 </script>
+<style>
+  
+</style>
 {{ footer }}

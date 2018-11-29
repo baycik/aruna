@@ -21,7 +21,7 @@ class ModelExtensionArunaSetup extends Model {
 	}
     }
 
-    public function check_get_cat_list($filter_data) {
+    public function getCategoryList($filter_data) {
 
 	$where = "WHERE sync_id = '{$filter_data['sync_id']}'";
 	$order = '';

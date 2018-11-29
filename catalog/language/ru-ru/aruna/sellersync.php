@@ -1,31 +1,35 @@
 <?php		
 // Heading		
 $_['heading_title']          	=	"Синхронизация с сайтами";
+$_['heading_title_sellerparser']=	"Синхронизация с сайтами";
+$_['heading_title_sellersync']          =	"Импорт категорий";
+$_['heading_title_dashboard']          =	"Панель продавца";
+
 		
 // Text		
 $_['text_success']           	=	"Успех: вы изменили продукты!";
 $_['text_list']              	=	"Список продуктов";
-$_['text_add']               	=	"Продукт добавлен";
-$_['text_edit']              	=	"Редактировать товар";
-$_['text_plus']              	=	"+";
+$_['text_select_parser']               	=	"Выберите сайт-источник";
+$_['text_loading_completed']            =	"Загрузка завершена!";
+$_['text_progress_descr']              	=	"Это займет не больше минуты =)...";
 $_['text_minus']             	=	"-";
 $_['text_default']           	=	"По умолчанию";
-$_['text_option']            	=	"Опция";
-$_['text_option_value']      	=	"Значение опции";
-$_['text_percent']           	=	"процент";
-$_['text_amount']            	=	"Фиксированное количество";
-$_['text_enabled']          	=	"Включено";
-$_['text_disabled']          	=	"Откл.";
+$_['text_category_name']            	=	"Название категории";
+$_['text_total_products']      	=	"Всего товаров";
+$_['text_comission']           	=	"Комиссия";
+$_['text_dest_cat']            	=	"Конечная папка";
+$_['text_input_category']          	=	"Введите название категории...";
+$_['text_skip']          	=	"Пропустить";
 $_['text_yes']          	=	"Да";
 $_['text_no']          	=	"Нет";
 $_['text_confirm']          	=	"Подтвердить *";
 $_['text_all']                      =   "Все";		
 //button		
-$_['button_add']          	=	"Добавить";
-$_['button_attribute_add']          	=	"Добавить атрибут";
-$_['button_option_value_add']          	=	"Добавить значение опций";
-$_['button_discount_add']          	=	"Добавить скидку";
-$_['button_special_add']          	=	"Добавить специальный";
+$_['button_parse']          	=	"Загрузка";
+$_['button_parsing']          	=	"Загружаем";
+$_['button_parse_completed']          	=	"Открываем результаты";
+$_['button_import']          	=	"Импорт";
+$_['button_save_prefs']          	=	"Запомнить изменения";
 $_['button_image_add']          	=	"Добавить изображение";
 $_['button_copy']          	=	"Клонирование продукта";
 $_['button_filter']			= 'фильтр';
@@ -75,7 +79,7 @@ $_['entry_length_class']     	=	"Длина";
 $_['entry_length']           	=	"Длительность";
 $_['entry_width']            	=	"Ширина";
 $_['entry_height']           	=	"Рост";
-$_['entry_image']            	=	"Образ";
+$_['entry_image']            	=	"Изображение";
 $_['entry_additional_image'] 	=	"Дополнительные изображения";
 $_['entry_customer_group']   	=	"Группа клиентов";
 $_['entry_date_start']       	=	"Дата начала";
@@ -131,7 +135,7 @@ $_['help_related']           	=	"Автодополнение";
 $_['help_tag']               	=	"Разделенные запятой";
 		
 // Error		
-$_['error_warning']          	=	"Внимание! Пожалуйста, внимательно проверьте форму на наличие ошибок!";
+$_['error_warning']          	=	"";
 $_['error_permission']       	=	"Предупреждение: у вас нет разрешения на изменение продуктов!";
 $_['error_name']             	=	"Название продукта должно быть больше 3 и менее 255 символов!";
 $_['error_meta_title']       	=	"Название мета должно быть больше 3 и меньше 255 символов!";

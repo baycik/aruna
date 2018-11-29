@@ -70,7 +70,11 @@ class ModelExtensionArunaParse extends Model {
 	    throw new \Exception('Error: Could not load model ' . $route . '!');
 	}
     }
-
+    
+    public function getParserList ($seller_id){
+        
+    }
+    
     public function parse_happywear($sync_id, $tmpfile) {
 	$presql = "
             DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id = '$sync_id'
@@ -120,6 +124,20 @@ class ModelExtensionArunaParse extends Model {
 	unlink($tmpfile);
     }
     
+    public function addSync($seller_id, $sync_source){
+        $sql = "
+            INSERT INTO " . DB_PREFIX . "baycik_sync_list
+                seller_id, sync_source,sync_comission,sync_last_improted
+            ON DUPLICATE KEY UPDATE  
+                seller_id = $seller_id,
+                sync_source = $sync_source,
+                sync_comission = '',
+                sync_last_improted = ''
+            ";
+        $this->db->query($sql);
+    }
+
+
     private function groupEntriesByCategories ($sync_id){
         if( !isset($sync_id) ){
             return;
