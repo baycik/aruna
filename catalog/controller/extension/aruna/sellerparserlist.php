@@ -19,8 +19,8 @@ class ControllerExtensionArunaSellerParserList extends Controller {
 	$this->document->setTitle($this->language->get('heading_title'));
 
 	$this->load->model('extension/aruna/parse');
-
-
+        
+  
 	$data['back'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
         
        
@@ -55,7 +55,7 @@ class ControllerExtensionArunaSellerParserList extends Controller {
 	$data['seller_id'] = $seller_id;
         $data['parser_list'] = $this->model_extension_aruna_parse->getParserList($seller_id);
         $data['parser_name'] = 'happywear.ru';
-
+        
 	$this->response->setOutput($this->load->view('extension/aruna/sellerparserlist', $data));
     }
     

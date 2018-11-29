@@ -1,0 +1,63 @@
+<!doctype html>
+<html amp lang="{{ lang }}">
+<head>
+	<meta charset="utf-8">
+	<title>{{meta_title}}</title>
+	<meta itemprop="description" content="{{meta_description}}">
+	
+	<meta property="og:title" content="{{meta_title}}">
+	<meta itemprop="image" content="{{thumb}} ">
+	<meta property="og:type" content="article">
+	<meta property="og:image" content="{{thumb}}">
+	<meta property="og:url" content="{{current}}">
+	<meta property="og:description" content="{{meta_description}}">
+	<meta property="og:site_name" content="{{name}}">
+	<meta name="mobile-web-app-capable" content="yes">
+	
+    <link rel="canonical" href="{{canonical}}" >
+    <link href="{{ favicon }}" rel="shortcut icon">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,600" rel="stylesheet" media="all" >
+	<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+	<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+	<style amp-custom>
+		{% include theme_directory~'/template/amp/css/base.twig' %}
+		{% include theme_directory~'/template/amp/css/form.twig' %}
+		{% include theme_directory~'/template/amp/css/header.twig' %}
+		{% include theme_directory~'/template/amp/css/footer.twig' %}
+		{% include theme_directory~'/template/amp/css/product.twig' %}
+		{% include theme_directory~'/template/amp/css/category.twig' %}
+		.amp-header{background-color: {{bgheader}};} 
+		a{color: {{linkColor}};}
+		.button--primary{background-color: {{bgButton}}; border-color:{{bgButton}};}
+		
+	</style>
+	
+    
+	<!-- snippet location htmlhead -->
+	<script async src="https://cdn.ampproject.org/v0.js"></script>
+    <script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script>
+    <script async custom-element="amp-sidebar" src="https://cdn.ampproject.org/v0/amp-sidebar-0.1.js"></script>
+    <script async custom-element="amp-analytics" src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"></script>
+    <script async custom-element="amp-accordion" src="https://cdn.ampproject.org/v0/amp-accordion-0.1.js"></script>
+	<script async custom-element="amp-carousel" src="https://cdn.ampproject.org/v0/amp-carousel-0.1.js"></script>
+    <script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script>
+	<script async custom-element="amp-selector" src="https://cdn.ampproject.org/v0/amp-selector-0.1.js"></script>
+	
+	{% for analytic in analytics %}
+		{{ analytic }}
+	{% endfor %}
+</head>
+<body>
+	<amp-sidebar layout="nodisplay" id="amp-menu" data-menu>
+		{% include theme_directory~'/template/amp/common/navigation-menu.twig' %}
+	</amp-sidebar>
+	
+	<header class="amp-header">
+		<button class="amp-menu-button" on="tap:amp-menu.toggle">
+			Toggle menu
+		</button>
+
+		<div class="amp-header-logo">
+			{% include theme_directory~'/template/amp/common/store-logo.twig' %}
+		</div>
+	</header>

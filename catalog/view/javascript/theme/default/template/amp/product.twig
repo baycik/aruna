@@ -1,0 +1,304 @@
+	{{header}}
+	
+	<div class="amp-wrapper" itemprop="offerDetails" itemscope itemtype="http://schema.org/Product">
+		<div class="productView">
+			
+			<div class="productView-details">
+				<h1 itemprop="name" class="productView-title">{{heading_title}}</h1>
+				
+				{% if manufacturer %}
+				<h3 class="productView-brand" itemprop="brand" itemscope="" itemtype="http://schema.org/Brand">
+					<a href="{{ manufacturers }}" itemprop="url"><span itemprop="name">{{ manufacturer }}</span></a>
+				</h3>
+				{% endif %}
+				
+				
+				{% if price %}
+				{#========= Product - Price ========= #}
+				<div class="productView-price " itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+					{% if not special %}
+						<span class="price-new">
+							<span itemprop="price" content="{{ price_value }}" id="price-old">{{ price }}</span>
+							<meta itemprop="priceCurrency" content="{{currency}}" />
+						</span>
+
+					{% else %}
+					
+						<span class="price-new">
+							<span itemprop="price" content="{{special_value}}" id="price-special">{{ special }}</span>
+							<meta itemprop="priceCurrency" content="{{currency}}" />
+						</span>
+					   <span class="price-old" id="price-old">{{ price }}</span>
+					   
+					{% endif %}
+					
+					{% if special and soconfig.get_settings('discount_status')   %} 
+					{#=======Discount Label======= #}
+					<span class="label-product label-sale">
+						 {{ discount }}
+					</span>
+					{% endif %} 
+
+					{% if tax %}
+						<div class="price-tax"><span>{{ text_tax }}</span> <span id="price-tax"> {{ tax }} </span></div>
+					{% endif %}
+				 
+				</div>
+				{% endif %}	
+				
+				{% if discounts %} 
+					<ul class="list-unstyled text-success">
+						{% if points %}
+						<li>{{ text_points }} {{ points }}</li>
+						{% endif %}
+					{% for discount in discounts %} 
+						<li><strong>{{ discount.quantity }} {{ text_discount }} {{ discount.price }}</strong> </li>
+					{% endfor %}
+					</ul>
+				{% endif %} 	
+				
+			   {% if review_status %}
+					<div class="box-review"  itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+
+					   {% if count_reviews %}
+								<meta itemprop="ratingValue" content="{{rating}}">
+								<meta itemprop="ratingCount" content="{{count_reviews}}">
+								<meta itemprop="reviewCount" content="{{count_reviews}}">
+						{% endif %}
+						<div class="rating">
+							{% for i in 1..5 %}
+								{% if rating < i %}
+									<span class="icon icon--ratingEmpty">
+										<svg xmlns="http://www.w3.org/2000/svg" width="26" height="28" viewBox="0 0 26 28"><path d="M0 10.11q0-.58.875-.72L8.72 8.25l3.515-7.11Q12.532.5 13 .5t.767.64l3.516 7.11 7.844 1.14q.875.14.875.72 0 .343-.406.75l-5.672 5.53 1.344 7.812q.016.11.016.313 0 .328-.164.555t-.477.227q-.297 0-.625-.187l-7.016-3.687-7.016 3.687q-.344.187-.625.187-.327 0-.49-.227t-.165-.555q0-.094.03-.313L6.08 16.39.392 10.86q-.39-.423-.39-.75z"/></svg>
+									</span>
+									
+								{% else %}
+									<span class="icon icon--ratingFull">
+										<svg xmlns="http://www.w3.org/2000/svg" width="26" height="28" viewBox="0 0 26 28"><path d="M0 10.11q0-.58.875-.72L8.72 8.25l3.515-7.11Q12.532.5 13 .5t.767.64l3.516 7.11 7.844 1.14q.875.14.875.72 0 .343-.406.75l-5.672 5.53 1.344 7.812q.016.11.016.313 0 .328-.164.555t-.477.227q-.297 0-.625-.187l-7.016-3.687-7.016 3.687q-.344.187-.625.187-.327 0-.49-.227t-.165-.555q0-.094.03-.313L6.08 16.39.392 10.86q-.39-.423-.39-.75z"/></svg>
+									</span>
+								{% endif %}
+							
+							{% endfor %} 
+							<p>{{ reviews }}</p> 
+					  </div>
+				  </div>
+			  {% endif %} 
+				
+				
+				<dl class="productView-info">
+					{% if manufacturer %}
+					<dt class="productView-info-name">{{ text_manufacturer }}</dt>
+					<dd class="productView-info-value" data-product-sku=""><a href="{{ manufacturers }}">{{ manufacturer }}</a></dd>
+					{% endif %}
+					
+					<dt class="productView-info-name">{{ text_model }}</dt>
+					<dd class="productView-info-value" data-product-sku="">{{ model }}</dd>
+					
+					{% if reward %}
+					<dt class="productView-info-name">{{ text_reward }}</dt>
+					<dd class="productView-info-value" data-product-sku="">{{ reward }}</dd>
+					{% endif %}
+					
+					<dt class="productView-info-name">{{ text_stock }}</dt>
+					<dd class="productView-info-value" data-product-sku="">{{ stock }}</dd>
+				</dl>
+				
+				<hr>
+			</div>
+			
+			{% if thumb or images %}
+				{% if  not thumb %}
+					<amp-img alt="{{heading_title}}" src="{{thumb}}"  layout="responsive" ></amp-img>
+				{% else %}
+					<amp-carousel 
+					width="{{mainWidth}}"
+					height="{{mainHeight}}"
+					layout="responsive"
+					autoplay
+					delay="5000"
+					type="slides">
+						<amp-img  
+						src="{{thumb}}"
+						width="{{mainWidth}}"
+						height="{{mainHeight}}"
+						layout="responsive"
+						alt="{{this.alt}}"></amp-img>
+						
+						{% for image in images %}
+						<amp-img src="{{image.popup}}"  
+						width="{{mainWidth}}"
+						height="{{mainHeight}}"
+						layout="responsive"
+						alt="{{this.alt}}"></amp-img>
+						{% endfor %}
+						
+					</amp-carousel>
+				{% endif %}
+            {% endif %}
+			
+			<div class="box-cart clearfix form-group">
+				{% if recurrings %}
+				<h3>{{ text_payment_recurring }}</h3>
+				<div class="form-group required">
+					<select name="recurring_id" class="form-control">
+					<option value="">{{ text_select }}</option>
+					{% for recurring in recurrings %}
+					<option value="{{ recurring.recurring_id }}">{{ recurring.name }}</option>
+					{% endfor %}
+					</select>
+				  <div class="help-block" id="recurring-description"></div>
+				</div>
+				{% endif %}
+			   
+			   
+				<div class="form-group box-info-product">
+					
+					<div class="detail-action">
+						{# =========button Cart ======#}
+						 <a href="{{amp_cart}}" id="button-cart"  class="button button--primary button--addtocart">
+							{{ button_cart }}
+						</a>
+						
+					</div>
+				</div>
+
+				<div class="clearfix"></div>
+				{% if minimum > 1 %}
+					<div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_minimum }}</div>
+				{% endif %}
+			</div>
+			
+			<amp-selector role="tablist" layout="container" multiple>
+				<div role="tab"class="tabButton  ampstart-nav-item" selected option="a">{{ tab_description }}</div>
+				<div role="tabpanel" class="tabContent p1 p">{{ description }}</div>
+					 
+				{% if attribute_groups %}
+				<div role="tab" class="tabButton  ampstart-nav-item" option="b">{{ tab_attribute}}</div>
+				<div role="tabpanel" class="tabContent p1 p">
+					<table class="table table-bordered">
+						{% for attribute_group in attribute_groups %}
+						<thead>
+						  <tr>
+							<td colspan="2"><strong>{{ attribute_group.name }}</strong></td>
+						  </tr>
+						</thead>
+						<tbody>
+							{% for attribute in attribute_group.attribute %}
+							<tr>
+							  <td>{{ attribute.name }}</td>
+							  <td>{{ attribute.text }}</td>
+							</tr>
+							{% endfor %}
+							
+						</tbody>
+						{% endfor %}
+					</table>
+				</div>
+				{% endif %}	
+					  
+				{% if review_status %}
+				<div role="tab" class="tabButton h4 ampstart-nav-item" option="c">{{ reviews }}</div>
+				
+				<div role="tabpanel"
+					class="tabContent p1 p">
+					{% if reviews_data %}
+						{% for review in reviews_data %}
+						<div class="review_list">
+							<div class="name_date">
+								<div class="name"><b>{{ review.author }}</b></div>
+								<div class="rating">
+									{% for i in 1..5 %}
+										{% if review.rating < i %}
+											<span class="icon icon--ratingEmpty">
+												<svg xmlns="http://www.w3.org/2000/svg" width="26" height="28" viewBox="0 0 26 28"><path d="M0 10.11q0-.58.875-.72L8.72 8.25l3.515-7.11Q12.532.5 13 .5t.767.64l3.516 7.11 7.844 1.14q.875.14.875.72 0 .343-.406.75l-5.672 5.53 1.344 7.812q.016.11.016.313 0 .328-.164.555t-.477.227q-.297 0-.625-.187l-7.016-3.687-7.016 3.687q-.344.187-.625.187-.327 0-.49-.227t-.165-.555q0-.094.03-.313L6.08 16.39.392 10.86q-.39-.423-.39-.75z"/></svg>
+											</span>
+											
+										{% else %}
+											<span class="icon icon--ratingFull">
+												<svg xmlns="http://www.w3.org/2000/svg" width="26" height="28" viewBox="0 0 26 28"><path d="M0 10.11q0-.58.875-.72L8.72 8.25l3.515-7.11Q12.532.5 13 .5t.767.64l3.516 7.11 7.844 1.14q.875.14.875.72 0 .343-.406.75l-5.672 5.53 1.344 7.812q.016.11.016.313 0 .328-.164.555t-.477.227q-.297 0-.625-.187l-7.016-3.687-7.016 3.687q-.344.187-.625.187-.327 0-.49-.227t-.165-.555q0-.094.03-.313L6.08 16.39.392 10.86q-.39-.423-.39-.75z"/></svg>
+											</span>
+										{% endif %}
+										
+									{% endfor %} 
+									
+								</div>
+								<div class="date">{{ review.date_added }}</div>
+							</div>
+							<p class="comment">
+								
+								{{ review.text }}
+							</p>
+						</div>
+						{% endfor %}
+					{% else %}
+					<p>{{ text_no_reviews }}</p>
+					{% endif %}	
+				</div>
+				{% endif %}	
+			</amp-selector>
+			
+			{% if products and relatedProduct %}
+            <div class="related-products">
+                <h3>{{ text_related }}</h3>
+                <div class="panel-body" id="related-products">
+					<amp-carousel 
+					width="{{mainWidth}}"
+					height="350"
+					layout="responsive"
+					
+					delay="5000"
+					type="slides">
+						
+						{% for product in products %}
+						<div class="image">
+						<amp-img src="{{product.thumb}}"  
+						width="{{mainWidth}}"
+						height="{{mainHeight}}"
+						layout="responsive"
+						alt="{{product.name}}"></amp-img>
+							<h5 ><a href="{{ product.href }}">{{ product.name }}</a></h5>
+							
+							<div class="rating">
+							{% for i in 1..5 %}
+								{% if rating < i %}
+									<span class="icon icon--ratingEmpty">
+										<svg xmlns="http://www.w3.org/2000/svg" width="26" height="28" viewBox="0 0 26 28"><path d="M0 10.11q0-.58.875-.72L8.72 8.25l3.515-7.11Q12.532.5 13 .5t.767.64l3.516 7.11 7.844 1.14q.875.14.875.72 0 .343-.406.75l-5.672 5.53 1.344 7.812q.016.11.016.313 0 .328-.164.555t-.477.227q-.297 0-.625-.187l-7.016-3.687-7.016 3.687q-.344.187-.625.187-.327 0-.49-.227t-.165-.555q0-.094.03-.313L6.08 16.39.392 10.86q-.39-.423-.39-.75z"/></svg>
+									</span>
+									
+								{% else %}
+									<span class="icon icon--ratingFull">
+										<svg xmlns="http://www.w3.org/2000/svg" width="26" height="28" viewBox="0 0 26 28"><path d="M0 10.11q0-.58.875-.72L8.72 8.25l3.515-7.11Q12.532.5 13 .5t.767.64l3.516 7.11 7.844 1.14q.875.14.875.72 0 .343-.406.75l-5.672 5.53 1.344 7.812q.016.11.016.313 0 .328-.164.555t-.477.227q-.297 0-.625-.187l-7.016-3.687-7.016 3.687q-.344.187-.625.187-.327 0-.49-.227t-.165-.555q0-.094.03-.313L6.08 16.39.392 10.86q-.39-.423-.39-.75z"/></svg>
+									</span>
+								{% endif %}
+							
+							{% endfor %} 
+							</div>
+						  
+						  
+							{% if product.price %}
+							<p class="productView-price">
+								{% if not product.special %}
+									<span class="price-new">{{ product.price }} </span>
+								{% else %} <span class="price-new">{{ product.special }}</span> <span class="price-old">{{ product.price }}</span> {% endif %}
+							</p>
+							  {% endif %} 
+						</div>
+						{% endfor %}
+						
+					</amp-carousel>
+					
+                  
+                  
+                </div>
+            </div>
+            <div class="clearfix"></div>
+           {% endif %}	
+			
+		</div>
+		
+		
+		
+	</div>
+	
+	{{footer}}
+	
