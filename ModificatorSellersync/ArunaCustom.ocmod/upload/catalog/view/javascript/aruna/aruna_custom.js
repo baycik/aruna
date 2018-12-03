@@ -1,7 +1,7 @@
 if ( localStorage.getItem("disableSW")!=1 && ('serviceWorker' in navigator) ) {
-    navigator.serviceWorker.register('catalog/view/javascript/aruna/sw.js', {scope: './'})
+    navigator.serviceWorker.register('?route=service_worker', {scope: './'})
     .then(function(reg) {
-	console.log('serviceWorker Registration succeeded. Scope is ' + reg.scope);
+	//console.log('serviceWorker Registration succeeded. Scope is ' + reg.scope);
     }).catch(function(error) {
 	console.log('serviceWorker Registration failed with ' + error);
     });

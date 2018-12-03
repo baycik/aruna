@@ -1,5 +1,5 @@
 this.addEventListener('install', function (event) {
-    console.log('Hello new version');
+    console.log('Aruna SW installed!!!');
 });
 
 this.addEventListener('message', function(event){
