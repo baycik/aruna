@@ -19,34 +19,35 @@ function postClientMessage( msg ){
 }
 this.addEventListener('fetch', function (event) {
     event.respondWith(
-	caches.match(event.request).then(function (resp) {
-	    if (resp) {//use cached version
-		return resp;
+	caches.match(event.request).then(function (cached_response) {
+	    var final_response=new Response('');
+	    if (cached_response) {//use cached version
+		final_response=cached_response;
 	    } else {
-		return fetch(event.request).then(function (response) {
+		fetch(event.request).then(function (response) {
 		    if( response.status!=200 ){
 			postClientMessage( {
 			    url: event.request.url,
 			    status: response.status
 			});
 		    } else 
-		    if ( /.jpg|.jpeg|.png|.gif|.css|.js|/.test(event.request.url) ) {
+		    if ( /[\w-_]+(.jpg|.jpeg|.png|.gif|.css|.js)/.test(event.request.url) ) {
 			var resp2 = response.clone();
 			caches.open('arunaCache').then(function (cache) {
 			    console.log(" saved to arunaCache: " + event.request.url);
 			    cache.put(event.request, resp2);
 			});
 		    }
-		    return response;
+		    final_response=response;
 		}).catch(function (e) {
 		    postClientMessage( {
 			url: event.request.url,
 			status: 408
 		    });
-		    console.log('arunaCache-error',e);
-		    return new Response('');
+		    //console.log('arunaCache-error',e);
 		});
 	    }
+	    return final_response;
 	})
     );
 });
