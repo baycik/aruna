@@ -12,6 +12,12 @@
 			]]></add>
 	</operation>
     </file>
+    <file path="catalog/model/tool/image.php">
+	<operation error="skip"> 
+	    <search><![CDATA[return;]]></search>
+	    <add offset="0" position="replace"><![CDATA[return $filename;]]></add>
+	</operation>
+    </file>
     <file path="catalog/view/theme/*/template/product/product.twig">
 	<operation error="skip">
 	    <search><![CDATA[ {% for attribute in attribute_group.attribute %} <li class="property-item">
