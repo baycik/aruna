@@ -1,6 +1,6 @@
 <?php		
 // Heading		
-$_['heading_title']       	=	"Панель управления";
+$_['heading_title']       	=	"Панель продавца";
 		
 // Text		
 		
@@ -55,11 +55,14 @@ $_['text_tracking']       	=	"Пользовательский код отсле
 $_['module_purpletree_multivendor_commission_status_warning']			 = "Предупреждение: расчеты могут быть неверными. Обратитесь к администратору, чтобы установить статус расчета комиссии с помощью параметров многопользовательского режима Purpletree!";
 
 //Dashboard icons
+$_['heading_title1']       = 'Панель продавца';
 $_['text_Seller_Account'] = 'Настройки';
 $_['text_Manage_Downloads'] = 'Управление загрузками';
 $_['text_reviews'] = 'Отзывы клиентов';
+$_['text_Seller_reviews'] = 'Отзывы клиентов';
 $_['text_Customer_Enquiries'] = 'Запросы клиентов';
 $_['text_Manage_products'] = 'Управление товарами';
+$_['text_SellerParserList'] = 'Синхронизация';
 $_['text_Bulk_product_upload'] = 'Загрузка массового продукта';
 $_['text_Orders'] = 'История заказов';
 $_['text_Seller_Store'] = 'О магазине';

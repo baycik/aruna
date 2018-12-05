@@ -112,3 +112,32 @@ BODY BACKGROUND COLORS
 .product-item-container .right-block{
   background-color: white !important; 
 }
+
+.so-categories.module{
+      background-color: white; 
+}
+.so-categories.module .modtitle{
+      background-color: white !important;
+      
+}
+
+/*==========================
+DASHBOARD
+============================*/
+.dashboard--top h2{
+    margin-bottom: 50px !important;
+    margin-left: 41%;
+    font-size: 24px !important;
+}
+.dashboard--top .boxicon--default{
+    border-radius: 0px!important;
+}
+.dashboard--top .boxicon--default:hover{
+    transform: translateY(0px) !important;
+   box-shadow: 0 1px 5px 0 rgba(50, 50, 50, 0.25), 0 0px 0px 1px rgba(50, 50, 50, 0.03),  0px -3px 0px #5ba2e4 inset !important;
+    color: #5ba2e4;
+    
+}
+.row #content .dashboard--main{
+    background-color: rgb(250, 250, 250) !important;
+}
