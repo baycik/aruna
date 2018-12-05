@@ -1,10 +1,10 @@
 <?php		
 // Heading		
-$_['heading_title']          	=	"Продукты продавца";
+$_['heading_title']          	=	"Товары продавца";
 		
 // Text		
-$_['text_success']           	=	"Успех: вы изменили продукты!";
-$_['text_list']              	=	"Список продуктов";
+$_['text_success']           	=	"Товары изменены!";
+$_['text_list']              	=	"Список товаров";
 $_['text_add']               	=	"Добавить товар";
 $_['text_edit']              	=	"Редактировать товар";
 $_['text_plus']              	=	"+";
@@ -12,17 +12,17 @@ $_['text_minus']             	=	"-";
 $_['text_default']           	=	"По умолчанию";
 $_['text_option']            	=	"Опция";
 $_['text_option_value']      	=	"Значение опции";
-$_['text_percent']           	=	"процент";
+$_['text_percent']           	=	"Процент";
 $_['text_amount']            	=	"Фиксированное количество";
 $_['text_yes']          	=	"Да";
 $_['text_no']          	=	"Нет";
 $_['text_no_results']	= 'Безрезультатно';
 $_['text_all']                      =   "Все";		
 // Column		
-$_['column_name']            	=	"Название продукция а";
-$_['column_seller_name']     	=	"Название продавца";
-$_['column_model']           	=	"Model";
-$_['column_image']           	=	"Образ";
+$_['column_name']            	=	"Название";
+$_['column_seller_name']     	=	"Продавец";
+$_['column_model']           	=	"Код";
+$_['column_image']           	=	"Фото";
 $_['column_price']           	=	"Цена";
 $_['column_quantity']        	=	"Количество";
 $_['column_status']          	=	"Статус";
@@ -30,18 +30,18 @@ $_['column_action']          	=	"Действие";
 $_['column_approved']          	=	"Одобрено";
 		
 $_['button_approve']			=	"Одобрить";
-$_['button_unassign']			=	"«Отменить передачу»";
-$_['button_filter']			= 'фильтр';
+$_['button_unassign']			=	"«Отменить»";
+$_['button_filter']			= 'Фильтр';
 		
 		
 // Entry		
-$_['entry_name']             	=	"Название продукция а";
+$_['entry_name']             	=	"Название";
 $_['entry_description']      	=	"Описание";
 $_['entry_meta_title'] 	     	=	"Название метатега";
-$_['entry_meta_keyword'] 	 	=	"Мета-тег Ключевые слова";
-$_['entry_meta_description'] 	=	"Описание Meta Tag";
+$_['entry_meta_keyword'] 	 	=	"Мета-тег";
+$_['entry_meta_description'] 	=	"Мета-описание";
 $_['entry_keyword']          	=	"URL SEO";
-$_['entry_model']            	=	"Model";
+$_['entry_model']            	=	"Код";
 $_['entry_sku']              	=	"Код";
 $_['entry_upc']              	=	"СКП";
 $_['entry_ean']              	=	"EAN";
@@ -99,8 +99,8 @@ $_['help_ean']               	=	"Европейский номер статьи"
 $_['help_jan']               	=	"Японский номер артикула";
 $_['help_isbn']              	=	"Международный стандартный номер книги (ISBN): 0-486-44971-8";
 $_['help_mpn']               	=	"Номер изготовителя";
-$_['help_manufacturer']      	=	"Автодополнение";
-$_['help_minimum']           	=	"Настроить минимальное количество заказа";
+$_['help_manufacturer']      	=	"Производитель";
+$_['help_minimum']           	=	"Настроить минимальное количество в заказе";
 $_['help_stock_status']      	=	"Состояние отображается, когда товар отсутствует.";
 $_['help_points']            	=	"Количество пунктов, необходимых для покупки этого предмета. Если вы не хотите, чтобы этот продукт был куплен с оговорками, отправьте 0.";
 $_['help_category']          	=	"Автодополнение";

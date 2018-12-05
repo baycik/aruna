@@ -1,16 +1,16 @@
 <?php		
 // Heading		
-$_['heading_title']              	=	"мои заказы";
+$_['heading_title']              	=	"История заказов";
 		
 // Text		
-$_['text_success']               	=	"Успех: вы изменили порядок!";
+$_['text_success']               	=	"Порядок сортировки изменен!";
 $_['text_list']                  	=	"Список заказов";
 $_['text_add']                   	=	"Добавить заказ";
 $_['text_edit']                  	=	"Изменить заказ";
 $_['text_order_detail']          	=	"Детали заказа ";
 $_['text_customer_detail']       	=	"Информация о клиенте";
 $_['text_option']                	=	"Опции";
-$_['text_store']                 	=	"Хранение";
+$_['text_store']                 	=	"Продавец";
 $_['text_date_added']            	=	"Дата добавления";
 $_['text_payment_method']        	=	"Способ оплаты";
 $_['text_shipping_method']       	=	"способ доставки";
@@ -21,12 +21,12 @@ $_['text_telephone']             	=	"Телефон";
 $_['text_invoice']               	=	"Счет";
 $_['text_reward']                	=	"Бонусные баллы";
 $_['text_affiliate']             	=	"Партнер";
-$_['text_order']                 	=	"Заказ№ %s";
+$_['text_order']                 	=	"Заказ № %s";
 $_['text_payment_address']       	=	"Адрес оплаты";
 $_['text_shipping_address']      	=	"Адрес Доставки ";
 $_['text_comment']               	=	"Комментарий клиента";
-$_['text_history']               	=	"разделе История заказов.";
-$_['text_history_add']           	=	"Добавить историю заказов";
+$_['text_history']               	=	"История заказа";
+$_['text_history_add']           	=	"Изменение статуса заказа";
 $_['text_account_custom_field']  	=	"Пользовательские поля";
 $_['text_payment_custom_field']  	=	"Пользовательские поля платежного адреса";
 $_['text_shipping_custom_field'] 	=	"Адрес доставки Пользовательские поля";
@@ -65,16 +65,16 @@ $_['text_seller_order_status']       	=	"Этот заказ обновлен с
 $_['text_seller_update_footer']       	=	"Это системная электронная почта. Пожалуйста, не отвечайте на него.";
 		
 // Column		
-$_['column_order_id']            	=	"№ Заказа";
+$_['column_order_id']            	=	"№";
 $_['column_customer']            	=	"Клиент";
 $_['column_status']              	=	"Статус";
 $_['column_date_added']          	=	"Дата добавления";
 $_['column_date_modified']       	=	"Дата изменена";
-$_['column_total']               	=	"Вс";
-$_['column_product']             	=	"Товар";
-$_['column_model']               	=	"Model";
+$_['column_total']               	=	"Сумма";
+$_['column_product']             	=	"Название";
+$_['column_model']               	=	"Код";
 $_['column_quantity']            	=	"Количество";
-$_['column_price']               	=	"Цена за ед.";
+$_['column_price']               	=	"Цена";
 $_['column_comment']             	=	"Комментарий";
 $_['column_notify']              	=	"Уведомление клиента";
 $_['column_location']            	=	"Расположение";
@@ -113,7 +113,7 @@ $_['entry_message']              	=	"Сообщение";
 $_['entry_amount']               	=	"Сумма";
 $_['entry_affiliate']            	=	"Партнер";
 $_['entry_notify']               	=	"Уведомить клиента";
-$_['entry_override']             	=	"@Override";
+$_['entry_override']             	=	"Добавить к администраторам";
 $_['entry_comment']              	=	"Комментарий";
 $_['entry_currency']             	=	"Валюта";
 $_['entry_shipping_method']      	=	"способ доставки";
@@ -122,33 +122,33 @@ $_['entry_coupon']               	=	"Купон";
 $_['entry_voucher']              	=	"Ваучер";
 $_['entry_reward']               	=	"Вознаграждение";
 $_['entry_order_id']             	=	"№ Заказа";
-$_['entry_total']                	=	"Вс";
+$_['entry_total']                	=	"Стоимость";
 $_['entry_date_added']           	=	"Дата добавления";
-$_['entry_date_modified']        	=	"Дата изменена";
-$_['entry_date_from']              	=	"Дата, с";
-$_['entry_date_to']              	=	"Дата";
-$_['entry_order_status']            =	"Статус заказа продавца";
-$_['entry_total_sale']          	=	"Общая распродажа";
+$_['entry_date_modified']        	=	"Дата изменения";
+$_['entry_date_from']              	=	"Начало периода";
+$_['entry_date_to']              	=	"Завершение периода";
+$_['entry_order_status']            =	"Ваш статус заказа";
+$_['entry_total_sale']          	=	"Сумма всех заказов";
 $_['entry_total_pay']          	=	"Общая сумма подлежащей оплате";
-$_['entry_total_commission']          	=	"Общая комиссия";
+$_['entry_total_commission']          	=	"Сумма всех комиссий";
 		
 //tab		
 		
 $_['tab_history']					=	"История";
-$_['button_history_add']					=	"Добавить историю";
+$_['button_history_add']					=	"Изменить статус";
 $_['button_invoice_print']					=	"Печать счета";
 $_['button_shipping_print']					=	"Версия для печати";
 $_['button_filter']					=	"Фильтр";
 		
 // Help		
-$_['help_override']              	=	"Если заказ клиента заблокирован, чтобы изменить статус заказа из-за отмены переопределения расширения анти-мошенничества.";
+$_['help_override']              	=	"Для соблюдения порядка Ваш статус заказа станет виден для администрации";
 		
 // Error		
 $_['error_warning']              	=	"Внимание! Пожалуйста, внимательно проверьте форму на наличие ошибок!";
-$_['error_permission']           	=	"Внимание: у вас нет разрешения на изменение заказов!";
+$_['error_permission']           	=	"Внимание: у вас нет разрешения для изменения заказов!";
 $_['error_action']               	=	"Предупреждение: не удалось выполнить это действие!";
-$_['error_filetype']			 	=	"(Неверный тип файла) ";
+$_['error_filetype']			 	=	"(Неверный тип файла)";
 $_['column_admin_status']              = "Статус администратора";
 $_['entry_admin_order_status']         = "Статус заказа администратора";
-$_['for_completed_orders']       = "для завершенных заказов";
-$_['module_purpletree_multivendor_commission_status_warning']			 = "Предупреждение: расчеты могут быть неверными. Обратитесь к администратору, чтобы установить статус расчета комиссии с помощью параметров многопользовательского режима Purpletree!";
+$_['for_completed_orders']       = "Для завершенных заказов";
+$_['module_purpletree_multivendor_commission_status_warning']			 = "Предупреждение: расчеты могут не совпадать. Обратитесь к администратору, чтобы установить статус расчета комиссии с помощью параметров многопользовательского режима!";

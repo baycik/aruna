@@ -15,7 +15,7 @@ $_['text_product']            = 'Товар:';
 $_['text_quantity']           = 'Количество:';
 $_['text_description']        = 'Описание';
 $_['text_reference']          = 'Связь';
-$_['text_transaction']        = 'Транзакции';
+$_['text_transaction']        = 'Платежи';
 
 
 $_['text_status_1']           = 'Активен';

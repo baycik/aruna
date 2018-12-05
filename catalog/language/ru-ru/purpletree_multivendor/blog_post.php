@@ -1,7 +1,7 @@
 <?php
 // Text
 $_['text_error'] = 'Страница сообщения блога не найдена!';
-$_['text_blog_heading'] = 'Блоги';
+$_['text_blog_heading'] = 'Блог';
 $_['text_comment_heading'] = 'Комментарии';
 $_['text_comment_empty'] = 'Без комментариев';
 $_['text_comment_reply'] = 'Оставьте ответ';

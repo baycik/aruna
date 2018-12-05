@@ -3,7 +3,7 @@ $_['heading_title']			=	"Платежи";
 		
 //text		
 $_['text_payment']			=	"Платежи";
-$_['text_trnasaction']			=	"Идентификатор транзакции";
+$_['text_trnasaction']			=	"Идентификатор Платежи";
 $_['text_amount']			=	"Сумма";
 $_['text_payment_mode']			=	"Режим оплаты";
 $_['text_status']			=	"Статус";

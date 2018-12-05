@@ -5,7 +5,7 @@ $_['heading_title']  	=	"Запросы клиентов";
 // Text		
 $_['text_success']   	=	"Ваш запрос был успешно отправлен продавцу!";
 $_['text_heading'] 	=	"Запросы клиентов";
-$_['text_empty_result'] 	=	"Запроса клиента нет.";
+$_['text_empty_result'] 	=	"Запросов пока нет";
 		
 		
 // Entry		
@@ -14,7 +14,7 @@ $_['entry_email']    	=	"Адрес электронной почты";
 $_['entry_enquiry']  	=	"Контакты";
 		
 // Email		
-$_['email_subject']  	=	"Запрос% s";
+$_['email_subject']  	=	"Запрос";
 		
 // Errors		
 $_['error_name']     	=	"Имя должно быть от 3 до 32 символов!";

@@ -95,7 +95,7 @@ $_['button_pay_offline'] = 'Оплатить офлайн';
 
 //column
 $_['column_payment_mode'] = 'Режим оплаты';
-$_['column_transaction_id'] = 'ID транзакции';
+$_['column_transaction_id'] = 'ID Платежи';
 $_['column_payment_date'] = 'Дата платежа';
 $_['column_comment'] = 'Комментарий';
 

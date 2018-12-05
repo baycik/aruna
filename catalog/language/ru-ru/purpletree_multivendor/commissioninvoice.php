@@ -42,7 +42,7 @@ $_['column_product'] = 'Продукт';
 $_['column_quantity'] = 'Quantity';    
 
 //column
-$_['column_transacton_id'] = 'ID транзакции';  
+$_['column_transacton_id'] = 'ID Платежи';  
 $_['column_amount'] = 'Количество';  
 $_['column_payment_mode'] = 'Режим оплаты';  
 $_['column_statuss'] = 'Положение дел';  
