@@ -61,16 +61,10 @@
                             </div>
                         </div>
                         <div class="but col" > 
-                            <button type="submit" class="btn btn-primary"></button>  
+                            <button type="submit" class="btn btn-primary" ></button>  
                         </div>
                     </div>    
                 </form> 
-              <div class="progress-container" style="display: none"  >
-                    <label>{{text_progress_descr}}</label><span class="progress-value">0%</span>
-                    <div class="progress">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
       </div>
       {{ content_bottom }}</div>
     {{ column_right }}</div>
@@ -81,27 +75,16 @@
     
     
 $("#form-parse").on('submit',function(e){
-    $('.progress-container').show();
+    $("#form-parse button").attr('disabled', 'true'); 
     $("#form-parse button").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parsing}}');
-    var progress = 0;
-    var timerId = setInterval(function() {
-        progress += 0.2;
-        $('.progress-value').html(Math.round(progress) + '%');
-        $('.progress-bar').width(progress + '%');
-        
-        }, 100);
     e.preventDefault();
     var parsername= $(this).find('select').val();
     $.post('index.php?route=extension/aruna/sellerparserlist/startParsing', {parsername: parsername}, function(ok){
             if(ok){
-                progress = 100;
-                setTimeout(function() {
-                    clearInterval(timerId);
-                    alert( '{{text_loading_completed}}' );
-                    $("#form-parse button").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parse_completed}}');
-                    location = 'index.php?route=extension/aruna/sellersync';
-                }, 500);
-                $('.progress-container').hide();
+                alert( '{{text_loading_completed}}' );
+                $("#form-parse button").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parse_completed}}');
+                location = 'index.php?route=extension/aruna/sellersync';
+                $("#form-parse button").attr('disabled', 'false'); 
                 return;
             }
     });

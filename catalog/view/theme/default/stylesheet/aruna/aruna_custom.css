@@ -141,3 +141,17 @@ DASHBOARD
 .row #content .dashboard--main{
     background-color: rgb(250, 250, 250) !important;
 }
+
+
+/*==========================
+SELLERSYNC
+============================*/
+.pts-row div.form-group\> form{
+    display: flex;
+    margin-bottom: 10px; 
+    margin-top: 10px; 
+    border: 2px solid lightgray;
+}
+.pts-row form input {
+    background-color: white !important;
+}

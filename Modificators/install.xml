@@ -1,0 +1,21 @@
+<modification>
+	<name><![CDATA[ArunaSellerSync]]></name>
+	<code><![CDATA[ArunaSellerSync1]]></code>
+	<version>1.0</version>
+	<author>ArunaTeam</author>
+	<file path="catalog/view/theme/default/template/account/purpletree_multivendor/dashboardicons.twig">
+		<operation error="skip">
+			<search><![CDATA[<div class="col-md-3 col-sm-6 col-xs-6" style='display:none'></div>
+                        ]]>
+                        </search>
+			<add position="replace" offset="0"><![CDATA[ 
+                            <div class="col-md-3 col-sm-6 col-xs-6">
+                                    <a class="boxicon--default" href="{{ sellerparserlist }}">
+                                        <span class="icon_cart">  <i class="fa fa-cloud-download" aria-hidden="true"></i></span>
+                                        <h4>{{ text_SellerParserList }}</h4>
+                                    </a>
+                                </div>
+			]]></add>
+		</operation>
+	</file>	
+</modification>

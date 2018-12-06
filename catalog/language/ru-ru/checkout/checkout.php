@@ -8,6 +8,7 @@ $_['text_checkout_option']							= 'Шаг %s: Способ оформления
 $_['text_checkout_account']						= 'Шаг %s: Профиль &amp; Платежная информация';
 $_['text_checkout_payment_address']			= 'Шаг %s: Платежная информация';
 $_['text_checkout_shipping_address']			= 'Шаг %s: Адрес доставки';
+$_['text_shipping_address']			= 'Адрес доставки';
 $_['text_checkout_shipping_method']			= 'Шаг %s: Способ доставки';
 $_['text_checkout_payment_method']			= 'Шаг %s: Способ оплаты';
 $_['text_checkout_confirm']							= 'Шаг 6: Подтверждение заказа';

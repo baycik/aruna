@@ -33,7 +33,7 @@ class ModelExtensionArunaImport extends Model {
 	    ]
 	]
     ];
-
+        
     
     public function getImportList($sync_id) {
         $sql="

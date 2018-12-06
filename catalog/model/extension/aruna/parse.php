@@ -80,7 +80,7 @@ class ModelExtensionArunaParse extends Model {
             DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id = '$sync_id'
             ";
 	$this->db->query($presql);
-	$sql = "
+	echo $sql = "
             LOAD DATA INFILE 
                 '$tmpfile'
             INTO TABLE 

@@ -1,7 +1,7 @@
 <?php
 
-class ControllerExtensionArunaSellerParserList extends Controller {
-
+class ControllerExtensionArunaSellerparserList extends Controller {
+    
     private $error = array();
 
     public function index() {
@@ -75,16 +75,19 @@ class ControllerExtensionArunaSellerParserList extends Controller {
     }
     
     public function syncWithHappywear() {
+
 	set_time_limit(300);
 	$sync_id = 1;
 	$tmpfile = tempnam("/tmp", "tmp_");
 	if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
-            return "Downloading failed";
+            die("Downloading failed");
         };
+        
         $this->load->model('extension/aruna/parse');
         if (!$this->model_extension_aruna_parse->parse_happywear($sync_id, addslashes($tmpfile))){
-            return "Parse Error";
+            die("Parse Error");
         };
+        die('7777');
         return 1;
     }
 

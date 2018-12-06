@@ -473,7 +473,7 @@ class ControllerExtensionModuleSofiltershopby extends Controller {
 		$theme_directory = $this->config->get('theme_default_directory');
 		$our_url = $this->registry->get('url');
 		
-
+                $this->load->model("setting/setting");
 		$data_template = array(
 			'header'  => $header,
 			'footer'  => $footer,
