@@ -14,18 +14,23 @@ class ControllerExtensionArunaSellersync extends Controller {
 	if (!isset($store_detail['store_status'])) {
 	    $this->response->redirect($this->url->link('account/account', '', true));
 	}
-	$this->load->language('aruna/sellersync');
-
-	$this->document->setTitle($this->language->get('heading_title_sellersync'));
-
+        
 	$url = '';
-	$this->load->model('extension/aruna/parse');
+        if ( isset($this->request->get['sync_id']) ) {
+	    $url .= '&sync_id=' . $this->request->get['sync_id'];
+            $sync_id=$this->request->get['sync_id'];
+	} else {
+            $this->response->setOutput('No sync selected!');
+            die();
+        }
+        
         
         if (isset($this->request->get['filter_name'])) {
 	    $url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 	}
-
         
+	$this->load->language('aruna/sellersync');
+	$this->document->setTitle($this->language->get('heading_title_sellersync'));
 	$data = [];
 	$data['breadcrumbs'] = array();
 	$data['breadcrumbs'][] = array(
@@ -71,8 +76,9 @@ class ControllerExtensionArunaSellersync extends Controller {
 	} else {
 	    $page = 1;
 	}
-	    //$url .= '&page=' . $page;
-	
+        //$url .= '&page=' . $page;
+        
+        $this->load->model('extension/aruna/parse');
 	$data['back'] = $this->url->link('extension/aruna/sellersync', '', true);
 	$data['sort'] = $sort;
 	$data['order'] = $order;
@@ -84,6 +90,7 @@ class ControllerExtensionArunaSellersync extends Controller {
 	$data['footer'] = $this->load->controller('common/footer');
 	$data['header'] = $this->load->controller('common/header');
 	$data['seller_id'] = $this->customer->getId();
+        $data['sync_id']=$sync_id;
 	$filter_data = [
 	    'filter_name' => $filter_name,
 	    'filter_model' => '',
@@ -91,7 +98,7 @@ class ControllerExtensionArunaSellersync extends Controller {
 	    'order' => $order,
 	    'start' => ($page - 1) * $this->config->get('config_limit_admin'),
 	    'limit' => $this->config->get('config_limit_admin'),
-	    'sync_id' => 1
+	    'sync_id' => $sync_id
 	];
 	$this->load->model('extension/aruna/setup');
 	$data['categories_total'] = $categories_total = $this->model_extension_aruna_setup->getCategoriesTotal($filter_data);
@@ -119,12 +126,16 @@ class ControllerExtensionArunaSellersync extends Controller {
 	"destination_category_id" => "27"
     );
 
-    public function testImport() {
-	$this->load->model('extension/aruna/import');
-	return $this->model_extension_aruna_import->importCategories(json_decode(json_encode($this->data)));
-    }
-
     public function getDestCategories() {
+	if (!$this->customer->isLogged()) {
+	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellersync', '', true);
+
+	    die('Access denied');
+	}
+	$store_detail = $this->customer->isSeller();
+	if (!isset($store_detail['store_status'])) {
+	    die('Access denied');
+	}
 	$list = $this->config->get('module_purpletree_multivendor_allow_category');
 	$new_list = [];
 	$keys = array_keys($list);
@@ -140,7 +151,17 @@ class ControllerExtensionArunaSellersync extends Controller {
     }
 
     public function saveImportPrefs() {
-	$this->load->model('extension/aruna/setup');
+	if (!$this->customer->isLogged()) {
+	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellersync', '', true);
+
+	    die('Access denied');
+	}
+	$store_detail = $this->customer->isSeller();
+	if (!isset($store_detail['store_status'])) {
+	    die('Access denied');
+	}
+        
+        $this->load->model('extension/aruna/setup');
 	$data = $this->request->post['data'];
 	$decoded_text = html_entity_decode($data);
 	$import_array = json_decode($decoded_text, true);
@@ -151,8 +172,19 @@ class ControllerExtensionArunaSellersync extends Controller {
     }
 
     public function importUserProducts() {
-	$this->load->model('extension/aruna/import');
-	$this->model_extension_aruna_import->getImportList(1);
+	if (!$this->customer->isLogged()) {
+	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellersync', '', true);
+
+	    die('Access denied');
+	}
+	$store_detail = $this->customer->isSeller();
+	if (!isset($store_detail['store_status'])) {
+	    die('Access denied');
+	}
+        
+        $sync_id=$this->request->post['sync_id'];
+        $this->load->model('extension/aruna/import');
+	$this->model_extension_aruna_import->getImportList($sync_id);
     }
 
 }

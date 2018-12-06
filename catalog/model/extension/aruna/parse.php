@@ -48,6 +48,20 @@ CREATE TABLE `oc_baycik_sync_groups` (
   UNIQUE KEY `category_path_UNIQUE` (`category_path`,`sync_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=256 DEFAULT CHARSET=utf8 COMMENT='';
 
+CREATE TABLE `oc_baycik_sync_list` (
+  `sync_id` int(11) NOT NULL AUTO_INCREMENT,
+  `seller_id` int(11) DEFAULT NULL,
+  `sync_name` varchar(45) DEFAULT NULL,
+  `sync_parser_name` varchar(45) DEFAULT NULL,
+  `sync_config` text,
+  `sync_last_started` datetime DEFAULT NULL,
+  PRIMARY KEY (`sync_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+
 ";
 
 class ModelExtensionArunaParse extends Model {
@@ -57,31 +71,35 @@ class ModelExtensionArunaParse extends Model {
 	$this->language_id = (int) $this->config->get('config_language_id');
 	$this->store_id = (int) $this->config->get('config_store_id');
     }
-
-    private function load_admin_model($route) {
-	$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $route);
-	$file = realpath(DIR_APPLICATION . '../admin/model/' . $route . '.php');
-	if (is_file($file)) {
-	    include_once($file);
-	    $modelName = str_replace('/', '', ucwords("Model/" . $route, "/"));
-	    $proxy = new $modelName($this->registry);
-	    $this->registry->set('model_' . str_replace('/', '_', (string) $route), $proxy);
-	} else {
-	    throw new \Exception('Error: Could not load model ' . $route . '!');
-	}
+    
+    public function initParser($sync_id){
+        $sync=$this->db->query("SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$sync_id'")->row;
+        if( !$sync ){
+            return false;
+        }
+        $method='parse_'.$sync['sync_parser_name'];
+        $this->$method($sync);
+        $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_last_started=NOW() WHERE sync_id='{$sync['sync_id']}'");
+        return true;
     }
     
-    public function getParserList ($seller_id){
+    public function parse_happywear($sync) {
+        set_time_limit(300);
+	$tmpfile = tempnam("/tmp", "tmp_");
+	//if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
+        //    die("Downloading failed");
+        //};
         
-    }
-    
-    public function parse_happywear($sync_id, $tmpfile) {
+        $tempnam="W:\price-list.csv";
+        
+	$sync_id = $sync['sync_id'];
+        
 	$presql = "
             DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id = '$sync_id'
             ";
 	$this->db->query($presql);
-	echo $sql = "
-            LOAD DATA INFILE 
+	$sql = "
+            LOAD DATA LOCAL INFILE 
                 '$tmpfile'
             INTO TABLE 
                 " . DB_PREFIX . "baycik_sync_entries
@@ -167,6 +185,4 @@ class ModelExtensionArunaParse extends Model {
             ";
         $this->db->query($clear_empty);
     }
-
-    
 }
