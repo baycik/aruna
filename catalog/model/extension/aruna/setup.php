@@ -8,18 +8,59 @@ class ModelExtensionArunaSetup extends Model {
 	$this->store_id = (int) $this->config->get('config_store_id');
     }
 
-    private function load_admin_model($route) {
-	$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $route);
-	$file = realpath(DIR_APPLICATION . '../admin/model/' . $route . '.php');
-	if (is_file($file)) {
-	    include_once($file);
-	    $modelName = str_replace('/', '', ucwords("Model/" . $route, "/"));
-	    $proxy = new $modelName($this->registry);
-	    $this->registry->set('model_' . str_replace('/', '_', (string) $route), $proxy);
-	} else {
-	    throw new \Exception('Error: Could not load model ' . $route . '!');
-	}
+    private $parser_registry=[
+        'happywear'=>[
+            'name'=>'Сайт одежды happywear.ru',
+            'attributes'=>[
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна'
+                ],
+                [
+                    'field'=>'attribute1',
+                    'name'=>'Цвет'
+                ],
+                [
+                    'field'=>'attribute2',
+                    'name'=>'Состав'
+                ]
+            ],
+            'options'=>[
+                [
+                    'name'=>'Размер',
+                    'option_type'=>'radio',
+                    'value_group_field'=>'option_group1',
+                    'price_group_field' => 'price_group1',
+                    'price_base_field' => 'price'
+                ]
+            ],
+            'manufacturer'=>'origin_country'
+        ]
+    ];
+
+    public function addParser($seller_id,$parser_id){
+        $parser_object=$this->parser_registry[$parser_id];
+        $parser_config= json_encode($parser_object);
+        $this->db->query("INSERT INTO " . DB_PREFIX . "baycik_sync_list SET seller_id='$seller_id', sync_parser_name='{$parser_id}', sync_name='{$parser_object['name']}',sync_config='$parser_config'");
     }
+    public function getParserList($seller_id){
+        $added_parsers=$this->getSyncList($seller_id);
+        $allowed_parsers=[];
+        foreach($this->parser_registry as $parser_id=>$available){
+            foreach($added_parsers as $added){
+                if( $added['sync_parser_name']==$parser_id ){
+                    continue 2;
+                }
+            }
+            $allowed_parsers[$parser_id]=$available;
+        }
+        return $allowed_parsers;
+    }
+    public function getSyncList ($seller_id){
+        $sql="SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE seller_id='$seller_id'";
+        return $this->db->query($sql)->rows;
+    }
+
 
     public function getCategoryList($filter_data) {
 

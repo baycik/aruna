@@ -34,6 +34,55 @@ class ModelExtensionArunaImport extends Model {
 	]
     ];
         
+    private function createNeededAttributesGroupsAndOptions($sync_id){
+        $sync_config_json=$this->db->query("SELECT sync_config FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$sync_id'");
+        $this->sync_config=json_decode($sync_config_json);
+        if( isset($this->sync_config->attributes) ){
+            $this->load_admin_model('catalog/attribute_group');
+            foreach($this->sync_config->attributes as &$attribute){
+                $row=$this->db->query("SELECT attribute_group_id FROM " . DB_PREFIX . "attribute_group_description WHERE name='{$attribute->name}'")->row;
+                if( $row && $row->attribute_group_id ){
+                    $attribute->attribute_group_id=$row->attribute_group_id;
+                } else {
+                    $data=[
+                        'sort_order'=>1,
+                        'attribute_group_description'=>[
+                            $this->language_id => [
+                                'name' => $attribute->name
+                            ]
+                        ]
+                    ];
+                    $attribute->attribute_group_id=$this->model_catalog_attribute_group->addAttributeGroup($data);
+                }
+                
+            }
+        }
+        if( isset($this->sync_config->options) ){
+            $this->load_admin_model('catalog/option');
+            foreach($this->sync_config->options as &$option){
+                $row=$this->db->query("SELECT option_id FROM `" . DB_PREFIX . "option` o LEFT JOIN " . DB_PREFIX . "option_description od ON (o.option_id = od.option_id) WHERE od.language_id = '{$this->language_id}' AND od.name='{$option->name}'")->row;
+                if( $row && $row->option_id ){
+                    $option->option_id=$row->option_id;
+                } else {
+                    $data=[
+                        'sort_order'=>1,
+                        'type'=>$option->type,
+                        'option_description'=>[
+                            $this->language_id => [
+                                'name' => $attribute->name
+                            ]
+                        ]
+                    ];
+                    $option->option_id=$this->model_catalog_option->addOption($data);
+                }
+            }
+        }
+        
+        
+        print_r($this->sync_config);
+        die();
+    }
+    
     
     public function getImportList($sync_id) {
         $sql="
@@ -51,6 +100,8 @@ class ModelExtensionArunaImport extends Model {
                 AND sync_id = '$sync_id'
             ";
         $rows = $this->db->query($sql);
+        
+        $this->createNeededAttributesGroupsAndOptions($sync_id);
         foreach ($rows->rows as $row){
             $this->importCategories($row);
         }
