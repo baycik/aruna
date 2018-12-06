@@ -86,9 +86,12 @@ class ModelExtensionArunaParse extends Model {
     public function parse_happywear($sync) {
         set_time_limit(300);
 	$tmpfile = tempnam("/tmp", "tmp_");
-	if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
-            die("Downloading failed");
-        };
+	//if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
+        //    die("Downloading failed");
+        //};
+        
+        $tempnam="W:\price-list.csv";
+        
 	$sync_id = $sync['sync_id'];
         
 	$presql = "
