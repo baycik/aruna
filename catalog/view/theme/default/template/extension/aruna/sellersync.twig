@@ -53,26 +53,26 @@
             {% set class = 'pts-col-sm-12' %}
         {% endif %}
         <div id="content" class="{{ class }}">{{ content_top }}
-            <button type="submit" id="button-import" class="btn btn-primary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> {{button_import}}</button>  
+            <button style="width:100%" type="button" id="button-import" class="btn btn-secondary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> {{button_import}}</button>  
 
-            <div class="form-group>" 
-                 <div class="input-group mb-10" >
-                    <form method="get" action="index.php">  
-                        <input type="text" class="form-control" name="filter_name" value="{{ filter_name }}" placeholder="{{text_input_category}}"/>
-                        <input type="hidden" name="route" 
-                               value="extension/aruna/sellersync"/>
-                        <div class="input-group-append" >
-                            <button class="btn btn-outline-secondary"><i class="fa fa-search"></i></button>
-                        </div>
-                    </form>
-                </div>           
+            <hr>
+            <form method="get" action="index.php"> 
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:90%"><input type="text" class="form-control" name="filter_name" value="{{ filter_name }}" placeholder="{{text_input_category}}"/></td>
+                        <td style="min-width: 90px"><button class="btn btn-primary" style="width:100%;padding: 12px;"><i class="fa fa-search"></i></button></td>
+                    </tr>
+                </table>
+                <input type="hidden" name="route" value="extension/aruna/sellersync"/>
+            </form>
+            <div class="form-group"> 
                 <form action="" method="post" enctype="multipart/form-data" id="form-import">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <td style="width: 1px;" class="text-center" colspan="3">{{text_category_name}}</td>
-                                    <td style="width: 1px;" class="text-left">{{text_total_products}}</td>
+                                    <td style="" class="text-center" colspan="3">{{text_category_name}}</td>
+                                    <td style="" class="text-left">{{text_total_products}}</td>
                                     <td class="text-left">{{text_comission}}</td>
                                     <td class="text-left">{{text_dest_cat}}</td>
                                 </tr>
@@ -80,7 +80,7 @@
                             <tbody>
                                 {% if categories %}
                                     {% for category in categories %}
-                                        <tr class="x-form-row">
+                                        <tr class="x-form-row {% if category.destination_category_id %}selected-row{% endif %}">
                                             <td class="text-left">{{ category.category_lvl1 }}</td>
                                             <td class="text-left">{{ category.category_lvl2 }}</td>
 
@@ -97,15 +97,13 @@
                                                         <option  value="{{ allowed_category.category_id }}" {% if category.destination_category_id == allowed_category.category_id %} {{ 'selected' }} {% endif %}>{{ allowed_category.category_path }}</option>
                                                     {% endfor %}
                                                 </select>
-                                            </td>
-                                            <td>
                                                 <input type="hidden" name="group_id" value="{{ category.group_id }}"/>
                                             </td>
                                         </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td class="text-center" colspan="11">{{ text_no_results }}</td>
+                                        <td class="text-center" colspan="10">{{ text_no_results }}</td>
                                     </tr>
                                 {% endif %}
                             </tbody>
@@ -121,36 +119,41 @@
             {{ column_right }}</div>
     </div>
     <script type="text/javascript">
-        var sync_id="{{sync_id}}";
+        var sync_id = "{{sync_id}}";
         var seller_id = "{{seller_id}}";
         $("#form-import input,#form-import select").on('change', function (e) {
             e.preventDefault();
-            var fvalue = [];
-            $("#form-import .x-form-row").each(function (index, value) {
-                var item = {
-                    group_id: $(this).find('input[name=group_id]').val(),
-                    category_comission: $(this).find('input[name=category_comission]').val().replace(/[^\d\.]/g, ''),
-                    destination_category_id: $(this).find('select[name=destination_category]').val()
+            var row_node=$(e.target).parent().parent();
+            var item = {
+                group_id: row_node.find('input[name=group_id]').val(),
+                category_comission: row_node.find('input[name=category_comission]').val().replace(/[^\d\.]/g, ''),
+                destination_category_id: row_node.find('select[name=destination_category]').val()
+            };
+            
+            if(item.destination_category_id>0){
+                row_node.addClass('selected-row');
+            } else {
+                row_node.removeClass('selected-row');
+            }
+            $.post('index.php?route=extension/aruna/sellersync/saveImportPrefs', {data: JSON.stringify(item)}, function (ok) {
+                if (!ok*1) {
+                    alert("Возникла ошибка сохранения");
                 };
-                fvalue.push(item);
-            });
-            $.post('index.php?route=extension/aruna/sellersync/saveImportPrefs', {data: JSON.stringify(fvalue), seller_id: seller_id}, function (ok) {
-                if (ok) {
-                    return;
-                }
-                ;
             });
         });
 
         $("#button-import").on('click', function () {
             $('#spinner_icon').show();
-            $.post('index.php?route=extension/aruna/sellersync/importUserProducts', {sync_id:sync_id}, function () {
+            $.post('index.php?route=extension/aruna/sellersync/importUserProducts', {sync_id: sync_id}, function () {
                 $('#spinner_icon').hide();
             });
         });
 
     </script>
     <style>
-
+        .selected-row{
+            background-color:#ffc
+        }
     </style>
+</div>
     {{ footer }}

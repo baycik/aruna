@@ -43,6 +43,11 @@ class ModelExtensionArunaSetup extends Model {
         $parser_config= json_encode($parser_object);
         $this->db->query("INSERT INTO " . DB_PREFIX . "baycik_sync_list SET seller_id='$seller_id', sync_parser_name='{$parser_id}', sync_name='{$parser_object['name']}',sync_config='$parser_config'");
     }
+    public function deleteParser($seller_id,$sync_id){
+        $this->db->query("DELETE FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id=".(int) $sync_id." AND seller_id=".(int)$seller_id );
+        $this->db->query("DELETE FROM " . DB_PREFIX . "baycik_sync_groups WHERE sync_id=".(int) $sync_id );
+        $this->db->query("DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id=".(int) $sync_id );
+    }
     public function getParserList($seller_id){
         $added_parsers=$this->getSyncList($seller_id);
         $allowed_parsers=[];
@@ -105,12 +110,12 @@ class ModelExtensionArunaSetup extends Model {
 	    FROM 
                " . DB_PREFIX . "baycik_sync_groups  
             $where
-            ";
+            ORDER BY category_lvl1,category_lvl2,category_lvl3";
 	$row = $this->db->query($sql);
 	return $row->row['num'];
     }
     
-    public function saveCategoryPrefs ($data, $sync_id){
+    public function saveCategoryPrefs ($data){
         $sql = "
             UPDATE 
              " . DB_PREFIX . "baycik_sync_groups
@@ -118,8 +123,7 @@ class ModelExtensionArunaSetup extends Model {
                 comission = ". (int) $data['category_comission']. ",
                 destination_category_id = ". (int) $data['destination_category_id']. " 
                     
-            WHERE group_id = ". (int) $data['group_id']. " AND sync_id = '$sync_id'     
-            ";
+            WHERE group_id = ". (int) $data['group_id'];
         return $this->db->query($sql);
     }
 

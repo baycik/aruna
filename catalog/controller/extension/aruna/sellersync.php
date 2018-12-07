@@ -153,7 +153,6 @@ class ControllerExtensionArunaSellersync extends Controller {
     public function saveImportPrefs() {
 	if (!$this->customer->isLogged()) {
 	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellersync', '', true);
-
 	    die('Access denied');
 	}
 	$store_detail = $this->customer->isSeller();
@@ -164,10 +163,11 @@ class ControllerExtensionArunaSellersync extends Controller {
         $this->load->model('extension/aruna/setup');
 	$data = $this->request->post['data'];
 	$decoded_text = html_entity_decode($data);
-	$import_array = json_decode($decoded_text, true);
-	foreach ($import_array as $item) {
-	    $this->model_extension_aruna_setup->saveCategoryPrefs($item, 1);
-	}
+	$item = json_decode($decoded_text, true);
+        $ok=$this->model_extension_aruna_setup->saveCategoryPrefs($item);
+        if( !$ok ){
+            die("Save of category failed");
+        }
 	echo 1;
     }
 
@@ -184,7 +184,8 @@ class ControllerExtensionArunaSellersync extends Controller {
         
         $sync_id=$this->request->post['sync_id'];
         $this->load->model('extension/aruna/import');
-	$this->model_extension_aruna_import->getImportList($sync_id);
+	$ok=$this->model_extension_aruna_import->importUserProducts($sync_id);
+        die($ok);
     }
 
 }

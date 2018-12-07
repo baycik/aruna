@@ -73,9 +73,8 @@
                             </div>
                         </div>
                         <div class="but col" > 
-                            <button type="submit" class="btn btn-primary" ></button>
-
-
+                            <button type="submit" class="btn btn-positive" style="width:50%">{{button_parse}}</button>
+                            <button type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
                         </div>
                     </div>    
                 </form>
@@ -85,24 +84,35 @@
 </div>
 <script type="text/javascript">
 
-    $("#form-parse button").html('{{button_parse}}');
 
+    $("#form-parse .btn-danger").click(function(){
+        if( confirm("Удалить источник из списка доступных") ){
+            var sync_id = $('#form-parse select').val();
+            $.post('index.php?route=extension/aruna/sellerparserlist/deleteparser', {sync_id: sync_id}, function (ok) {
+                location.reload();
+            });
+        }
+    });
 
+    var syncing_in_progress=false;
     $("#form-parse").on('submit', function (e) {
-        $("#form-parse button").prop('disabled', 'true');
-        $("#form-parse button").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parsing}}');
-        e.preventDefault();
         var sync_id = $(this).find('select').val();
+        if( syncing_in_progress || !sync_id ){
+            return;
+        }
+        syncing_in_progress=true;
+        $("#form-parse .btn-positive").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parsing}}');
+        e.preventDefault();
         $.post('index.php?route=extension/aruna/sellerparserlist/startParsing', {sync_id: sync_id}, function (ok) {
+            syncing_in_progress=false
             if (ok*1) {
                 alert('{{text_loading_completed}}');
-                $("#form-parse button").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parse_completed}}');
+                $("#form-parse .btn-positive").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parse_completed}}');
                 location = 'index.php?route=extension/aruna/sellersync&sync_id='+sync_id;
             } else {
-                $("#form-parse button").html('{{button_parse}}');
-                alert("error occured");
+                $("#form-parse .btn-positive").html('{{button_parse}}');
+                alert("Error occured: "+ok);
             }
-            $("#form-parse button").prop('disabled', 'false');
         });
     });
 

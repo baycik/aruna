@@ -11,6 +11,8 @@ $create_table = "CREATE TABLE `oc_baycik_sync_entries` (
   `url` varchar(512) DEFAULT NULL,
   `description` varchar(2048) DEFAULT NULL,
   `min_order_size` varchar(45) DEFAULT NULL,
+  `stock_count` varchar(45) DEFAULT NULL,
+  `stock_status` varchar(45) DEFAULT NULL,
   `manufacturer` varchar(45) DEFAULT NULL,
   `origin_country` varchar(45) DEFAULT NULL,
   `attribute1` varchar(100) DEFAULT NULL,
@@ -85,12 +87,10 @@ class ModelExtensionArunaParse extends Model {
     
     public function parse_happywear($sync) {
         set_time_limit(300);
-	$tmpfile = tempnam("/tmp", "tmp_");
-	//if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
-        //    die("Downloading failed");
-        //};
-        
-        $tempnam="W:\price-list.csv";
+	$tmpfile = '/happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
+	if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
+            die("Downloading failed");
+        };
         
 	$sync_id = $sync['sync_id'];
         
@@ -117,7 +117,9 @@ class ModelExtensionArunaParse extends Model {
                 origin_country = @col8,                     
                 url = @col10, 
                 description = @col12, 
-                min_order_size = @col15, 
+                min_order_size = @col15,
+                stock_status='7-9 дней',
+                stock_count=0,
                 attribute1 = @col5,
                 attribute2 = @col6,
                 attribute3 = '',

@@ -98,8 +98,28 @@ class ControllerExtensionArunaSellerparserList extends Controller {
             return;
         }
         $seller_id = $this->customer->getId();
-        $this->load->model('extension/aruna/parse');
-        $this->model_extension_aruna_parse->addParser($seller_id,$parser_id);
+        $this->load->model('extension/aruna/setup');
+        $this->model_extension_aruna_setup->addParser($seller_id,$parser_id);
         $this->response->redirect($this->url->link('extension/aruna/sellerparserlist', '', true));
+    }
+    public function deleteParser(){
+	if (!$this->customer->isLogged()) {
+	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
+
+	    $this->response->redirect($this->url->link('account/login', '', true));
+	}
+	$store_detail = $this->customer->isSeller();
+	if (!isset($store_detail['store_status'])) {
+	    $this->response->redirect($this->url->link('account/account', '', true));
+	}
+
+        $sync_id = $this->request->post['sync_id'];
+        if( !$sync_id ){
+            echo "No sync selected";
+            return;
+        }
+        $seller_id = $this->customer->getId();
+        $this->load->model('extension/aruna/setup');
+        $this->model_extension_aruna_setup->deleteParser($seller_id,$sync_id);
     }
 }
