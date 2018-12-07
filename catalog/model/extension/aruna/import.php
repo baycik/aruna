@@ -396,7 +396,7 @@ class ModelExtensionArunaImport extends Model {
             'status' => 1
         ];
         
-        //print_r($product);die();
+        //print_r($product);die("$category_comission-");
         
         return $product;
     }
