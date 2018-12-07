@@ -87,7 +87,7 @@ class ModelExtensionArunaParse extends Model {
     
     public function parse_happywear($sync) {
         set_time_limit(300);
-	$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
+	$tmpfile = '/happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
 	if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
             die("Downloading failed");
         };
@@ -116,12 +116,12 @@ class ModelExtensionArunaParse extends Model {
                 manufacturer = @col7,  
                 origin_country = @col8,                     
                 url = @col10, 
-                description = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@col12,'{{emoji_183}}',''),'{{emoji_6}}',''),'{{emoji_9}}',''),'{{emoji_104}}',''),'{{emoji_223}}',''),'{{emoji_55}}',''),'{{emoji_271}}',''),'{{emoji_137}}',''),'{{emoji_147}}',''),'{{emoji_40}}',''),'{{emoji_66}}',''),'{{emoji_284}}',''),'{{emoji_239}}',''),'{{emoji_77}}',''),'{{emoji_129}}',''),'{{emoji_4}}',''), 
+                description = REPLACE('{{emoji_183}}','',REPLACE('{{emoji_6}}','',REPLACE('{{emoji_9}}','',REPLACE('{{emoji_104}}','',REPLACE('{{emoji_223}}','',REPLACE('{{emoji_55}}','',REPLACE('{{emoji_271}}','',REPLACE('{{emoji_137}}','',REPLACE('{{emoji_147}}','',REPLACE('{{emoji_40}}','',REPLACE('{{emoji_66}}','',REPLACE('{{emoji_284}}','',REPLACE('{{emoji_239}}','',REPLACE('{{emoji_77}}','',REPLACE('{{emoji_129}}','',REPLACE('{{emoji_4}}','',@col2)))))))))))))))), 
                 min_order_size = @col15,
                 stock_status='7-9 дней',
                 stock_count=0,
-                attribute1 = TRIM(REPLACE(REPLACE(REPLACE(@col5,',',', '),'  ',' '),'  ',' ')),
-                attribute2 = TRIM(REPLACE(REPLACE(REPLACE(@col6,',',', '),'  ',' '),'  ',' ')),
+                attribute1 = TRIM(REPLACE('  ',' ',REPLACE('  ',' ',REPLACE(',',', ',@col5)))),
+                attribute2 = TRIM(REPLACE('  ',' ',REPLACE('  ',' ',REPLACE(',',', ',@col6)))),
                 attribute3 = '',
                 attribute4 = '',
                 attribute5 = '',
