@@ -13,7 +13,7 @@ class ModelExtensionArunaImport extends Model {
         if (!$result->row || !$result->row['sync_config']) {
             return false;
         }
-        $this->sync_config = json_decode($result->row['sync_config']);
+        $this->sync_config = json_decode($result->row['sync_config'], false, 512, JSON_UNESCAPED_UNICODE);
         if (isset($this->sync_config->attributes)) {
             $this->load_admin_model('catalog/attribute_group');
             foreach ($this->sync_config->attributes as &$attribute) {
@@ -206,7 +206,7 @@ class ModelExtensionArunaImport extends Model {
                     'option_value_id' => $this->optionsCache[$value]['option_value_id'],
                     'quantity' => '0',
                     'subtract' => '0',
-                    'price' => round(($option_prices[$i] - $price) * $category_comission, 2),
+                    'price' => round(($option_prices[$i] - $price) * $category_comission, 0),
                     'price_prefix' => '+',
                     'points' => 0,
                     'points_prefix' => '+',
@@ -223,12 +223,12 @@ class ModelExtensionArunaImport extends Model {
 
     private function composeProductOptionsObject($row, $category_comission) {
         $product_options = [];
-        if ($this->globalSyncConfig['options']) {
-            foreach ($this->globalSyncConfig['options'] as $optionConfig) {
-                $option_price = $row[$optionConfig['price_group_field']];
-                $option_value = $row[$optionConfig['value_group_field']];
-                $price = $row[$optionConfig['price_base_field']];
-                $product_options[] = $this->getProductOption($optionConfig['option_id'], $optionConfig['option_type'], $option_value, $price, $option_price, $category_comission);
+        if ($this->sync_config->options) {
+            foreach ($this->sync_config->options as $optionConfig) {
+                $option_price = $row[$optionConfig->price_group_field];
+                $option_value = $row[$optionConfig->value_group_field];
+                $price = $row[$optionConfig->price_base_field];
+                $product_options[] = $this->getProductOption($optionConfig->option_id, $optionConfig->option_type, $option_value, $price, $option_price, $category_comission);
             }
         }
         return $product_options;
@@ -299,11 +299,11 @@ class ModelExtensionArunaImport extends Model {
 
     private function composeProductAttributeObject($row) {
         $product_attribute = [];
-        if ($this->globalSyncConfig['attributes']) {
-            foreach ($this->globalSyncConfig['attributes'] as $attributeConfig) {
-                $attribute_name = $row[$attributeConfig['field']];
+        if ($this->sync_config->attributes) {
+            foreach ($this->sync_config->attributes as $attributeConfig) {
+                $attribute_name = $row[$attributeConfig->field];
                 $product_attribute[] = [
-                    'attribute_id' => $this->getProductAttributeId($attribute_name, $attributeConfig['attribute_group_id']),
+                    'attribute_id' => $this->getProductAttributeId($attribute_name, $attributeConfig->attribute_group_id),
                     'product_attribute_description' => [
                         $this->language_id => [
                             'text' => $attribute_name

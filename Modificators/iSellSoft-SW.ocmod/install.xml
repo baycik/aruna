@@ -1,16 +1,16 @@
 <modification>
-    <name><![CDATA[ArunaCustomCode]]></name>
-    <code><![CDATA[ArunaCustomCode1.0.0]]></code>
+    <name><![CDATA[iSellSoft-ServiceWorker]]></name>
+    <code><![CDATA[iSellSoft-ServiceWorker1.0.0]]></code>
     <version><![CDATA[1.0.0]]></version>
-    <author>ArunaTeam</author>
+    <author>iSellSoft Team</author>
     <file path="catalog/view/theme/*/template/common/header.twig">
 	<operation error="skip"> 
 	    <search><![CDATA[</head>]]></search>
 	    <add offset="0" position="before"><![CDATA[
-	    <script src="?route=service_worker" type="text/javascript"></script>
+	    <script src="?route=extension/service_worker" type="text/javascript"></script>
 	    <script type="text/javascript">
 		if ( localStorage.getItem("disableSW")!=1 && ('serviceWorker' in navigator) ) {
-		    navigator.serviceWorker.register('?route=service_worker', {scope: './'})
+		    navigator.serviceWorker.register('?route=extension/service_worker', {scope: './'})
 		    .then(function(reg) {
 			//console.log('serviceWorker Registration succeeded. Scope is ' + reg.scope);
 		    }).catch(function(error) {

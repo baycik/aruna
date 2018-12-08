@@ -2,7 +2,7 @@
     <name><![CDATA[ArunaCustomCode]]></name>
     <code><![CDATA[ArunaCustomCode1.0.0]]></code>
     <version><![CDATA[1.0.0]]></version>
-    <author>ArunaTeam</author>
+    <author>iSellSoft Team</author>
     <file path="catalog/view/theme/*/template/common/header.twig">
 	<operation error="skip"> 
 	    <search><![CDATA[</head>]]></search>

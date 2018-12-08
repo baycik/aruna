@@ -18,7 +18,7 @@ class ModelExtensionArunaSetup extends Model {
                 ],
                 [
                     'field'=>'attribute1',
-                    'name'=>'Цвет'
+                    'name'=>'Расцветка'
                 ],
                 [
                     'field'=>'attribute2',
@@ -40,7 +40,7 @@ class ModelExtensionArunaSetup extends Model {
 
     public function addParser($seller_id,$parser_id){
         $parser_object=$this->parser_registry[$parser_id];
-        $parser_config= json_encode($parser_object);
+        $parser_config= json_encode($parser_object, JSON_UNESCAPED_UNICODE);
         $this->db->query("INSERT INTO " . DB_PREFIX . "baycik_sync_list SET seller_id='$seller_id', sync_parser_name='{$parser_id}', sync_name='{$parser_object['name']}',sync_config='$parser_config'");
     }
     public function deleteParser($seller_id,$sync_id){

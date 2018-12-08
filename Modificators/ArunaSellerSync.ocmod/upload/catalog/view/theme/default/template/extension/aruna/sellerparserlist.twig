@@ -67,13 +67,14 @@
                                 <label>{{text_select_parser}}</label>
                                 <select class="form-control"  >
                                     {% for sync in sync_list %}
-                                        <option value="{{sync.sync_id}}">{{sync.sync_name}}</option>
+                                        <option value="{{sync.sync_id}}">{{sync.sync_name}} (Последнее скачивание: {{sync.sync_last_started}})</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                         <div class="but col" > 
-                            <button type="submit" class="btn btn-positive" style="width:50%">{{button_parse}}</button>
+                            <button type="submit" class="btn btn-positive" style="width:50%"><i class="fa fa-download"></i>{{button_parse}}</button>
+			    <button type="button" class="btn btn-secondary"><i class="fa fa-eye"></i>Открыть</button>
                             <button type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
                         </div>
                     </div>    
@@ -92,6 +93,10 @@
                 location.reload();
             });
         }
+    });
+    $("#form-parse .btn-secondary").click(function(){
+	var sync_id = $('#form-parse select').val();
+	location = 'index.php?route=extension/aruna/sellersync&sync_id='+sync_id;
     });
 
     var syncing_in_progress=false;

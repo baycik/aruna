@@ -1,6 +1,6 @@
 <?php
 
-class ControllerServiceWorker extends Controller {
+class ControllerExtensionServiceWorker extends Controller {
 
     function index() {
 	header("Content-type:application/javascript");
