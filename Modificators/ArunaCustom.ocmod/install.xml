@@ -1,37 +1,24 @@
 <modification>
-    <name><![CDATA[ArunaCustomCode]]></name>
-    <code><![CDATA[ArunaCustomCode1.0.0]]></code>
-    <version><![CDATA[1.0.0]]></version>
+    <name>ArunaCustomInjection</name>
+    <code>ArunaCustomInjection</code>
+    <version>0.9</version>
     <author>iSellSoft Team</author>
+    <file path="catalog/view/theme/*/template/product/product.twig">
+	<operation error="skip">
+	    <search><![CDATA[attribute.name]]></search>
+	    <add position="replace" offset="0"><![CDATA[attribute_group.name]]></add>
+	</operation>
+	<operation error="skip">
+	    <search><![CDATA[attribute.text]]></search>
+	    <add position="replace" offset="0"><![CDATA[attribute.name]]></add>
+	</operation>
+    </file>
     <file path="catalog/view/theme/*/template/common/header.twig">
 	<operation error="skip"> 
 	    <search><![CDATA[</head>]]></search>
 	    <add offset="0" position="before"><![CDATA[
-			<script src="catalog/view/javascript/aruna/aruna_custom.js" type="text/javascript"></script>
-			<link href="catalog/view/javascript/aruna/aruna_custom.css" rel="stylesheet">  
-			]]></add>
-	</operation>
-    </file>
-    <file path="catalog/model/tool/image.php">
-	<operation error="skip"> 
-	    <search><![CDATA[return;]]></search>
-	    <add offset="0" position="replace"><![CDATA[return $filename;]]></add>
-	</operation>
-    </file>
-    <file path="catalog/view/theme/*/template/product/product.twig">
-	<operation error="skip">
-	    <search><![CDATA[ {% for attribute in attribute_group.attribute %} <li class="property-item">
-                                    <span class="propery-title">{{ attribute.name }}</span>
-                                    <span class="propery-des">{{ attribute.text }}</span>
-                                  </li>
-                                  {% endfor %}]]>
-	    </search>
-	    <add position="replace" offset="0"><![CDATA[ {% for attribute in attribute_group.attribute %}
-                                                            <li class="property-item">
-                                                              <span class="propery-title">{{ attribute_group.name }}</span>
-                                                              <span class="propery-des">{{ attribute.name }}</span>
-                                                            </li>
-                                                            {% endfor %}
+                        <link href="catalog/view/theme/default/stylesheet/aruna/aruna_custom.css" rel="stylesheet">
+			<script src="catalog/view/javascript/aruna/aruna_custom.js" type="text/javascript"></script> 
 			]]></add>
 	</operation>
     </file>
