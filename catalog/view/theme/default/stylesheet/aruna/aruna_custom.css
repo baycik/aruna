@@ -6,6 +6,26 @@
    box-shadow: 1px 0.2px 3px lightgrey;
 }
 
+
+
+/*=============================
+        PRODUCT PAGE
+=============================*/
+
+.seller-usergroup {
+    box-shadow: 1px 1px 3px lightgray;
+    background-color: azure;
+    border-top: 5px solid orange;
+}
+.tab-content{
+    padding: 20px 20px 30px 30px !important;
+}
+.tabsslider .nav-tabs{
+    background-color: white !important;
+    border-bottom: 1px solid lightgrey !important;
+}
+
+
 /*=============================
             FILTER
 =============================*/
@@ -102,6 +122,12 @@ BODY BACKGROUND COLORS
 =========================*/
 #wrapper{
    background-color: rgb(250, 250, 250);
+}
+
+
+#pts-content .pts-well, #pts-content input, #pts-content .pts-table{
+    background-color: white;
+    border: 0.5px solid lightgray;
 }
 
 .product-layout {
