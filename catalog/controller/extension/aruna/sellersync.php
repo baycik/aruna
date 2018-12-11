@@ -17,11 +17,10 @@ class ControllerExtensionArunaSellersync extends Controller {
         
 	$url = '';
         if ( isset($this->request->get['sync_id']) ) {
-	    $url .= '&sync_id=' . $this->request->get['sync_id'];
             $sync_id=$this->request->get['sync_id'];
+	    $url .= '&sync_id=' . $this->request->get['sync_id'];
 	} else {
-            $this->response->setOutput('No sync selected!');
-            die();
+            die('No sync selected!');
         }
         
         
@@ -65,8 +64,8 @@ class ControllerExtensionArunaSellersync extends Controller {
 	    $order = 'ASC';
 	}
 
-	if (isset($this->request->get['filter_name'])) {
-	    $filter_name = $this->request->get['filter_name'];
+	if (isset($this->request->post['filter_name'])) {
+	    $filter_name = $this->request->post['filter_name'];
 	} else {
 	    $filter_name = null;
 	}
@@ -106,6 +105,8 @@ class ControllerExtensionArunaSellersync extends Controller {
         
 	$data['destination_categories'] = $this->getDestCategories();
 	$data['filter_name'] = $filter_name;
+	
+	$data['url']=$this->url->link('extension/aruna/sellersync', $url, true);
 
 	$pagination = new Pagination();
 	$pagination->total = $categories_total;
