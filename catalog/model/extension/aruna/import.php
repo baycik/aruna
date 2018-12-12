@@ -81,6 +81,12 @@ class ModelExtensionArunaImport extends Model {
         return true;
     }
 
+    public function importProductClean() {
+        
+    }
+
+    
+    
     public function importCategory($data) {
         $sql = "
             SELECT 
@@ -421,10 +427,6 @@ class ModelExtensionArunaImport extends Model {
     public function importProductUpdate($item) {
         $this->load_admin_model('catalog/product');
         return $this->model_catalog_product->editProduct($item['product_id'], $item);
-    }
-
-    public function importProductClean($data) {
-        
     }
 
     private function reorderOptions() {

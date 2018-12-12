@@ -48,7 +48,7 @@ CREATE TABLE `oc_baycik_sync_groups` (
   `destination_category_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`group_id`),
   UNIQUE KEY `category_path_UNIQUE` (`category_path`,`sync_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=256 DEFAULT CHARSET=utf8 COMMENT='';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `oc_baycik_sync_list` (
   `sync_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -140,6 +140,7 @@ class ModelExtensionArunaParse extends Model {
                 price4 = ''
             ";
 	$this->db->query($sql);
+        $this->db->query("DELETE FROM baycik_aruna.oc_baycik_sync_entries WHERE url NOT LIKE 'http%' OR price1<1");//DELETING defective entries
         $this->groupEntriesByCategories($sync_id);
 	unlink($tmpfile);
     }
