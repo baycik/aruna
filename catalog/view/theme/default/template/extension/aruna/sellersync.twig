@@ -56,14 +56,13 @@ zC<style>
             <button style="width:100%" type="button" id="button-import" class="btn btn-secondary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> {{button_import}}</button>  
 
             <hr>
-            <form method="get" action="index.php"> 
+            <form method="post" action="{{url}}"> 
                 <table style="width:100%">
                     <tr>
                         <td style="width:90%"><input type="text" class="form-control" name="filter_name" value="{{ filter_name }}" placeholder="{{text_input_category}}"/></td>
                         <td style="min-width: 90px"><button class="btn btn-primary" style="width:100%;padding: 12px;"><i class="fa fa-search"></i></button></td>
                     </tr>
                 </table>
-                <input type="hidden" name="route" value="extension/aruna/sellersync"/>
             </form>
             <div class="form-group"> 
                 <form action="" method="post" enctype="multipart/form-data" id="form-import">

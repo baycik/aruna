@@ -371,7 +371,7 @@ class ModelExtensionArunaImport extends Model {
             'minimum' => 0,
             'subtract' => '',
             'date_available' => '',
-            'price' => round($row['price'] * $category_comission, 2),
+            'price' => round($row['price'] * $category_comission, 0),
             'points' => 0,
             'weight' => 0,
             'weight_class_id' => 0,
@@ -430,12 +430,17 @@ class ModelExtensionArunaImport extends Model {
     private function reorderOptions() {
         $this->db->query("SET @i:=0;");
         $sql = "
-            UPDATE
-                 " . DB_PREFIX . "option_value
-            SET sort_order=@i:=@i+1
-            WHERE option_value_id IN (SELECT option_value_id FROM
-            " . DB_PREFIX . "option_value_description ORDER BY name)
-            ";
+	    UPDATE " . DB_PREFIX . "option_value 
+	    JOIN (SELECT * FROM " . DB_PREFIX . "option_value_description ORDER BY `name`) AS t USING(option_value_id)
+	    SET sort_order = @i:=@i + 1";
+        $this->db->query($sql);
+	
+	
+        $this->db->query("SET @i:=0;");
+        $sql = "
+	    UPDATE " . DB_PREFIX . "attribute 
+	    JOIN (SELECT * FROM " . DB_PREFIX . "attribute_description ORDER BY `name`) AS t USING(attribute_id)
+	    SET sort_order = @i:=@i + 1";
         $this->db->query($sql);
     }
 
