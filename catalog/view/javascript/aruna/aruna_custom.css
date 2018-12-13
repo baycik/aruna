@@ -14,7 +14,7 @@
 .form-group label{
     font-size: 14px;
 }
-.form-group input, .form-group textarea{
+.form-group .form-control, .form-group textarea{
     background-color: white !important;
     border: 1px solid lightgrey !important;
 }

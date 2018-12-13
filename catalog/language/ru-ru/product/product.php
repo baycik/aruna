@@ -43,7 +43,7 @@ $_['entry_captcha']                           = 'Введите код, указ
 // Tabs
 $_['tab_description']                       = 'Описание';
 $_['tab_attribute']                           = 'Характеристики';
-$_['tab_review']                              = 'Отзывов (%s)';
+$_['tab_review']                              = 'Отзывы (%s)';
 $_['button_continue']                      = 'Отправить отзыв';
 
 // Error

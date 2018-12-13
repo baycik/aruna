@@ -60,7 +60,6 @@ $_['heading_title1']       = 'Dashboard';
 $_['text_Seller_Account'] = 'Seller Account';
 $_['text_Manage_Downloads'] = 'Manage Downloads';
 $_['text_reviews'] = 'My reviews';
-$_['text_Seller_reviews'] = 'My reviews';
 $_['text_Customer_Enquiries'] = 'Customer Enquiries';
 $_['text_Manage_products'] = 'Manage Products';
 $_['text_Bulk_product_upload'] = 'Bulk product upload';
