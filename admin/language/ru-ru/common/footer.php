@@ -1,5 +1,5 @@
 <?php
 // Text
-$_['text_footer']  = '<hr><a href="http://www.opencart.com">OpenCart</a> &copy; 2009-' . date('Y') . ' Все права защищены.<br> <a href="https://ocmod.net" target="_blank">Магазин дополнений Opencart</a>';
-$_['text_version'] = 'Version %s';
+$_['text_footer']  = '<HR><a href="http://www.opencart.com">OpenCart</a> &copy; 2009-' . date('Y') . ' Все права защищены.<br> <BR> <a href="http://opencart-russia.ru" target="_blank">Русская сборка OpenCart</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="http://forum.opencart-russia.ru" target="_blank">Форум поддержки</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="http://shop.opencart-russia.ru" target="_blank">Магазин дополнений</a>';
+$_['text_version'] = 'Version %s (trs-3.0.2.0)';
 

@@ -2,11 +2,11 @@
 // Heading
 $_['heading_title']        = 'Мои Адреса';
 
-
 // Text
 $_['text_account']         = 'Личный Кабинет';
 $_['text_address_book']    = 'Мои Адреса';
-$_['text_edit_address']    = 'Редактировать адрес';
+$_['text_address_add']   = 'Добавить адрес';
+$_['text_address_edit']    = 'Изменить адрес';
 $_['text_add']             = 'Адрес был успешно добавлен';
 $_['text_edit']            = 'Адрес был успешно изменен';
 $_['text_delete']          = 'Адрес был успешно удален';

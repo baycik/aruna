@@ -100,12 +100,6 @@ class ModelExtensionArunaImport extends Model {
         return true;
     }
 
-    public function importProductClean() {
-        
-    }
-
-    
-    
     public function importCategory($data) {
         $sql = "
             SELECT 
@@ -488,12 +482,9 @@ class ModelExtensionArunaImport extends Model {
             'shipping' => 1,
             'quantity' => $row['stock_count'],
             'stock_status_id' => $this->composeStockStatus($row['stock_status']),
-            'product_store' => [$this->store_id],
-            'status' => 1
+            'product_store' => [$this->store_id]
         ];
-        
         //print_r($product);die("$category_comission-");
-        
         return $product;
     }
 
