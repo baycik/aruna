@@ -75,6 +75,7 @@ class ModelExtensionArunaImport extends Model {
     }
     
     public function importUserProducts($sync_id) {
+	set_time_limit(36000);
         $this->createNeededProductProperties($sync_id);
         $sql = "
             SELECT  
@@ -478,11 +479,13 @@ class ModelExtensionArunaImport extends Model {
             'product_attribute' => $this->composeProductAttributeObject($row),
             'product_category' => $this->composeProductCategory($destination_category_id),
             'product_option' => $this->composeProductOptionsObject($row, $category_comission),
+	    'product_filter'=>$this->composeProductFilters($row),
             'product_description' => $product_description,
             'shipping' => 1,
             'quantity' => $row['stock_count'],
             'stock_status_id' => $this->composeStockStatus($row['stock_status']),
-            'product_store' => [$this->store_id]
+            'product_store' => [$this->store_id],
+	    'status'=>1
         ];
         //print_r($product);die("$category_comission-");
         return $product;
