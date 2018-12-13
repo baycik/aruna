@@ -13,43 +13,10 @@
 
 
 
-.so-filter-options .so-filter-content-opts{
-    overflow-y: auto !important;
+div.list-group-item{
+    overflow-y: auto;
+    overflow-x: hidden;
     max-height: 300px; 
-}
-
-.so-filter-options .so-filter-content-opts .so-filter-content-opts-container{
-    padding-right: 20px !important;
-}
-
-@media (min-width: 1200px) {
-    .wrapper-fluid .fluid-sidebar {
-        width: 80% !important; 
-    }
-    .wrapper-fluid .fluid-allsidebar {
-        width: 66%; 
-    }
-    .wrapper-fluid .content-aside {
-        width: 20% !important;
-    } 
-}
-
-.so-option-container label{
-    max-width: 120px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.module.so_filter_wrap .modcontent ul li.so-filter-options .so-filter-content-opts .so-filter-content-opts-container .so-option-container {
-
-    padding: 2px 0;
-
-}
-
-.module.so_filter_wrap .modcontent ul li.so-filter-options .so-filter-content-opts .so-filter-content-opts-container .so-option-container i{
-
-    top:-9px;
-
 }
 
 /*=============================

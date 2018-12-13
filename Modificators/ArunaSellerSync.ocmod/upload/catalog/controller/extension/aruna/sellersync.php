@@ -118,15 +118,6 @@ class ControllerExtensionArunaSellersync extends Controller {
 		$categories_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $categories_total, ceil($categories_total / $this->config->get('config_limit_admin')));
 	$this->response->setOutput($this->load->view('extension/aruna/sellersync', $data));
     }
-
-    private $data = array(
-	"category_lvl1" => "Одежда",
-	"category_lvl2" => "Свитшоты, толстовки",
-	"category_lvl3" => "Толстовка для мальчика",
-	"category_comission" => "1.33",
-	"destination_category_id" => "27"
-    );
-
     public function getDestCategories() {
 	if (!$this->customer->isLogged()) {
 	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellersync', '', true);
