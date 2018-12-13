@@ -171,7 +171,6 @@ class ControllerExtensionModuleSosearchpro extends Controller {
 	}
 	public function autocomplete() {
 		$json = array();
-
 		$this->load->language('product/category');
 		if (isset($this->request->get['filter_name']) || isset($this->request->get['filter_category_id'])) {
 			$this->load->model('tool/image');

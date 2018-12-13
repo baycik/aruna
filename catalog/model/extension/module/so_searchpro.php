@@ -56,7 +56,9 @@ class ModelExtensionModuleSosearchpro extends Model {
 				$implode = array();
 
 				$words = explode(' ', trim(preg_replace('/\s+/', ' ', $data['filter_name'])));
-
+                                
+                               
+                                
 				foreach ($words as $word) {
 					$implode[] = "pd.name LIKE '%" . $this->db->escape($word) . "%'";
 				}
@@ -77,7 +79,6 @@ class ModelExtensionModuleSosearchpro extends Model {
 			if (!empty($data['filter_tag'])) {
 				$sql .= "pd.tag LIKE '%" . $this->db->escape($data['filter_tag']) . "%'";
 			}
-
 			if (!empty($data['filter_name'])) {
 				$sql .= " OR LCASE(p.model) = '" . $this->db->escape(utf8_strtolower($data['filter_name'])) . "'";
 				$sql .= " OR LCASE(p.sku) = '" . $this->db->escape(utf8_strtolower($data['filter_name'])) . "'";

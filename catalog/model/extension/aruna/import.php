@@ -81,12 +81,6 @@ class ModelExtensionArunaImport extends Model {
         return true;
     }
 
-    public function importProductClean() {
-        
-    }
-
-    
-    
     public function importCategory($data) {
         $sql = "
             SELECT 
@@ -118,7 +112,8 @@ class ModelExtensionArunaImport extends Model {
         $this->reorderOptions();
         return true;
     }
-
+   
+    
     private function composeProductImageObject($row) {
         return $product_image = [
             [
@@ -398,15 +393,24 @@ class ModelExtensionArunaImport extends Model {
             'shipping' => 1,
             'quantity' => $row['stock_count'],
             'stock_status_id' => $this->composeStockStatus($row['stock_status']),
-            'product_store' => [$this->store_id],
-            'status' => 1
+            'product_store' => [$this->store_id]
         ];
-        
+        if ($row['product_id']){
+            $actual_product = $this->checkIfEnabled($row['product_id']);
+            $product['status'] = $actual_product['status'];
+            
+        } else {
+            $product['status'] = 0;
+        }
         //print_r($product);die("$category_comission-");
-        
         return $product;
     }
-
+ 
+    private function checkIfEnabled($product_id) {
+        $this->load_admin_model('catalog/product');
+        return $this->model_catalog_product->getProduct($product_id);
+    }
+    
     public function importProductAdd($item) {
         $this->load_admin_model('catalog/product');
         $product_id = $this->model_catalog_product->addProduct($item);
@@ -427,6 +431,10 @@ class ModelExtensionArunaImport extends Model {
     public function importProductUpdate($item) {
         $this->load_admin_model('catalog/product');
         return $this->model_catalog_product->editProduct($item['product_id'], $item);
+    }
+
+    public function importProductClean($data) {
+        
     }
 
     private function reorderOptions() {

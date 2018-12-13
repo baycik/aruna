@@ -22,4 +22,10 @@
 			]]></add>
 	</operation>
     </file>
+    <file path="catalog/model/catalog/product.php">
+	<operation error="skip"> 
+	    <search><![CDATA[$implode[] = "pd.name LIKE '%" . $this->db->escape($word) . "%']]></search>
+	    <add offset="0" position="reolace"><![CDATA[$implode[] = "pd.name LIKE '%" . $this->db->escape($word) . "%' OR p.model LIKE '%" . $this->db->escape($word) . "%']]></add>
+	</operation>
+    </file>
 </modification>
