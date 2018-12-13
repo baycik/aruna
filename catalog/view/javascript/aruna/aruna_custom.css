@@ -1,17 +1,41 @@
 
 /*============================
+            COMMON
+=============================*/
+#wrapper {
+    font-family: Century Gothic;
+}
+#content form {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid lightgrey;
+    box-shadow: 1px 1px 2px lightgrey;
+}
+.form-group label{
+    font-size: 14px;
+}
+.form-group input, .form-group textarea{
+    background-color: white !important;
+    border: 1px solid lightgrey !important;
+}
+form .buttons input{
+    border-radius: 0px;
+}
+
+/*============================
             HEADER
 =============================*/
 #header{
     box-shadow: 1px 0.2px 3px lightgrey;
 }
 
+.so-search {
+    width: 110% !important;
+}
+
 /*=============================
             FILTER
 =============================*/
-
-
-
 
 .so-filter-options .so-filter-content-opts{
     overflow-y: auto !important;
@@ -176,4 +200,12 @@ SELLERSYNC
 }
 .pts-row form input {
     background-color: white !important;
+}
+
+/*==========================
+SOCIAL LOGIN
+===========================*/
+
+.well div h3{
+    font-size: 18px;
 }
