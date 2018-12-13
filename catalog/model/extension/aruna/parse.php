@@ -33,8 +33,11 @@ $create_table = "CREATE TABLE `oc_baycik_sync_entries` (
   `price2` float DEFAULT NULL,
   `price3` float DEFAULT NULL,
   `price4` float DEFAULT NULL,
-  PRIMARY KEY (`sync_entry_id`)
+  PRIMARY KEY (`sync_entry_id`),
+  KEY `index2` (`category_lvl1`,`category_lvl2`,`category_lvl3`),
+  KEY `index3` (`model`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE `oc_baycik_sync_groups` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -177,15 +180,11 @@ class ModelExtensionArunaParse extends Model {
                 FROM 	
                     " . DB_PREFIX . "baycik_sync_entries AS bse    
                 WHERE bse.sync_id = '$sync_id'
-                GROUP BY bse.category_lvl1, bse.category_lvl2, bse.category_lvl3) hello_vasya
+                GROUP BY bse.category_lvl1, bse.category_lvl2, bse.category_lvl3) hhh
             ON DUPLICATE KEY UPDATE  total_products = tp
             ";
         $this->db->query($sql);
-        $clear_empty="
-            DELETE FROM 
-                " . DB_PREFIX . "baycik_sync_groups 
-            WHERE total_products=0;
-            ";
+        $clear_empty="DELETE FROM  " . DB_PREFIX . "baycik_sync_groups  WHERE total_products=0;";
         $this->db->query($clear_empty);
     }
 }

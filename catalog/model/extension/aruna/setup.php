@@ -34,7 +34,22 @@ class ModelExtensionArunaSetup extends Model {
                     'price_base_field' => 'price'
                 ]
             ],
-            'manufacturer'=>'origin_country'
+            'filters'=>[
+                [
+                    'field'=>'option_group1',
+                    'name'=>'Размер',
+                    'delimeter'=>'|'
+                ],
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель'
+                ]
+            ],
+            'manufacturer'=>'manufacturer'
         ]
     ];
 
