@@ -34,7 +34,22 @@ class ModelExtensionArunaSetup extends Model {
                     'price_base_field' => 'price'
                 ]
             ],
-            'manufacturer'=>'origin_country'
+            'filters'=>[
+                [
+                    'field'=>'option_group1',
+                    'name'=>'Размер',
+                    'delimeter'=>'|'
+                ],
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель'
+                ]
+            ],
+            'manufacturer'=>'manufacturer'
         ]
     ];
 
@@ -47,6 +62,15 @@ class ModelExtensionArunaSetup extends Model {
         $this->db->query("DELETE FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id=".(int) $sync_id." AND seller_id=".(int)$seller_id );
         $this->db->query("DELETE FROM " . DB_PREFIX . "baycik_sync_groups WHERE sync_id=".(int) $sync_id );
         $this->db->query("DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id=".(int) $sync_id );
+    }
+    public function updateParserConfig($sync_id){
+	$sql="SELECT sync_parser_name FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$sync_id'";
+	$parser_id=$this->db->query($sql)->row['sync_parser_name'];
+	if( $parser_id && $sync_id ){
+	    $parser_object=$this->parser_registry[$parser_id];
+	    $parser_config= json_encode($parser_object, JSON_UNESCAPED_UNICODE);
+	    $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config='$parser_config' WHERE sync_id='$sync_id'");
+	}
     }
     public function getParserList($seller_id){
         $added_parsers=$this->getSyncList($seller_id);
