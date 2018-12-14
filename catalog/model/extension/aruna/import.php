@@ -14,6 +14,25 @@ class ModelExtensionArunaImport extends Model {
             return false;
         }
         $this->sync_config = json_decode($result->row['sync_config'], false, 512, JSON_UNESCAPED_UNICODE);
+        if (isset($this->sync_config->filters)) {
+            $this->load_admin_model('catalog/filter');
+            foreach ($this->sync_config->filters as &$filter) {
+                $row = $this->db->query("SELECT filter_group_id FROM " . DB_PREFIX . "filter_group_description WHERE name='{$filter->name}'")->row;
+                if ($row && $row['filter_group_id']) {
+                    $filter->filter_group_id = $row['filter_group_id'];
+                } else {
+                    $data = [
+                        'sort_order' => 1,
+                        'filter_group_description' => [
+                            $this->language_id => [
+                                'name' => $filter->name
+                            ]
+                        ]
+                    ];
+                    $filter->filter_group_id = $this->model_catalog_filter->addFilter($data);
+                }
+            }
+        }        
         if (isset($this->sync_config->attributes)) {
             $this->load_admin_model('catalog/attribute_group');
             foreach ($this->sync_config->attributes as &$attribute) {
@@ -135,9 +154,79 @@ class ModelExtensionArunaImport extends Model {
             }
         }
         $this->reorderOptions();
+        $this->assignFiltersToCategory($data['destination_category_id']);
         return true;
     }
-   
+    public function importProductAdd($item) {
+        $this->load_admin_model('catalog/product');
+        $product_id = $this->model_catalog_product->addProduct($item);
+        $sql = "
+            INSERT INTO
+                " . DB_PREFIX . "purpletree_vendor_products
+            SET
+                id = '',
+                seller_id = '2',
+                product_id = '$product_id',
+                is_approved = '0',
+                created_at = NOW(),
+                updated_at = NOW()
+            ";
+        return $this->db->query($sql);
+    }
+
+    public function importProductUpdate($item) {
+        $this->load_admin_model('catalog/product');
+        return $this->model_catalog_product->editProduct($item['product_id'], $item);
+    }
+    
+    
+    private $filterCategoryIds=[];
+    private function assignFiltersToCategory($category_id){
+        $filter_ids=array_keys($this->filterCategoryIds);
+        if( count($filter_ids)>0 ){
+            $insert_values='';
+            foreach ($filter_ids as $filter_id) {
+                $insert_values.=",($category_id,$filter_id)";
+            }
+            $insert_values=substr($insert_values, 1);
+            $this->db->query("INSERT IGNORE INTO " . DB_PREFIX . "category_filter (category_id, filter_id) VALUES $insert_values");
+        }
+        $this->filterCategoryIds=[];
+    }
+    
+    private $filterCache=[];
+    private function composeProductFilters($row){
+        $product_filters = [];
+        if ($this->sync_config->filters) {            
+            foreach ($this->sync_config->filters as $filterConfig) {
+                $filter_group_id=$filterConfig->filter_group_id;
+                if( isset($filterConfig->delimeter) ){
+                    $filter_names= explode($filterConfig->delimeter, $row[ $filterConfig->field ]);
+                } else {
+                    $filter_names=[ $row[$filterConfig->field] ];
+                }
+                foreach($filter_names as $filter_name){
+                    if( !$filter_name ){
+                        continue;
+                    }
+                    if( !isset($this->filterCache[$filter_group_id.'_'.$filter_name]) ){
+                        $filter_row=$this->db->query("SELECT filter_id FROM " . DB_PREFIX . "filter_description WHERE filter_group_id='{$filter_group_id}' AND name='{$filter_name}'")->row;
+                        if( $filter_row && $filter_row['filter_id'] ){
+                            $filter_id=$filter_row['filter_id'];
+                        } else {
+                            $this->db->query("INSERT INTO ".DB_PREFIX."filter SET filter_group_id='{$filter_group_id}'");
+                            $filter_id = $this->db->getLastId();
+                            $this->db->query("INSERT INTO ".DB_PREFIX."filter_description SET filter_group_id='{$filter_group_id}', language_id='{$this->language_id}',filter_id='{$filter_id}',name='$filter_name'");
+                        }
+                        $this->filterCache[$filter_group_id.'_'.$filter_name]=$filter_id;
+                    }
+                    $product_filters[]=$this->filterCache[$filter_group_id.'_'.$filter_name];
+                    $this->filterCategoryIds[$this->filterCache[$filter_group_id.'_'.$filter_name]]=1;
+                }
+            }
+        }
+        return $product_filters;
+    }
     
     private function composeProductImageObject($row) {
         return $product_image = [
@@ -393,7 +482,7 @@ class ModelExtensionArunaImport extends Model {
             'jan' => '',
             'isbn' => '',
             'mpn' => '',
-            'location' => $row['origin_country'],
+            'location' => '',
             'minimum' => 0,
             'subtract' => '',
             'date_available' => '',
@@ -414,52 +503,16 @@ class ModelExtensionArunaImport extends Model {
             'product_attribute' => $this->composeProductAttributeObject($row),
             'product_category' => $this->composeProductCategory($destination_category_id),
             'product_option' => $this->composeProductOptionsObject($row, $category_comission),
+	    'product_filter'=>$this->composeProductFilters($row),
             'product_description' => $product_description,
             'shipping' => 1,
             'quantity' => $row['stock_count'],
             'stock_status_id' => $this->composeStockStatus($row['stock_status']),
-            'product_store' => [$this->store_id]
+            'product_store' => [$this->store_id],
+	    'status'=>1
         ];
-        if ($row['product_id']){
-            $actual_product = $this->checkIfEnabled($row['product_id']);
-            $product['status'] = $actual_product['status'];
-            
-        } else {
-            $product['status'] = 0;
-        }
         //print_r($product);die("$category_comission-");
         return $product;
-    }
- 
-    private function checkIfEnabled($product_id) {
-        $this->load_admin_model('catalog/product');
-        return $this->model_catalog_product->getProduct($product_id);
-    }
-    
-    public function importProductAdd($item) {
-        $this->load_admin_model('catalog/product');
-        $product_id = $this->model_catalog_product->addProduct($item);
-        $sql = "
-            INSERT INTO
-                " . DB_PREFIX . "purpletree_vendor_products
-            SET
-                id = '',
-                seller_id = '2',
-                product_id = '$product_id',
-                is_approved = '0',
-                created_at = NOW(),
-                updated_at = NOW()
-            ";
-        return $this->db->query($sql);
-    }
-
-    public function importProductUpdate($item) {
-        $this->load_admin_model('catalog/product');
-        return $this->model_catalog_product->editProduct($item['product_id'], $item);
-    }
-
-    public function importProductClean($data) {
-        
     }
 
     private function reorderOptions() {
@@ -470,11 +523,17 @@ class ModelExtensionArunaImport extends Model {
 	    SET sort_order = @i:=@i + 1";
         $this->db->query($sql);
 	
-	
         $this->db->query("SET @i:=0;");
         $sql = "
 	    UPDATE " . DB_PREFIX . "attribute 
 	    JOIN (SELECT * FROM " . DB_PREFIX . "attribute_description ORDER BY `name`) AS t USING(attribute_id)
+	    SET sort_order = @i:=@i + 1";
+        $this->db->query($sql);
+        
+        $this->db->query("SET @i:=0;");
+        $sql = "
+	    UPDATE " . DB_PREFIX . "filter 
+	    JOIN (SELECT * FROM " . DB_PREFIX . "filter_description ORDER BY `name`) AS t USING(filter_id)
 	    SET sort_order = @i:=@i + 1";
         $this->db->query($sql);
     }
