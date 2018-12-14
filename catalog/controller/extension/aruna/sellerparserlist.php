@@ -76,6 +76,9 @@ class ControllerExtensionArunaSellerparserList extends Controller {
             echo "Source hasn't been selected";
             return;
         }
+        $this->load->model('extension/aruna/setup');
+        echo $this->model_extension_aruna_setup->updateParserConfig($sync_id);
+	
         $this->load->model('extension/aruna/parse');
         echo $this->model_extension_aruna_parse->initParser($sync_id);
         
