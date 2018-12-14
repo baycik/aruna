@@ -1,5 +1,7 @@
 <?php
 
+/**/
+
 $create_table = "CREATE TABLE `oc_baycik_sync_entries` (
   `sync_entry_id` int(11) NOT NULL AUTO_INCREMENT,
   `sync_id` int(11) DEFAULT NULL,
