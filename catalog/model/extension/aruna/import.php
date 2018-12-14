@@ -55,7 +55,32 @@ class ModelExtensionArunaImport extends Model {
         }
     }
 
-    public function importUserProducts($sync_id) {
+     public function getTotalImportCategories($sync_id) {
+        $sql = "
+            SELECT  
+                group_id,
+                destination_category_id
+            FROM
+               " . DB_PREFIX . "baycik_sync_groups
+            WHERE
+                destination_category_id IS NOT NULL
+                AND destination_category_id != 0
+                AND sync_id = '$sync_id'
+            ";
+        $result = $this->db->query($sql);
+        $total = [
+            'total_rows'=>$result->num_rows,
+            'groups'=>[]    
+        ];
+        foreach ($result->rows as $row){
+            array_push($total['groups'], $row['group_id']);
+        }
+        return $total;
+    }
+    
+    
+    
+    public function importUserProducts($sync_id, $group_id) {
         $this->createNeededProductProperties($sync_id);
         $sql = "
             SELECT  
@@ -70,16 +95,16 @@ class ModelExtensionArunaImport extends Model {
                 destination_category_id IS NOT NULL
                 AND destination_category_id != 0
                 AND sync_id = '$sync_id'
+                AND group_id = '$group_id'   
             ";
         $result = $this->db->query($sql);
-        foreach ($result->rows as $row) {
-            $ok = $this->importCategory($row);
-            if (!$ok) {
-                return false;
-            }
+        $ok = $this->importCategory($result->row);
+        if (!$ok) {
+            return false;
         }
         return true;
     }
+    
 
     public function importCategory($data) {
         $sql = "

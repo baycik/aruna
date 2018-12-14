@@ -184,9 +184,28 @@ class ControllerExtensionArunaSellersync extends Controller {
 	}
         
         $sync_id=$this->request->post['sync_id'];
+        $group_id=$this->request->post['group_id'];
         $this->load->model('extension/aruna/import');
-	$ok=$this->model_extension_aruna_import->importUserProducts($sync_id);
+	$ok=$this->model_extension_aruna_import->importUserProducts($sync_id, $group_id);
         die($ok);
+    }
+    
+    public function getTotalImportCategories() {
+	if (!$this->customer->isLogged()) {
+	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellersync', '', true);
+
+	    die('Access denied');
+	}
+	$store_detail = $this->customer->isSeller();
+	if (!isset($store_detail['store_status'])) {
+	    die('Access denied');
+	}
+        
+        $sync_id=$this->request->post['sync_id'];
+        $this->load->model('extension/aruna/import');
+	$total_caegories=$this->model_extension_aruna_import->getTotalImportCategories($sync_id);
+        
+        echo(json_encode($total_caegories));
     }
 
 }
