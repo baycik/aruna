@@ -9,7 +9,7 @@
 	$_['text_supported'] 					=	'«Поддерживаемый файл: jpeg, png, jpg, pdf, doc, docx, zip»';
 	$_['error_supported_file'] 				=	'Это не эквалитный формат файла !!!';
 	$_['error_file_empty']  				=	'Пожалуйста, выберите файл !!!';
-	$_['text_seller_label']         	=	'Продан:';
+	$_['text_seller_label']         	=	'Магазин:';
 	$_['text_seller_review']         	=	'Отзывы';
 	$_['text_seller_rating']         	=	'Рейтинг продавца:';
 	$_['text_seller_contact']         	=	'Связаться с продавцом';

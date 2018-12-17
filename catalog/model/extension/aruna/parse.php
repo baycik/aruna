@@ -1,7 +1,5 @@
 <?php
 
-/**/
-
 $create_table = "CREATE TABLE `oc_baycik_sync_entries` (
   `sync_entry_id` int(11) NOT NULL AUTO_INCREMENT,
   `sync_id` int(11) DEFAULT NULL,
@@ -13,8 +11,6 @@ $create_table = "CREATE TABLE `oc_baycik_sync_entries` (
   `url` varchar(512) DEFAULT NULL,
   `description` varchar(2048) DEFAULT NULL,
   `min_order_size` varchar(45) DEFAULT NULL,
-  `stock_count` varchar(45) DEFAULT NULL,
-  `stock_status` varchar(45) DEFAULT NULL,
   `manufacturer` varchar(45) DEFAULT NULL,
   `origin_country` varchar(45) DEFAULT NULL,
   `attribute1` varchar(100) DEFAULT NULL,
@@ -35,11 +31,8 @@ $create_table = "CREATE TABLE `oc_baycik_sync_entries` (
   `price2` float DEFAULT NULL,
   `price3` float DEFAULT NULL,
   `price4` float DEFAULT NULL,
-  PRIMARY KEY (`sync_entry_id`),
-  KEY `index2` (`category_lvl1`,`category_lvl2`,`category_lvl3`),
-  KEY `index3` (`model`)
+  PRIMARY KEY (`sync_entry_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE `oc_baycik_sync_groups` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -55,20 +48,6 @@ CREATE TABLE `oc_baycik_sync_groups` (
   UNIQUE KEY `category_path_UNIQUE` (`category_path`,`sync_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=256 DEFAULT CHARSET=utf8 COMMENT='';
 
-CREATE TABLE `oc_baycik_sync_list` (
-  `sync_id` int(11) NOT NULL AUTO_INCREMENT,
-  `seller_id` int(11) DEFAULT NULL,
-  `sync_name` varchar(45) DEFAULT NULL,
-  `sync_parser_name` varchar(45) DEFAULT NULL,
-  `sync_config` text,
-  `sync_last_started` datetime DEFAULT NULL,
-  PRIMARY KEY (`sync_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-
-
 ";
 
 class ModelExtensionArunaParse extends Model {
@@ -78,33 +57,31 @@ class ModelExtensionArunaParse extends Model {
 	$this->language_id = (int) $this->config->get('config_language_id');
 	$this->store_id = (int) $this->config->get('config_store_id');
     }
-    
-    public function initParser($sync_id){
-        $sync=$this->db->query("SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$sync_id'")->row;
-        if( !$sync ){
-            return false;
-        }
-        $method='parse_'.$sync['sync_parser_name'];
-        $this->$method($sync);
-        $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_last_started=NOW() WHERE sync_id='{$sync['sync_id']}'");
-        return true;
+
+    private function load_admin_model($route) {
+	$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $route);
+	$file = realpath(DIR_APPLICATION . '../admin/model/' . $route . '.php');
+	if (is_file($file)) {
+	    include_once($file);
+	    $modelName = str_replace('/', '', ucwords("Model/" . $route, "/"));
+	    $proxy = new $modelName($this->registry);
+	    $this->registry->set('model_' . str_replace('/', '_', (string) $route), $proxy);
+	} else {
+	    throw new \Exception('Error: Could not load model ' . $route . '!');
+	}
     }
     
-    public function parse_happywear($sync) {
-        set_time_limit(300);
-	$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
-	if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
-            die("Downloading failed");
-        };
+    public function getParserList ($seller_id){
         
-	$sync_id = $sync['sync_id'];
-        
+    }
+    
+    public function parse_happywear($sync_id, $tmpfile) {
 	$presql = "
             DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id = '$sync_id'
             ";
 	$this->db->query($presql);
 	$sql = "
-            LOAD DATA LOCAL INFILE 
+            LOAD DATA INFILE 
                 '$tmpfile'
             INTO TABLE 
                 " . DB_PREFIX . "baycik_sync_entries
@@ -121,16 +98,14 @@ class ModelExtensionArunaParse extends Model {
                 manufacturer = @col7,  
                 origin_country = @col8,                     
                 url = @col10, 
-                description = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@col12,'{{emoji_183}}',''),'{{emoji_6}}',''),'{{emoji_9}}',''),'{{emoji_104}}',''),'{{emoji_223}}',''),'{{emoji_55}}',''),'{{emoji_271}}',''),'{{emoji_137}}',''),'{{emoji_147}}',''),'{{emoji_40}}',''),'{{emoji_66}}',''),'{{emoji_284}}',''),'{{emoji_239}}',''),'{{emoji_77}}',''),'{{emoji_129}}',''),'{{emoji_4}}',''), 
-                min_order_size = @col15,
-                stock_status='7-9 дней',
-                stock_count=0,
-                attribute1 = TRIM(REPLACE(REPLACE(REPLACE(@col5,',',', '),'  ',' '),'  ',' ')),
-                attribute2 = TRIM(REPLACE(REPLACE(REPLACE(@col6,',',', '),'  ',' '),'  ',' ')),
+                description = @col12, 
+                min_order_size = @col15, 
+                attribute1 = @col5,
+                attribute2 = @col6,
                 attribute3 = '',
                 attribute4 = '',
                 attribute5 = '',
-                option1 = TRIM(@col9), 
+                option1 = @col9, 
                 option2 = '', 
                 option3 = '', 
                 image = @col11,
@@ -145,7 +120,6 @@ class ModelExtensionArunaParse extends Model {
                 price4 = ''
             ";
 	$this->db->query($sql);
-        $this->db->query("DELETE FROM baycik_aruna.oc_baycik_sync_entries WHERE url NOT LIKE 'http%'");//DELETING defective entries
         $this->groupEntriesByCategories($sync_id);
 	unlink($tmpfile);
     }
@@ -182,11 +156,17 @@ class ModelExtensionArunaParse extends Model {
                 FROM 	
                     " . DB_PREFIX . "baycik_sync_entries AS bse    
                 WHERE bse.sync_id = '$sync_id'
-                GROUP BY bse.category_lvl1, bse.category_lvl2, bse.category_lvl3) hhh
+                GROUP BY bse.category_lvl1, bse.category_lvl2, bse.category_lvl3) hello_vasya
             ON DUPLICATE KEY UPDATE  total_products = tp
             ";
         $this->db->query($sql);
-        $clear_empty="DELETE FROM  " . DB_PREFIX . "baycik_sync_groups  WHERE total_products=0;";
+        $clear_empty="
+            DELETE FROM 
+                " . DB_PREFIX . "baycik_sync_groups 
+            WHERE total_products=0;
+            ";
         $this->db->query($clear_empty);
     }
+
+    
 }

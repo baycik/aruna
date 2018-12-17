@@ -11,7 +11,7 @@ $_['text_search']        = 'Поиск';
 $_['text_cart']        = 'Корзина';
 $_['text_all']           = 'Показать всё';
 $_['text_more']       = 'Ещё';
-$_['text_language']       = 'Язык';
+$_['text_language']       = 'Языки';
 $_['text_currency']       = 'Валюта';
 $_['text_compare']       = 'Сравнение';
 $_['text_itemcount']     = '<span class="items_cart">%s </span>';
