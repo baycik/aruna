@@ -1,23 +1,168 @@
 
 /*============================
+            COMMON
+=============================*/
+#wrapper {
+    font-family: Century Gothic;
+}
+#content form {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid lightgrey;
+    box-shadow: 1px 1px 2px lightgrey;
+}
+.form-group label{
+    font-size: 14px;
+}
+.form-group input, .form-group textarea{
+    background-color: white !important;
+    border: 1px solid lightgrey !important;
+}
+form .buttons input{
+    border-radius: 0px;
+}
+
+/*============================
             HEADER
 =============================*/
 #header{
     box-shadow: 1px 0.2px 3px lightgrey;
 }
 
+.so-search {
+    width: 110% !important;
+}
+
 /*=============================
             FILTER
 =============================*/
-
-
-
-
-div.list-group-item{
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 300px; 
+.list-group-item .list-group-item{
+    padding-bottom: 0px;
+    padding-top: 0px;
+    border-bottom: none;
 }
+@media (min-width: 1200px) {
+    .wrapper-fluid .fluid-sidebar {
+        width: 80% !important; 
+    }
+    .wrapper-fluid .fluid-allsidebar {
+        width: 66%; 
+    }
+    .wrapper-fluid .content-aside {
+        width: 20% !important;
+    } 
+}
+
+/*===============================
+ACCOUNT LOGIN PAGES
+=================================*/
+
+ 
+.account-login #header, .account-login .container aside, .account-login footer, .account-login ul.breadcrumb, .account-login #content .row .col-sm-6:nth-child(1){
+    display:none;
+}
+.account-login #content form{
+    box-shadow: none;
+    border:none;
+}
+
+.account-login #content .row .col-sm-6{
+    margin-top: 8%;
+    margin-bottom: 8%;
+
+}
+.account-login #content .row .col-sm-6 .well{
+   box-shadow: 0px 0px 15px #5f5f5f; 
+}
+
+.account-login #wrapper{
+    background-image: url('//aruna.market/image/catalog/articles/login.jpeg');
+    background-size: cover;
+}
+
+.subwell{
+    background-color: grey;
+    height: 4em;
+    opacity: 0.7;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.subwell_link{
+    position: relative;
+    top: -39px;
+    color: white;
+    padding: 10px;
+}
+.well_logo{
+    text-align: center;
+}
+.well_logo img{
+    width: 40%;
+    margin-bottom: 2em;
+    margin-top: 2em;
+}
+.account-login .well{
+    margin-bottom: 0px !important;
+    text-align: left !important;
+}
+
+.account-login a.btn.btn-primary{
+    float:right;
+}
+.account-login .col-sm-6:nth-child(2){
+    text-align:center;
+}
+
+/*===============================
+ACCOUNT FORGOTTEN PAGES
+=================================*/
+
+ 
+.account-forgotten #header, .account-forgotten .container aside, .account-forgotten footer, .account-forgotten ul.breadcrumb{
+    display:none;
+}
+.account-forgotten #content form{
+    box-shadow: none;
+    border:none;
+}
+
+.account-forgotten .form-horizontal{
+    margin-top: 8%;
+    margin-bottom: 8%;
+    width: 52%;
+    box-shadow: 0px 0px 15px #5f5f5f;
+    border-radius: 4px;
+}
+
+.account-forgotten #wrapper{
+    background-image: url('//aruna.market/image/catalog/articles/login.jpeg');
+    background-size: cover;
+}
+
+.account-forgotten .subwell{
+    background-color: grey;
+    height: 4em;
+    opacity: 0.7;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.account-forgotten .subwell_link{
+    position: relative;
+    top: -39px;
+    color: white;
+    padding: 10px;
+}
+.account-forgotten .well_logo{
+    text-align: center;
+}
+.account-forgotten .well_logo img{
+    width: 40%;
+    margin-bottom: 2em;
+    margin-top: 2em;
+}
+
+
+
 
 /*=============================
         PRODUCT IMAGE
@@ -144,3 +289,12 @@ SELLERSYNC
 .pts-row form input {
     background-color: white !important;
 }
+
+/*==========================
+SOCIAL LOGIN
+===========================*/
+
+.well div h3{
+    font-size: 18px;
+}
+
