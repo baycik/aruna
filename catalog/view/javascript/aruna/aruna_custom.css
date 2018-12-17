@@ -21,7 +21,12 @@
 form .buttons input{
     border-radius: 0px;
 }
-
+.btn.btn-primary{
+    background-color: #5AA4ED;
+}
+.btn.btn-primary:hover{
+    background-color: #00589A;
+}
 /*============================
             HEADER
 =============================*/
@@ -36,10 +41,14 @@ form .buttons input{
 /*=============================
             FILTER
 =============================*/
-.list-group-item .list-group-item{
-    padding-bottom: 0px;
-    padding-top: 0px;
-    border-bottom: none;
+.list-group div.list-group-item{
+    padding-bottom: 0px !important; 
+    padding-top: 0px!important; 
+    border-bottom: none; 
+    max-height: 28em;
+    overflow: hidden;
+    overflow-y: auto;
+    
 }
 @media (min-width: 1200px) {
     .wrapper-fluid .fluid-sidebar {
@@ -57,6 +66,9 @@ form .buttons input{
 ACCOUNT LOGIN PAGES
 =================================*/
 
+.account-login, html, .account-login #wrapper{
+    height: 100%;
+}
  
 .account-login #header, .account-login .container aside, .account-login footer, .account-login ul.breadcrumb, .account-login #content .row .col-sm-6:nth-child(1){
     display:none;
@@ -117,20 +129,18 @@ ACCOUNT LOGIN PAGES
 ACCOUNT FORGOTTEN PAGES
 =================================*/
 
+.account-forgotten, html, .account-forgotten #wrapper{
+    height: 100%;
+}
  
 .account-forgotten #header, .account-forgotten .container aside, .account-forgotten footer, .account-forgotten ul.breadcrumb{
     display:none;
 }
-.account-forgotten #content form{
-    box-shadow: none;
-    border:none;
-}
-
 .account-forgotten .form-horizontal{
     margin-top: 8%;
     margin-bottom: 8%;
     width: 52%;
-    box-shadow: 0px 0px 15px #5f5f5f;
+    box-shadow: 0px 0px 15px #5f5f5f !important;
     border-radius: 4px;
 }
 
@@ -161,8 +171,121 @@ ACCOUNT FORGOTTEN PAGES
     margin-top: 2em;
 }
 
+/*=============================
+        PRODUCT CATEGORY PAGE
+===============================*/
+.product-layout.product-list.col-xs-12 .product-item-container{
+    height: 22em;
+    margin-bottom: 10px !important;
+}
+
+.product-filter.product-filter-top.filters-panel{
+    background-color: white;
+    padding: 2em;
+    box-shadow: 1px 1px 3px #dedede;
+}
+/*=============================
+        PRODUCT PAGE
+=============================*/
+
+.product-product .cart input.btn{ 
+    background-color: rgb(90, 164, 237) !important;
+    
+}
+
+.product-product .cart input.btn:hover{ 
+    background-color: RGB(0, 88, 154)!important;
+    
+}
+
+.product-product .inner-box-desc a{
+    color: rgb(90, 164, 237) !important;
+}
+
+.product-product .inner-box-desc a:hover{
+    color: RGB(0, 88, 154)!important;
+}
+.product-product .content-product-mainheader{
+     background-color: white;
+    padding: 3em;
+    box-shadow: 1px 1px 2px lightgray;
+    height: 100% !important;
+}
+
+.product-product .content-product-mainheader .row{
+    width: 101% !important;
+}
+.product-product .content-product-right {
+   
+    }
 
 
+.product-product .tabsslider{
+    box-shadow: 1px 1px 2px lightgray;
+    width: 100% !important;
+}
+
+.product-product .tabsslider .nav{
+    background-color: white !important;
+    padding: 2em !important; 
+}
+
+.product-product .tab-content{
+   padding: 2em !important; 
+}
+
+.product-product .product-property-list{
+    display: grid !important;
+}
+.product-product .content-product-midde{
+    margin-top: 10px;
+}
+
+.product-product .blank.list-inline li a i{
+    vertical-align: middle;
+    background-color: rgb(90, 164, 237) !important;
+    color: white;
+    border: none !important;
+}  
+
+.product-product .blank.list-inline li:hover i{
+    background-color: white !important;
+    color: RGB(0, 88, 154);
+    font-size: 19px;
+    border: none !important;
+}  
+.product-product #form-review{
+    border: none;
+    box-shadow: none;
+}
+.product-product .box-review{
+    margin-left: 0.4em;
+}
+
+
+.product-product .product-box-desc .inner-box-desc li{
+    display: block; 
+}
+.product-product .product-box-desc .inner-box-desc li div.rating .fa-stack:nth-child(1) {
+    margin-left:4px !important; 
+}
+
+.product-product .product-box-desc .inner-box-desc a{
+    padding: 0px !important;
+}
+.product-product .option-content-box{
+    background-color: white !important;
+    border:  1px solid darkgray;
+}
+
+.product-product .option-content-box:hover{
+   background-color: rgb(90, 164, 237) !important;
+    color: white;
+}
+
+.product-product .option-content-box.active{
+    background-color: RGB(0, 88, 154) !important;
+}
 
 /*=============================
         PRODUCT IMAGE
@@ -298,3 +421,9 @@ SOCIAL LOGIN
     font-size: 18px;
 }
 
+/*==========OTHER=============*/
+.seller-usergroup{
+ max-height: 18em;
+    overflow: hidden;
+    overflow-y: auto;
+}
