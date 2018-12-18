@@ -1,7 +1,7 @@
 <?php
 
-class ControllerExtensionArunaSellerparserList extends Controller {
-    
+class ControllerExtensionArunaSellerParserList extends Controller {
+
     private $error = array();
 
     public function index() {
@@ -18,6 +18,7 @@ class ControllerExtensionArunaSellerparserList extends Controller {
 
 	$this->document->setTitle($this->language->get('heading_title'));
 
+	$this->load->model('extension/aruna/parse');
         
   
 	$data['back'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
@@ -52,77 +53,40 @@ class ControllerExtensionArunaSellerparserList extends Controller {
 	$data['footer'] = $this->load->controller('common/footer');
 	$data['header'] = $this->load->controller('common/header');
 	$data['seller_id'] = $seller_id;
+        $data['parser_list'] = $this->model_extension_aruna_parse->getParserList($seller_id);
+        $data['parser_name'] = 'happywear.ru';
         
-	$this->load->model('extension/aruna/setup');
-        $data['sync_list'] = $this->model_extension_aruna_setup->getSyncList($seller_id);
-        $data['parser_list'] = $this->model_extension_aruna_setup->getParserList($seller_id);
-       
 	$this->response->setOutput($this->load->view('extension/aruna/sellerparserlist', $data));
     }
     
     public function startParsing(){
-	if (!$this->customer->isLogged()) {
-	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
-
-	    $this->response->redirect($this->url->link('account/login', '', true));
-	}
-	$store_detail = $this->customer->isSeller();
-	if (!isset($store_detail['store_status'])) {
-	    $this->response->redirect($this->url->link('account/account', '', true));
-	}
-
-        $sync_id = $this->request->post['sync_id'];
-        if( !$sync_id ){
+        $parsername = $this->request->post['parsername'];
+        if(!$parsername){
             echo "Source hasn't been selected";
             return;
         }
-        $this->load->model('extension/aruna/setup');
-        echo $this->model_extension_aruna_setup->updateParserConfig($sync_id);
-	
-        $this->load->model('extension/aruna/parse');
-        echo $this->model_extension_aruna_parse->initParser($sync_id);
+        //$seller_id = $this->customer->getId();
+        //$this->load->model('extension/aruna/parse');
+	//$this->model_extension_aruna_parse->addSync($seller_id, $parsername);
         
+        if($parsername == 'happywear.ru'){
+            echo $this->syncWithHappywear();
+        } 
     }
     
-    public function addParser(){
-	if (!$this->customer->isLogged()) {
-	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
-
-	    $this->response->redirect($this->url->link('account/login', '', true));
-	}
-	$store_detail = $this->customer->isSeller();
-	if (!isset($store_detail['store_status'])) {
-	    $this->response->redirect($this->url->link('account/account', '', true));
-	}
-
-        $parser_id = $this->request->post['parser_id'];
-        if( !$parser_id ){
-            echo "No parser selected";
-            return;
-        }
-        $seller_id = $this->customer->getId();
-        $this->load->model('extension/aruna/setup');
-        $this->model_extension_aruna_setup->addParser($seller_id,$parser_id);
-        $this->response->redirect($this->url->link('extension/aruna/sellerparserlist', '', true));
+    public function syncWithHappywear() {
+	set_time_limit(300);
+	$sync_id = 1;
+	$tmpfile = tempnam("/tmp", "tmp_");
+	if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
+            return "Downloading failed";
+        };
+        $this->load->model('extension/aruna/parse');
+        if (!$this->model_extension_aruna_parse->parse_happywear($sync_id, addslashes($tmpfile))){
+            return "Parse Error";
+        };
+        return 1;
     }
-    public function deleteParser(){
-	if (!$this->customer->isLogged()) {
-	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
 
-	    $this->response->redirect($this->url->link('account/login', '', true));
-	}
-	$store_detail = $this->customer->isSeller();
-	if (!isset($store_detail['store_status'])) {
-	    $this->response->redirect($this->url->link('account/account', '', true));
-	}
 
-        $sync_id = $this->request->post['sync_id'];
-        if( !$sync_id ){
-            echo "No sync selected";
-            return;
-        }
-        $seller_id = $this->customer->getId();
-        $this->load->model('extension/aruna/setup');
-        $this->model_extension_aruna_setup->deleteParser($seller_id,$sync_id);
-    }
 }

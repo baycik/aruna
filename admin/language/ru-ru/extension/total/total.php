@@ -3,9 +3,9 @@
 $_['heading_title']    = 'Итого';
 
 // Text
-$_['text_extension']   = 'Расширения';
+$_['text_total']       = 'Учитывать в заказе';
 $_['text_success']     = 'Настройки успешно изменены!';
-$_['text_edit']        = 'Редактирование';
+$_['text_edit']        = 'Настройки';
 
 // Entry
 $_['entry_status']     = 'Статус';

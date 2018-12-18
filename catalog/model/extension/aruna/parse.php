@@ -47,7 +47,7 @@ class ModelExtensionArunaParse extends Model {
         
 
 	$sql = "
-            LOAD DATA LOCAL INFILE 
+            LOAD DATA INFILE 
                 '$tmpfile'
             INTO TABLE 
                 " . DB_PREFIX . "baycik_sync_entries
@@ -64,16 +64,14 @@ class ModelExtensionArunaParse extends Model {
                 manufacturer = @col7,  
                 origin_country = @col8,                     
                 url = @col10, 
-                description = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@col12,'{{emoji_183}}',''),'{{emoji_6}}',''),'{{emoji_9}}',''),'{{emoji_104}}',''),'{{emoji_223}}',''),'{{emoji_55}}',''),'{{emoji_271}}',''),'{{emoji_137}}',''),'{{emoji_147}}',''),'{{emoji_40}}',''),'{{emoji_66}}',''),'{{emoji_284}}',''),'{{emoji_239}}',''),'{{emoji_77}}',''),'{{emoji_129}}',''),'{{emoji_4}}',''), 
-                min_order_size = @col15,
-                stock_status='7-9 дней',
-                stock_count=0,
-                attribute1 = TRIM(REPLACE(REPLACE(REPLACE(@col5,',',', '),'  ',' '),'  ',' ')),
-                attribute2 = TRIM(REPLACE(REPLACE(REPLACE(@col6,',',', '),'  ',' '),'  ',' ')),
+                description = @col12, 
+                min_order_size = @col15, 
+                attribute1 = @col5,
+                attribute2 = @col6,
                 attribute3 = '',
                 attribute4 = '',
                 attribute5 = '',
-                option1 = TRIM(@col9), 
+                option1 = @col9, 
                 option2 = '', 
                 option3 = '', 
                 image = @col11,
@@ -88,7 +86,6 @@ class ModelExtensionArunaParse extends Model {
                 price4 = ''
             ";
 	$this->db->query($sql);
-        $this->db->query("DELETE FROM baycik_aruna.oc_baycik_sync_entries WHERE url NOT LIKE 'http%'");//DELETING defective entries
         $this->groupEntriesByCategories($sync_id);
 	//unlink($tmpfile);
     }
@@ -125,11 +122,17 @@ class ModelExtensionArunaParse extends Model {
                 FROM 	
                     " . DB_PREFIX . "baycik_sync_entries AS bse    
                 WHERE bse.sync_id = '$sync_id'
-                GROUP BY bse.category_lvl1, bse.category_lvl2, bse.category_lvl3) hhh
+                GROUP BY bse.category_lvl1, bse.category_lvl2, bse.category_lvl3) hello_vasya
             ON DUPLICATE KEY UPDATE  total_products = tp
             ";
         $this->db->query($sql);
-        $clear_empty="DELETE FROM  " . DB_PREFIX . "baycik_sync_groups  WHERE total_products=0;";
+        $clear_empty="
+            DELETE FROM 
+                " . DB_PREFIX . "baycik_sync_groups 
+            WHERE total_products=0;
+            ";
         $this->db->query($clear_empty);
     }
+
+    
 }

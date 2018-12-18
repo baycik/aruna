@@ -1,18 +1,16 @@
 <?php
 // Heading
-$_['heading_title']    = 'OpenCart Магазин API';
+$_['heading_title']    = 'Авторизация на opencart.com';
 
 // Text
-$_['text_success']     = 'Настройки успешно изменены!';
-$_['text_signup']      = 'Пожалуйста, введите свой OpenCart API который указан  <a href="https://www.opencart.com/index.php?route=account/store" target="_blank" class="alert-link">тут</a>.';
+$_['text_success']     = 'Успешно: вы изменили модификации!';
+$_['text_signup']      = 'Введите данные учетной записи. Зарегистрироваться можно <a href="https://www.opencart.com/index.php?route=account/store" target="_blank" class="alert-link">здесь</a>.';
 
 // Entry
-$_['entry_username']   = 'Username';
-$_['entry_secret']     = 'Secret';
+$_['entry_username']   = 'Логин';
+$_['entry_secret']     = 'Пароль';
 
 // Error
-$_['error_permission'] = 'У Вас нет прав для управления модулем!';
-$_['error_username']   = 'Username необходим!';
-$_['error_secret']     = 'Secret необходим!';
-
-
+$_['error_permission'] = 'Предупреждение: у вас нет разрешения на изменение Авторизации на opencart.com!';
+$_['error_username']   = 'Логин обязательно!';
+$_['error_secret']     = 'Пароль обязательно!';

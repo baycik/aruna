@@ -1,10 +1,10 @@
 <?php
-// Heading
+// header
 $_['heading_title']  = 'Сброс пароля';
 
 // Text
 $_['text_password']  = 'Введите новый пароль!';
-$_['text_success']   = 'Ваш пароль успешно изменен!';
+$_['text_success']   = 'Ваш пароль успешно обновлен!';
 
 // Entry
 $_['entry_password'] = 'Пароль';

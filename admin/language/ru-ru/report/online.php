@@ -1,19 +1,19 @@
 <?php
 // Heading
-$_['heading_title']     = 'Online отчет';
+$_['heading_title']     = 'Кто онлайн';
 
 // Text
-$_['text_extension']    = 'Расширения';
-$_['text_success']      = 'Настройки успешно изменены!';
-$_['text_list']         = 'Список клиентов online';
+$_['text_extension']    = 'Модули';
+$_['text_success']      = 'Вы успешно изменили отчеты по онлайну!';
+$_['text_list']         = 'Список';
 $_['text_filter']       = 'Фильтр';
-$_['text_guest']        = 'Гость';
+$_['text_guest']        = 'гость';
 
 // Column
 $_['column_ip']         = 'IP';
 $_['column_customer']   = 'Клиент';
-$_['column_url']        = 'Последняя просмотренная страница';
-$_['column_referer']    = 'Откуда перешел';
+$_['column_url']        = 'Последняя страница';
+$_['column_referer']    = 'Источник';
 $_['column_date_added'] = 'Последний клик';
 $_['column_action']     = 'Действие';
 
@@ -21,8 +21,7 @@ $_['column_action']     = 'Действие';
 $_['entry_ip']          = 'IP';
 $_['entry_customer']    = 'Клиент';
 $_['entry_status']      = 'Статус';
-$_['entry_sort_order']  = 'Порядок сортировки';
+$_['entry_sort_order']  = 'Порядок';
 
 // Error
-$_['error_permission']  = 'У Вас нет прав для управления отчетом!';
-
+$_['error_permission']  = 'Внимание: У вас нет разрешения изменять настройки!';
