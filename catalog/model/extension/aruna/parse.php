@@ -25,13 +25,26 @@ class ModelExtensionArunaParse extends Model {
     }
     
     private function prepare_parsing($sync_id){
-	$this->db->query("DROP  TABLE IF EXISTS baycik_tmp_previous_sync");#TEMPORARY
-	$this->db->query("CREATE  TABLE baycik_tmp_previous_sync AS (SELECT * FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id='$sync_id')");
+	$this->db->query("DROP TEMPORARY TABLE IF EXISTS baycik_tmp_previous_sync");#TEMPORARY
+	$this->db->query("CREATE TEMPORARY TABLE baycik_tmp_previous_sync AS (SELECT * FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id='$sync_id')");
 	$clear_previous_sync_sql = "DELETE FROM ".DB_PREFIX."baycik_sync_entries WHERE sync_id = '$sync_id'";
 	$this->db->query($clear_previous_sync_sql);
     }
     private function finish_parsing($sync_id){
-	$remove_duplicate_rows="";
+	$change_finder1_sql="
+	    UPDATE 
+		".DB_PREFIX."baycik_sync_entries 
+	    SET 
+		is_changed = 1;";
+	$change_finder2_sql="
+	    UPDATE
+		".DB_PREFIX."baycik_sync_entries bse
+		    JOIN
+		baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
+	    SET
+		bse.is_changed=0;";
+	$this->db->query($change_finder1_sql);
+	$this->db->query($change_finder2_sql);
     }
     
     

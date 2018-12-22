@@ -1,23 +1,108 @@
 <?php
 
 class ModelExtensionArunaImport extends Model {
-    private $sync_id;
 
     public function __construct($registry) {
         parent::__construct($registry);
         $this->language_id = (int) $this->config->get('config_language_id');
         $this->store_id = (int) $this->config->get('config_store_id');
     }
-    
-    public function importSellerProduct($seller_id,$sync_id,$group_id=null){
-	$this->seller_id=$seller_id;
-	$this->sync_id=$sync_id;
-	$group_filter='';
-	if( $group_id ){
-	    $group_filter="AND group_id = '$group_id'";//if group_id is defined there will be only one row!
-	}
+
+    private function createNeededProductProperties($sync_id) {
+        $result = $this->db->query("SELECT sync_config FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$sync_id'");
+        if (!$result->row || !$result->row['sync_config']) {
+            return false;
+        }
+        $this->sync_config = json_decode($result->row['sync_config'], false, 512, JSON_UNESCAPED_UNICODE);
+        if (isset($this->sync_config->filters)) {
+            $this->load_admin_model('catalog/filter');
+            foreach ($this->sync_config->filters as &$filter) {
+                $row = $this->db->query("SELECT filter_group_id FROM " . DB_PREFIX . "filter_group_description WHERE name='{$filter->name}'")->row;
+                if ($row && $row['filter_group_id']) {
+                    $filter->filter_group_id = $row['filter_group_id'];
+                } else {
+                    $data = [
+                        'sort_order' => 1,
+                        'filter_group_description' => [
+                            $this->language_id => [
+                                'name' => $filter->name
+                            ]
+                        ]
+                    ];
+                    $filter->filter_group_id = $this->model_catalog_filter->addFilter($data);
+                }
+            }
+        }        
+        if (isset($this->sync_config->attributes)) {
+            $this->load_admin_model('catalog/attribute_group');
+            foreach ($this->sync_config->attributes as &$attribute) {
+                $row = $this->db->query("SELECT attribute_group_id FROM " . DB_PREFIX . "attribute_group_description WHERE name='{$attribute->name}'")->row;
+                if ($row && $row['attribute_group_id']) {
+                    $attribute->attribute_group_id = $row['attribute_group_id'];
+                } else {
+                    $data = [
+                        'sort_order' => 1,
+                        'attribute_group_description' => [
+                            $this->language_id => [
+                                'name' => $attribute->name
+                            ]
+                        ]
+                    ];
+                    $attribute->attribute_group_id = $this->model_catalog_attribute_group->addAttributeGroup($data);
+                }
+            }
+        }
+        if (isset($this->sync_config->options)) {
+            $this->load_admin_model('catalog/option');
+            foreach ($this->sync_config->options as &$option) {
+                $row = $this->db->query("SELECT o.option_id FROM `" . DB_PREFIX . "option` o LEFT JOIN " . DB_PREFIX . "option_description od ON (o.option_id = od.option_id) WHERE od.language_id = '{$this->language_id}' AND od.name='{$option->name}'")->row;
+                if ($row && $row['option_id']) {
+                    $option->option_id = $row['option_id'];
+                } else {
+                    $data = [
+                        'sort_order' => 1,
+                        'type' => $option->option_type,
+                        'option_description' => [
+                            $this->language_id => [
+                                'name' => $option->name
+                            ]
+                        ]
+                    ];
+                    $option->option_id = $this->model_catalog_option->addOption($data);
+                }
+            }
+        }
+    }
+
+     public function getTotalImportCategories($sync_id) {
         $sql = "
-            SELECT 
+            SELECT  
+                group_id,
+                destination_category_id
+            FROM
+               " . DB_PREFIX . "baycik_sync_groups
+            WHERE
+                destination_category_id IS NOT NULL
+                AND destination_category_id != 0
+                AND sync_id = '$sync_id'
+            ";
+        $result = $this->db->query($sql);
+        $total = [
+            'total_rows'=>$result->num_rows,
+            'groups'=>[]    
+        ];
+        foreach ($result->rows as $row){
+            array_push($total['groups'], $row['group_id']);
+        }
+        return $total;
+    }
+    
+    
+    
+    public function importUserProducts($sync_id, $group_id) {
+        $this->createNeededProductProperties($sync_id);
+        $sql = "
+            SELECT  
                 category_lvl1,
                 category_lvl2,
                 category_lvl3,
@@ -29,44 +114,38 @@ class ModelExtensionArunaImport extends Model {
                 destination_category_id IS NOT NULL
                 AND destination_category_id != 0
                 AND sync_id = '$sync_id'
-                $group_filter  
+                AND group_id = '$group_id'   
             ";
         $result = $this->db->query($sql);
-	if( !$result->num_rows ){
-	    return false;
-	}
-	$ok=1;
-	foreach($result->rows as $group_data){
-	    $ok*=$this->importSellerProductGroup($seller_id,$group_data);
-	}
-	return $ok;
+        $ok = $this->importCategory($result->row);
+        if (!$ok) {
+            return false;
+        }
+        return true;
     }
     
-    private function importSellerProductGroup($seller_id,$group_data) {
+
+    public function importCategory($data) {
         $sql = "
             SELECT 
                 bse.*,
-		(SELECT product_id FROM ".DB_PREFIX."product p JOIN ".DB_PREFIX."purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id,
+                product_id,
                 GROUP_CONCAT(option1 SEPARATOR '|') AS option_group1,
                 GROUP_CONCAT(price1 SEPARATOR '|') AS price_group1,
-                MIN(price1) AS price,
-		MAX(is_changed) AS product_is_changed
+                MIN(price1) AS price
             FROM
-                ".DB_PREFIX."baycik_sync_entries AS bse
+                " . DB_PREFIX . "baycik_sync_entries AS bse
+                LEFT JOIN 
+                " . DB_PREFIX . "product USING(model)
             WHERE
-                category_lvl1 = '{$group_data['category_lvl1']}'
-                AND category_lvl2 = '{$group_data['category_lvl2']}'
-                AND category_lvl3 = '{$group_data['category_lvl3']}'
+                category_lvl1 = '{$data['category_lvl1']}'
+                AND category_lvl2 = '{$data['category_lvl2']}'
+                AND category_lvl3 = '{$data['category_lvl3']}'
             GROUP BY model
-	    HAVING product_is_changed
             ";
-        $rows = $this->db->query($sql)->rows;
-	if( !$rows ){
-	    return true;
-	}
-        $this->createNeededProductProperties($this->sync_id);
-        foreach ($rows as $row) {
-            $product = $this->composeProductObject($row, $group_data['comission'], $group_data['destination_category_id']);
+        $rows = $this->db->query($sql);
+        foreach ($rows->rows as $row) {
+            $product = $this->composeProductObject($row, $data['comission'], $data['destination_category_id']);
             if ($row['product_id']) {
                 $product['product_id'] = $row['product_id'];
                 $this->importProductUpdate($product); //is this right???
@@ -75,17 +154,18 @@ class ModelExtensionArunaImport extends Model {
             }
         }
         $this->reorderOptions();
-        $this->assignFiltersToCategory($group_data['destination_category_id']);
+        $this->assignFiltersToCategory($data['destination_category_id']);
         return true;
     }
-    private function importProductAdd($item) {
+    public function importProductAdd($item) {
         $this->load_admin_model('catalog/product');
         $product_id = $this->model_catalog_product->addProduct($item);
         $sql = "
             INSERT INTO
                 " . DB_PREFIX . "purpletree_vendor_products
             SET
-                seller_id = '$this->seller_id',
+                id = '',
+                seller_id = '2',
                 product_id = '$product_id',
                 is_approved = '0',
                 created_at = NOW(),
@@ -94,37 +174,11 @@ class ModelExtensionArunaImport extends Model {
         return $this->db->query($sql);
     }
 
-    private function importProductUpdate($item) {
+    public function importProductUpdate($item) {
         $this->load_admin_model('catalog/product');
         return $this->model_catalog_product->editProduct($item['product_id'], $item);
     }
     
-    public function deleteAbsentSellerProducts($seller_id){
-	set_time_limit(300);
-	$sql="SELECT 
-		    product_id
-		FROM
-		    ".DB_PREFIX."product p
-			JOIN
-		    ".DB_PREFIX."purpletree_vendor_products vp USING (product_id)
-			LEFT JOIN
-		    ".DB_PREFIX."baycik_sync_entries bse USING(model)
-			LEFT JOIN
-		    ".DB_PREFIX."baycik_sync_list sl ON bse.sync_id =sl.sync_id AND sl.seller_id='$seller_id'
-		WHERE
-		    vp.seller_id = '$seller_id'
-		    AND sl.sync_id IS NULL
-		";
-	$result=$this->db->query($sql);
-	if( !$result->num_rows ){
-	    return true;
-	}
-	$this->load_admin_model('catalog/product');
-	foreach($result->rows as $product){
-	    $this->model_catalog_product->deleteProduct($product['product_id']);
-	}
-	return true;
-    }
     
     private $filterCategoryIds=[];
     private function assignFiltersToCategory($category_id){
@@ -425,7 +479,7 @@ class ModelExtensionArunaImport extends Model {
             'sku' => '',
             'upc' => '',
             'ean' => '',
-            'jan' => $this->sync_id,
+            'jan' => '',
             'isbn' => '',
             'mpn' => '',
             'location' => '',
@@ -496,92 +550,5 @@ class ModelExtensionArunaImport extends Model {
             throw new \Exception('Error: Could not load model ' . $route . '!');
         }
     }
-    private function createNeededProductProperties($sync_id) {
-        $result = $this->db->query("SELECT sync_config FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$sync_id'");
-        if (!$result->row || !$result->row['sync_config']) {
-            return false;
-        }
-        $this->sync_config = json_decode($result->row['sync_config'], false, 512, JSON_UNESCAPED_UNICODE);
-        if (isset($this->sync_config->filters)) {
-            $this->load_admin_model('catalog/filter');
-            foreach ($this->sync_config->filters as &$filter) {
-                $row = $this->db->query("SELECT filter_group_id FROM " . DB_PREFIX . "filter_group_description WHERE name='{$filter->name}'")->row;
-                if ($row && $row['filter_group_id']) {
-                    $filter->filter_group_id = $row['filter_group_id'];
-                } else {
-                    $data = [
-                        'sort_order' => 1,
-                        'filter_group_description' => [
-                            $this->language_id => [
-                                'name' => $filter->name
-                            ]
-                        ]
-                    ];
-                    $filter->filter_group_id = $this->model_catalog_filter->addFilter($data);
-                }
-            }
-        }        
-        if (isset($this->sync_config->attributes)) {
-            $this->load_admin_model('catalog/attribute_group');
-            foreach ($this->sync_config->attributes as &$attribute) {
-                $row = $this->db->query("SELECT attribute_group_id FROM " . DB_PREFIX . "attribute_group_description WHERE name='{$attribute->name}'")->row;
-                if ($row && $row['attribute_group_id']) {
-                    $attribute->attribute_group_id = $row['attribute_group_id'];
-                } else {
-                    $data = [
-                        'sort_order' => 1,
-                        'attribute_group_description' => [
-                            $this->language_id => [
-                                'name' => $attribute->name
-                            ]
-                        ]
-                    ];
-                    $attribute->attribute_group_id = $this->model_catalog_attribute_group->addAttributeGroup($data);
-                }
-            }
-        }
-        if (isset($this->sync_config->options)) {
-            $this->load_admin_model('catalog/option');
-            foreach ($this->sync_config->options as &$option) {
-                $row = $this->db->query("SELECT o.option_id FROM `" . DB_PREFIX . "option` o LEFT JOIN " . DB_PREFIX . "option_description od ON (o.option_id = od.option_id) WHERE od.language_id = '{$this->language_id}' AND od.name='{$option->name}'")->row;
-                if ($row && $row['option_id']) {
-                    $option->option_id = $row['option_id'];
-                } else {
-                    $data = [
-                        'sort_order' => 1,
-                        'type' => $option->option_type,
-                        'option_description' => [
-                            $this->language_id => [
-                                'name' => $option->name
-                            ]
-                        ]
-                    ];
-                    $option->option_id = $this->model_catalog_option->addOption($data);
-                }
-            }
-        }
-    }
 
-     public function getTotalImportCategories($sync_id) {
-        $sql = "
-            SELECT  
-                group_id,
-                destination_category_id
-            FROM
-               " . DB_PREFIX . "baycik_sync_groups
-            WHERE
-                destination_category_id IS NOT NULL
-                AND destination_category_id != 0
-                AND sync_id = '$sync_id'
-            ";
-        $result = $this->db->query($sql);
-        $total = [
-            'total_rows'=>$result->num_rows,
-            'groups'=>[]    
-        ];
-        foreach ($result->rows as $row){
-            array_push($total['groups'], $row['group_id']);
-        }
-        return $total;
-    }
 }
