@@ -129,6 +129,7 @@ class ModelExtensionModuleSomegamenu extends Model {
 				);
 				
 				$results = array();
+                                
 				switch ($type_product) {
 					case 'new':
 						$results = $this->model_catalog_product->getLatestProducts($limit_product);

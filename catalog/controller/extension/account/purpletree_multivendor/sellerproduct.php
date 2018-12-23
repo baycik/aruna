@@ -15,8 +15,8 @@ class ControllerExtensionAccountPurpletreeMultivendorSellerproduct extends Contr
 		$this->load->language('purpletree_multivendor/metals_spot_price');
 		
 		$this->document->setTitle($this->language->get('heading_title'));
-		
-		$this->load->model('extension/purpletree_multivendor/sellerproduct');
+                
+                $this->load->model('extension/purpletree_multivendor/sellerproduct');
 		
 		$this->getList();
 	}	
@@ -147,6 +147,8 @@ class ControllerExtensionAccountPurpletreeMultivendorSellerproduct extends Contr
 		$data['entry_category_featured_product'] = $this->language->get('entry_category_featured_product');
 		/////// End category featured and featured product /////////
 		$data['metals_product'] = 0;
+                
+                
 		if ($this->config->get('module_purpletree_multivendor_allow_metals_product')) {
 			$data['metals_product'] = $this->config->get('module_purpletree_multivendor_allow_metals_product');
 		}		
@@ -1127,6 +1129,7 @@ class ControllerExtensionAccountPurpletreeMultivendorSellerproduct extends Contr
 				'quantity'   => $result['quantity'],
 				'status'     => $result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),
 				'is_approved'     => $result['is_approved'] ? $this->language->get('text_yes') : $this->language->get('text_no'),
+                                'edit_link'  => $this->url->link('extension/aruna/sellerproductedit' . '&product_id=' . $result['product_id'])
 			);
 		}
 
@@ -1193,6 +1196,7 @@ class ControllerExtensionAccountPurpletreeMultivendorSellerproduct extends Contr
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
+		
 		$this->response->setOutput($this->load->view('account/purpletree_multivendor/product_list', $data));
 	}
 	

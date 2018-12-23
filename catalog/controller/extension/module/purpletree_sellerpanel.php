@@ -27,7 +27,7 @@ class ControllerExtensionModulePurpletreeSellerpanel extends Controller {
 				$data['sellerprofile'] = $this->url->link('account/edit', '', true);
 				$data['sellerstore'] = $this->url->link('extension/account/purpletree_multivendor/sellerstore', '', true);
 				$data['dashboardicons'] = $this->url->link('extension/account/purpletree_multivendor/dashboardicons', '', true);
-				$data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
+				$data['sellerproduct'] = $this->url->link('extension/aruna/sellerproduct', '', true);
 				$orderstatus = 0;
 				if(null !== $this->config->get('module_purpletree_multivendor_commission_status')) {
 					$orderstatus = $this->config->get('module_purpletree_multivendor_commission_status');

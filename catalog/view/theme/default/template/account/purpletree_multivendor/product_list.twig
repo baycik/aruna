@@ -83,7 +83,8 @@
                   <td class="pts-text-right">{{ column_price }}</td>
                   <td class="pts-text-right">{{ column_quantity }}</td>
                   <td class="pts-text-left">{{ column_status }}</td>
-                  <td class="pts-text-left">{{ column_approved }}</td>
+                  <td class="pts-text-left"> {{ column_approved }}</td>
+                  <td class="pts-text-left">{{ column_action }}</td>
                 </tr>
               </thead>
               <tbody>
@@ -117,6 +118,7 @@
                     {% endif %}</td>
                   <td class="pts-text-left">{{ product.status }}</td>
                   <td class="pts-text-left">{{ product.is_approved }}</td>
+                  <td class="text-right"><a href="{{ product.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
                 </tr>
                 {% endfor %}
                 {% else %}
