@@ -5,7 +5,7 @@
         margin-top: 10px;
         border: 2px solid lightgray;
     }
-    
+
     input{
         background-color:white;
     }
@@ -21,139 +21,180 @@
     .btn.btn-outline-secondary{
         border-radius:0px;
     }
-    
-    
-    
+
+
+
 </style>
 
 {{ header }}
 
 <div class="pts-container">
-  <ul class="pts-breadcrumb">
-	{% for breadcrumb in breadcrumbs %}
-    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-	{% endfor %}
-  </ul>
-  <div class="successdiv">
-  {% if success %}
-  <div class="alert pts-alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>
-	{% endif %}
-   </div>
-   <div class="errordiv">
-	{% if error_warning %}
-  <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
-	{% endif %}
-	</div>
-  <div class="pts-row">{{ column_left }}
-	{% if column_left and column_right %}
-    {% set class = 'pts-col-sm-6' %}
-    {% elseif column_left or column_right %}
-    {% set class = 'pts-col-sm-9' %}
-    {% else %}
-    {% set class = 'pts-col-sm-12' %}
-    {% endif %}
-    <div id="content" class="{{ class }}">{{ content_top }}
-      <button type="submit" id="button-import" class="btn btn-primary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> {{button_import}}</button>  
+    <ul class="pts-breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+            {% endfor %}
+    </ul>
+    <div class="successdiv">
+        {% if success %}
+            <div class="alert pts-alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>
+        {% endif %}
+    </div>
+    <div class="errordiv">
+        {% if error_warning %}
+            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+        {% endif %}
+    </div>
+    <div class="pts-row">{{ column_left }}
+        {% if column_left and column_right %}
+            {% set class = 'pts-col-sm-6' %}
+        {% elseif column_left or column_right %}
+            {% set class = 'pts-col-sm-9' %}
+        {% else %}
+            {% set class = 'pts-col-sm-12' %}
+        {% endif %}
+        <div id="content" class="{{ class }}">{{ content_top }}
+            <button style="width:100%" type="button" id="button-import" class="btn btn-secondary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> {{button_import}}</button>  
+            <div class="progress-header" style="margin-top: 15px; margin-bottom:15px"></div>
+            <div class="progress" style="height: 10px">
+                <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <hr>
+            <form method="post" action="{{url}}"> 
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:90%"><input type="text" class="form-control" name="filter_name" value="{{ filter_name }}" placeholder="{{text_input_category}}"/></td>
+                        <td style="min-width: 90px"><button class="btn btn-primary" style="width:100%;padding: 12px;"><i class="fa fa-search"></i></button></td>
+                    </tr>
+                </table>
+            </form>
+            <div class="form-group"> 
+                <form action="" method="post" enctype="multipart/form-data" id="form-import">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <td style="" class="text-center" colspan="3">{{text_category_name}}</td>
+                                    <td style="" class="text-left">{{text_total_products}}</td>
+                                    <td class="text-left">{{text_comission}}</td>
+                                    <td class="text-left">{{text_dest_cat}}</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if categories %}
+                                    {% for category in categories %}
+                                        <tr class="x-form-row {% if category.destination_category_id %}selected-row{% endif %}">
+                                            <td class="text-left">{{ category.category_lvl1 }}</td>
+                                            <td class="text-left">{{ category.category_lvl2 }}</td>
 
-        <div class="form-group>" 
-                <div class="input-group mb-10" >
-                    <form method="get" action="index.php">  
-                        <input type="text" class="form-control" name="filter_name" value="{{ filter_name }}" placeholder="{{text_input_category}}"/>
-                        <input type="hidden" name="route" 
-                               value="extension/aruna/sellersync"/>
-                        <div class="input-group-append" >
-                          <button class="btn btn-outline-secondary"><i class="fa fa-search"></i></button>
-                        </div>
-                     </form>
-                </div>           
-        <form action="" method="post" enctype="multipart/form-data" id="form-import">
-          <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-              <thead>
-                <tr>
-                  <td style="width: 1px;" class="text-center" colspan="3">{{text_category_name}}</td>
-                  <td style="width: 1px;" class="text-left">{{text_total_products}}</td>
-                  <td class="text-left">{{text_comission}}</td>
-                  <td class="text-left">{{text_dest_cat}}</td>
-                </tr>
-              </thead>
-              <tbody>
-        {% if categories %}
-                {% for category in categories %}
-                <tr class="x-form-row">
-                  <td class="text-left">{{ category.category_lvl1 }}</td>
-                  <td class="text-left">{{ category.category_lvl2 }}</td>
-                      
-                  <td class="text-left">{{ category.category_lvl3 }}</td>
-                  <td class="text-left">{{ category.total_products }}</td>
-                  <td class="text-left">
-                        <input style=""  type="text" name="category_comission" value="{{ category_comission }}" placeholder="%" id="input-quantity" class="pts-form-control" />
-                  </td>
-                  <td class="text-left">
-                        <select name="destination_category" >
-                                
-                                <option value="">{{text_skip}}</option>
-                                {% for allowed_category in destination_categories %}
-                                        <option  value="{{ allowed_category.category_id }}" {% if category.destination_category_id == allowed_category.category_id %} {{ 'selected' }} {% endif %}>{{ allowed_category.category_path }}</option>
-                                {% endfor %}
-                        </select>
-                  </td>
-                  <td>
-                      <input type="hidden" name="group_id" value="{{ category.group_id }}"/>
-                  </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                  <td class="text-center" colspan="11">{{ text_no_results }}</td>
-                </tr>
-                {% endif %}
-              </tbody>
-            </table>
-          </div>
-        </form>
-        <div class="row">
-          <div class="col-sm-6 pts-text-left">{{ pagination }}</div>
-          <div class="col-sm-6 pts-text-right">{{ results }}</div>
-            
-        </div>
-      {{ content_bottom }}</div>
-    {{ column_right }}</div>
+                                            <td class="text-left">{{ category.category_lvl3 }}</td>
+                                            <td class="text-left">{{ category.total_products }}</td>
+                                            <td class="text-left">
+                                                <input style=""  type="text" name="category_comission" value="{{ category.comission }}" placeholder="%" id="input-quantity" class="pts-form-control" />
+                                            </td>
+                                            <td class="text-left">
+                                                <select name="destination_category" >
+
+                                                    <option value="">{{text_skip}}</option>
+                                                    {% for allowed_category in destination_categories %}
+                                                        <option  value="{{ allowed_category.category_id }}" {% if category.destination_category_id == allowed_category.category_id %} {{ 'selected' }} {% endif %}>{{ allowed_category.category_path }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <input type="hidden" name="group_id" value="{{ category.group_id }}"/>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td class="text-center" colspan="10">{{ text_no_results }}</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col-sm-6 pts-text-left">{{ pagination }}</div>
+                    <div class="col-sm-6 pts-text-right">{{ results }}</div>
+
+                </div>
+                {{ content_bottom }}</div>
+            {{ column_right }}</div>
+    </div>
+    <script type="text/javascript">
+	var sync_id = "{{sync_id}}";
+	var seller_id = "{{seller_id}}";
+	$("#form-import input,#form-import select").on('change', function (e) {
+	    e.preventDefault();
+	    var row_node = $(e.target).parent().parent();
+	    var item = {
+		group_id: row_node.find('input[name=group_id]').val(),
+		category_comission: row_node.find('input[name=category_comission]').val().replace(/[^\d\.]/g, ''),
+		destination_category_id: row_node.find('select[name=destination_category]').val()
+	    };
+
+	    if (item.destination_category_id > 0) {
+		row_node.addClass('selected-row');
+	    } else {
+		row_node.removeClass('selected-row');
+	    }
+	    $.post('index.php?route=extension/aruna/sellersync/saveImportPrefs', {data: JSON.stringify(item)}, function (ok) {
+		if (!ok * 1) {
+		    alert("Возникла ошибка сохранения");
+		}
+		;
+	    });
+	});
+
+	var step_size = 0;
+	var current_progress = 0;
+
+	$("#button-import").on('click', function () {
+	    if (confirm('Вы уверены, что готовы начать импорт?')) {
+		$('.progress-header').html('Начинаем импортировать...');
+		$('#spinner_icon').show();
+		$(".btn-secondary").attr('disabled', '');
+		$.post('index.php?route=extension/aruna/sellersync/getTotalImportCategories', {sync_id: sync_id}, function (total) {
+		    var totalCategories = JSON.parse(total);
+		    step_size = 100 / totalCategories.total_rows;
+		    $('.progress-header').val('Идет процесс импорта товаров...Импортировано ' + Math.round(current_progress) + '% товаров');
+		    continueImport(totalCategories);
+		});
+	    }
+	});
+
+	function continueImport(totalCategories) {
+	    if (totalCategories.total_rows == 0) {
+		$('.progress-bar').width('100%');
+		$('.progress-header').html('Удаление отсутствующих товаров...');
+		$.post('index.php?route=extension/aruna/sellersync/deleteAbsentSellerProducts').done(function(){
+		    $('.progress-header').html('Импорт завершен');
+		    $('#spinner_icon').hide();
+		    $(".btn-secondary").attr('disabled', null);
+		    alert('Импорт завершен успешно!');
+		});
+		return;
+	    }
+	    $.post('index.php?route=extension/aruna/sellersync/importUserProducts', {sync_id: sync_id, group_id: totalCategories.groups[0]}, function (ok) {
+		if (ok && totalCategories.total_rows > 0) {
+		    current_progress += step_size;
+		    totalCategories.total_rows -= 1;
+		    totalCategories.groups.shift()
+		    $('.progress-header').html('Идет процесс импорта товаров...Импортировано ' + Math.round(current_progress) + '% товаров');
+		    $('.progress-bar').width(current_progress + '%');
+		    continueImport(totalCategories);
+		} else {
+		    $('#spinner_icon').hide();
+		    $(".btn-secondary").attr('disabled', null);
+		    alert('Ошибка импорта!');
+		}
+	    });
+	}
+
+    </script>
+    <style>
+        .selected-row{
+            background-color:#ffc
+        }
+    </style>
 </div>
-<script type="text/javascript">
-
-
-var seller_id="{{seller_id}}";
-$("#form-import input,#form-import select").on('change',function(e){
-    e.preventDefault();
-    var fvalue=[];
-    $("#form-import .x-form-row").each(function(index,value){
-        var item={
-            group_id: $(this).find('input[name=group_id]').val(),
-            category_comission: $(this).find('input[name=category_comission]').val().replace(/[^\d\.]/g,''),
-            destination_category_id: $(this).find('select[name=destination_category]').val()
-        };
-        fvalue.push(item);
-    });
-    $.post('index.php?route=extension/aruna/sellersync/saveImportPrefs', {data: JSON.stringify(fvalue),seller_id:seller_id}, function(ok){
-        if(ok){
-            return;
-        };
-    });
-});
-
-$("#button-import").on('click',function(){
-   $('#spinner_icon').show();
-   $.post('index.php?route=extension/aruna/sellersync/importUserProducts', {}, function(){
-        
-            $('#spinner_icon').hide();   
-            console.log('hide');
-            return;
-    });
-});
-
-</script>
-<style>
-  
-</style>
 {{ footer }}

@@ -2,6 +2,8 @@
 
 class ModelExtensionArunaImport extends Model {
     private $sync_id;
+    private $meta_description_prefix="Купить в симферополе ";
+    private $meta_keyword_prefix="Крым,Симферополь,купить,";
 
     public function __construct($registry) {
         parent::__construct($registry);
@@ -35,11 +37,10 @@ class ModelExtensionArunaImport extends Model {
 	if( !$result->num_rows ){
 	    return false;
 	}
-	$ok=1;
 	foreach($result->rows as $group_data){
-	    $ok*=$this->importSellerProductGroup($seller_id,$group_data);
+	    $this->importSellerProductGroup($seller_id,$group_data);
 	}
-	return $ok;
+	return true;
     }
     
     private function importSellerProductGroup($seller_id,$group_data) {
@@ -62,7 +63,7 @@ class ModelExtensionArunaImport extends Model {
             ";
         $rows = $this->db->query($sql)->rows;
 	if( !$rows ){
-	    return true;
+	    return 1;
 	}
         $this->createNeededProductProperties($this->sync_id);
         foreach ($rows as $row) {
@@ -76,7 +77,7 @@ class ModelExtensionArunaImport extends Model {
         }
         $this->reorderOptions();
         $this->assignFiltersToCategory($group_data['destination_category_id']);
-        return true;
+        return 1;
     }
     private function importProductAdd($item) {
         $this->load_admin_model('catalog/product');
@@ -411,9 +412,9 @@ class ModelExtensionArunaImport extends Model {
             $this->language_id => [
                 'name' => $row['product_name'],
                 'description' => $row['description'],
-                'meta_title' => $row['category_lvl3'] . ' ' . $row['manufacturer'],
-                'meta_description' => $row['description'],
-                'meta_keyword' => $row['product_name'],
+                'meta_title' => strip_tags($row['category_lvl3'] . ' ' . $row['manufacturer']),
+                'meta_description' => $this->meta_description_prefix.strip_tags($row['description']),
+                'meta_keyword' => $this->meta_keyword_prefix. str_replace(' ',',',strip_tags($row['product_name'])),
                 'tag' => '',
             ]
         ];
