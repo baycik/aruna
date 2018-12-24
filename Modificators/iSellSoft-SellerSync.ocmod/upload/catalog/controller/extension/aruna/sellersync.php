@@ -176,9 +176,27 @@ class ControllerExtensionArunaSellersync extends Controller {
         
         $sync_id=$this->request->post['sync_id'];
         $group_id=$this->request->post['group_id'];
+	$seller_id = $this->customer->getId();
         $this->load->model('extension/aruna/import');
-	$ok=$this->model_extension_aruna_import->importUserProducts($sync_id, $group_id);
+	$ok=$this->model_extension_aruna_import->importSellerProduct($seller_id,$sync_id, $group_id);
         die($ok);
+    }
+    
+    public function deleteAbsentSellerProducts(){
+	if (!$this->customer->isLogged()) {
+	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellersync', '', true);
+
+	    die('Access denied');
+	}
+	$store_detail = $this->customer->isSeller();
+	if (!isset($store_detail['store_status'])) {
+	    die('Access denied');
+	}
+
+        $seller_id = $this->customer->getId();
+        $this->load->model('extension/aruna/import');
+	$ok=$this->model_extension_aruna_import->deleteAbsentSellerProducts($seller_id);
+	die($ok);
     }
     
     public function getTotalImportCategories() {

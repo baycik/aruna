@@ -1,76 +1,4 @@
 <?php
-
-/**/
-
-$create_table = "CREATE TABLE `oc_baycik_sync_entries` (
-  `sync_entry_id` int(11) NOT NULL AUTO_INCREMENT,
-  `sync_id` int(11) DEFAULT NULL,
-  `category_lvl1` varchar(45) DEFAULT NULL,
-  `category_lvl2` varchar(45) DEFAULT NULL,
-  `category_lvl3` varchar(45) DEFAULT NULL,
-  `product_name` varchar(255) DEFAULT NULL,
-  `model` varchar(64) DEFAULT NULL,
-  `url` varchar(512) DEFAULT NULL,
-  `description` varchar(2048) DEFAULT NULL,
-  `min_order_size` varchar(45) DEFAULT NULL,
-  `stock_count` varchar(45) DEFAULT NULL,
-  `stock_status` varchar(45) DEFAULT NULL,
-  `manufacturer` varchar(45) DEFAULT NULL,
-  `origin_country` varchar(45) DEFAULT NULL,
-  `attribute1` varchar(100) DEFAULT NULL,
-  `attribute2` varchar(100) DEFAULT NULL,
-  `attribute3` varchar(100) DEFAULT NULL,
-  `attribute4` varchar(100) DEFAULT NULL,
-  `attribute5` varchar(100) DEFAULT NULL,
-  `option1` varchar(45) DEFAULT NULL,
-  `option2` varchar(45) DEFAULT NULL,
-  `option3` varchar(45) DEFAULT NULL,
-  `image` varchar(512) DEFAULT NULL,
-  `image1` varchar(512) DEFAULT NULL,
-  `image2` varchar(512) DEFAULT NULL,
-  `image3` varchar(512) DEFAULT NULL,
-  `image4` varchar(512) DEFAULT NULL,
-  `image5` varchar(512) DEFAULT NULL,
-  `price1` float DEFAULT NULL,
-  `price2` float DEFAULT NULL,
-  `price3` float DEFAULT NULL,
-  `price4` float DEFAULT NULL,
-  PRIMARY KEY (`sync_entry_id`),
-  KEY `index2` (`category_lvl1`,`category_lvl2`,`category_lvl3`),
-  KEY `index3` (`model`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `oc_baycik_sync_groups` (
-  `group_id` int(11) NOT NULL AUTO_INCREMENT,
-  `sync_id` int(11) DEFAULT NULL,
-  `category_path` varchar(602) DEFAULT NULL,
-  `category_lvl1` varchar(200) DEFAULT NULL,
-  `category_lvl2` varchar(200) DEFAULT NULL,
-  `category_lvl3` varchar(200) DEFAULT NULL,
-  `total_products` int(11) DEFAULT NULL,
-  `comission` int(11) DEFAULT NULL,
-  `destination_category_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`group_id`),
-  UNIQUE KEY `category_path_UNIQUE` (`category_path`,`sync_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=256 DEFAULT CHARSET=utf8 COMMENT='';
-
-CREATE TABLE `oc_baycik_sync_list` (
-  `sync_id` int(11) NOT NULL AUTO_INCREMENT,
-  `seller_id` int(11) DEFAULT NULL,
-  `sync_name` varchar(45) DEFAULT NULL,
-  `sync_parser_name` varchar(45) DEFAULT NULL,
-  `sync_config` text,
-  `sync_last_started` datetime DEFAULT NULL,
-  PRIMARY KEY (`sync_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-
-
-";
-
 class ModelExtensionArunaParse extends Model {
 
     public function __construct($registry) {
@@ -84,13 +12,44 @@ class ModelExtensionArunaParse extends Model {
         if( !$sync ){
             return false;
         }
-        $method='parse_'.$sync['sync_parser_name'];
-        $this->$method($sync);
+	$sync_id = $sync['sync_id'];
+	$this->prepare_parsing($sync_id);
+	
+        $parser_method='parse_'.$sync['sync_parser_name'];
+        $this->$parser_method($sync);
+	
+	$this->finish_parsing($sync_id);
+	
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_last_started=NOW() WHERE sync_id='{$sync['sync_id']}'");
         return true;
     }
     
-    public function parse_happywear($sync) {
+    private function prepare_parsing($sync_id){
+	$this->db->query("DROP TEMPORARY TABLE IF EXISTS baycik_tmp_previous_sync");#TEMPORARY
+	$this->db->query("CREATE TEMPORARY TABLE baycik_tmp_previous_sync AS (SELECT * FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id='$sync_id')");
+	$clear_previous_sync_sql = "DELETE FROM ".DB_PREFIX."baycik_sync_entries WHERE sync_id = '$sync_id'";
+	$this->db->query($clear_previous_sync_sql);
+    }
+    private function finish_parsing($sync_id){
+	$change_finder1_sql="
+	    UPDATE 
+		".DB_PREFIX."baycik_sync_entries 
+	    SET 
+		is_changed = 1;";
+	$change_finder2_sql="
+	    UPDATE
+		".DB_PREFIX."baycik_sync_entries bse
+		    JOIN
+		baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
+	    SET
+		bse.is_changed=0;";
+	$this->db->query($change_finder1_sql);
+	$this->db->query($change_finder2_sql);
+    }
+    
+    
+    
+    private function parse_happywear($sync) {
         set_time_limit(300);
 	$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
 	if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
@@ -99,12 +58,9 @@ class ModelExtensionArunaParse extends Model {
         
 	$sync_id = $sync['sync_id'];
         
-	$presql = "
-            DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id = '$sync_id'
-            ";
-	$this->db->query($presql);
+
 	$sql = "
-            LOAD DATA LOCAL INFILE 
+            LOAD DATA INFILE 
                 '$tmpfile'
             INTO TABLE 
                 " . DB_PREFIX . "baycik_sync_entries
@@ -118,19 +74,18 @@ class ModelExtensionArunaParse extends Model {
                 category_lvl3 = '',      
                 product_name = CONCAT(@col4,' ',@col7,' ',@col5), 
                 model = CONCAT(@col3,' ',@col5), 
+                mpn='@col14',
                 manufacturer = @col7,  
                 origin_country = @col8,                     
                 url = @col10, 
                 description = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@col12,'{{emoji_183}}',''),'{{emoji_6}}',''),'{{emoji_9}}',''),'{{emoji_104}}',''),'{{emoji_223}}',''),'{{emoji_55}}',''),'{{emoji_271}}',''),'{{emoji_137}}',''),'{{emoji_147}}',''),'{{emoji_40}}',''),'{{emoji_66}}',''),'{{emoji_284}}',''),'{{emoji_239}}',''),'{{emoji_77}}',''),'{{emoji_129}}',''),'{{emoji_4}}',''), 
-                min_order_size = @col15,
-                stock_status='7-9 дней',
-                stock_count=0,
-                attribute1 = TRIM(REPLACE(REPLACE(REPLACE(@col5,',',', '),'  ',' '),'  ',' ')),
-                attribute2 = TRIM(REPLACE(REPLACE(REPLACE(@col6,',',', '),'  ',' '),'  ',' ')),
+                min_order_size = @col15, 
+                attribute1 = @col5,
+                attribute2 = @col6,
                 attribute3 = '',
                 attribute4 = '',
                 attribute5 = '',
-                option1 = TRIM(@col9), 
+                option1 = @col9, 
                 option2 = '', 
                 option3 = '', 
                 image = @col11,
@@ -145,7 +100,7 @@ class ModelExtensionArunaParse extends Model {
                 price4 = ''
             ";
 	$this->db->query($sql);
-        $this->db->query("DELETE FROM baycik_aruna.oc_baycik_sync_entries WHERE url NOT LIKE 'http%'");//DELETING defective entries
+        $this->db->query("DELETE FROM baycik_aruna.oc_baycik_sync_entries WHERE price1<1");//DELETING defective entries
         $this->groupEntriesByCategories($sync_id);
 	unlink($tmpfile);
     }
@@ -182,11 +137,17 @@ class ModelExtensionArunaParse extends Model {
                 FROM 	
                     " . DB_PREFIX . "baycik_sync_entries AS bse    
                 WHERE bse.sync_id = '$sync_id'
-                GROUP BY bse.category_lvl1, bse.category_lvl2, bse.category_lvl3) hhh
+                GROUP BY bse.category_lvl1, bse.category_lvl2, bse.category_lvl3) hello_vasya
             ON DUPLICATE KEY UPDATE  total_products = tp
             ";
         $this->db->query($sql);
-        $clear_empty="DELETE FROM  " . DB_PREFIX . "baycik_sync_groups  WHERE total_products=0;";
+        $clear_empty="
+            DELETE FROM 
+                " . DB_PREFIX . "baycik_sync_groups 
+            WHERE total_products=0;
+            ";
         $this->db->query($clear_empty);
     }
+
+    
 }
