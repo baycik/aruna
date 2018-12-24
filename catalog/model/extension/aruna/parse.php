@@ -51,10 +51,10 @@ class ModelExtensionArunaParse extends Model {
     
     private function parse_happywear($sync) {
         set_time_limit(300);
-	$tmpfile = '/price-list1.csv';//$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
-	//if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
-        //    die("Downloading failed");
-        //};
+	$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
+	if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
+            die("Downloading failed");
+        };
         
 	$sync_id = $sync['sync_id'];
         
@@ -102,7 +102,7 @@ class ModelExtensionArunaParse extends Model {
 	$this->db->query($sql);
         $this->db->query("DELETE FROM baycik_aruna.oc_baycik_sync_entries WHERE price1<1");//DELETING defective entries
         $this->groupEntriesByCategories($sync_id);
-	//unlink($tmpfile);
+	unlink($tmpfile);
     }
     
     public function addSync($seller_id, $sync_source){
