@@ -56,7 +56,7 @@
             <button style="width:100%" type="button" id="button-import" class="btn btn-secondary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> {{button_import}}</button>  
             <div class="progress-header" style="margin-top: 15px; margin-bottom:15px"></div>
             <div class="progress" style="height: 10px">
-                <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <hr>
             <form method="post" action="{{url}}"> 
@@ -164,6 +164,7 @@
 
 	function continueImport(totalCategories) {
 	    if (totalCategories.total_rows == 0) {
+                current_progress=0;
 		$('.progress-bar').width('100%');
 		$('.progress-header').html('Удаление отсутствующих товаров...');
 		$.post('index.php?route=extension/aruna/sellersync/deleteAbsentSellerProducts').done(function(){
@@ -183,6 +184,7 @@
 		    $('.progress-bar').width(current_progress + '%');
 		    continueImport(totalCategories);
 		} else {
+                    current_progress=0;
 		    $('#spinner_icon').hide();
 		    $(".btn-secondary").attr('disabled', null);
 		    alert('Ошибка импорта!');

@@ -1,4 +1,4 @@
-zC<style>
+<style>
     .input-group.mb-10 form{
         display: flex;
         margin-bottom: 10px; 
@@ -56,7 +56,7 @@ zC<style>
             <button style="width:100%" type="button" id="button-import" class="btn btn-secondary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> {{button_import}}</button>  
             <div class="progress-header" style="margin-top: 15px; margin-bottom:15px"></div>
             <div class="progress" style="height: 10px">
-                <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <hr>
             <form method="post" action="{{url}}"> 
@@ -121,69 +121,76 @@ zC<style>
             {{ column_right }}</div>
     </div>
     <script type="text/javascript">
-        var sync_id = "{{sync_id}}";
-        var seller_id = "{{seller_id}}";
-        $("#form-import input,#form-import select").on('change', function (e) {
-            e.preventDefault();
-            var row_node=$(e.target).parent().parent();
-            var item = {
-                group_id: row_node.find('input[name=group_id]').val(),
-                category_comission: row_node.find('input[name=category_comission]').val().replace(/[^\d\.]/g, ''),
-                destination_category_id: row_node.find('select[name=destination_category]').val()
-            };
-            
-            if(item.destination_category_id>0){
-                row_node.addClass('selected-row');
-            } else {
-                row_node.removeClass('selected-row');
-            }
-            $.post('index.php?route=extension/aruna/sellersync/saveImportPrefs', {data: JSON.stringify(item)}, function (ok) {
-                if (!ok*1) {
-                    alert("Возникла ошибка сохранения");
-                };
-            });
-        });
-        
-        var step_size = 0;
-        var current_progress = 0;
-        
-        $("#button-import").on('click', function () {
-            if(confirm('Вы уверены, что готовы начать импорт?')){
-                $('.progress-header').html('Начинаем импортировать...');
-                $('#spinner_icon').show();
-                $(".btn-secondary").attr('disabled', '');
-                $.post('index.php?route=extension/aruna/sellersync/getTotalImportCategories', {sync_id: sync_id}, function (total) {
-                    var totalCategories = JSON.parse(total);
-                    step_size = 100/totalCategories.total_rows;
-                    $('.progress-header').val('Идет процесс импорта товаров...Импортировано ' + Math.round(current_progress) + '% товаров');
-                    continueImport(totalCategories);
-                });
-            }
-        });
-        
-        function continueImport(totalCategories){
-                    if (totalCategories.total_rows==0){
-                            $('#spinner_icon').hide();
-                            $('.progress-header').html('Импорт завершен');
-                            $('.progress-bar').width('100%');
-                            $(".btn-secondary").attr('disabled', null);
-                            alert('Импорт завершен успешно!');
-                            return;
-                    } 
-                    $.post('index.php?route=extension/aruna/sellersync/importUserProducts', {sync_id: sync_id, group_id: totalCategories.groups[0]}, function (ok) {
-                        if(ok && totalCategories.total_rows>0){
-                            current_progress += step_size;
-                            console.log(totalCategories);
-                            totalCategories.total_rows -= 1;
-                            totalCategories.groups.shift()
-                            $('.progress-header').html('Идет процесс импорта товаров...Импортировано ' + Math.round(current_progress) + '% товаров');
-                            $('.progress-bar').width(current_progress + '%');
-                            continueImport(totalCategories);
-                        } else {
-                            alert ('Ошибка импорта!');
-                        }
-                    });
-                }
+	var sync_id = "{{sync_id}}";
+	var seller_id = "{{seller_id}}";
+	$("#form-import input,#form-import select").on('change', function (e) {
+	    e.preventDefault();
+	    var row_node = $(e.target).parent().parent();
+	    var item = {
+		group_id: row_node.find('input[name=group_id]').val(),
+		category_comission: row_node.find('input[name=category_comission]').val().replace(/[^\d\.]/g, ''),
+		destination_category_id: row_node.find('select[name=destination_category]').val()
+	    };
+
+	    if (item.destination_category_id > 0) {
+		row_node.addClass('selected-row');
+	    } else {
+		row_node.removeClass('selected-row');
+	    }
+	    $.post('index.php?route=extension/aruna/sellersync/saveImportPrefs', {data: JSON.stringify(item)}, function (ok) {
+		if (!ok * 1) {
+		    alert("Возникла ошибка сохранения");
+		}
+		;
+	    });
+	});
+
+	var step_size = 0;
+	var current_progress = 0;
+
+	$("#button-import").on('click', function () {
+	    if (confirm('Вы уверены, что готовы начать импорт?')) {
+		$('.progress-header').html('Начинаем импортировать...');
+		$('#spinner_icon').show();
+		$(".btn-secondary").attr('disabled', '');
+		$.post('index.php?route=extension/aruna/sellersync/getTotalImportCategories', {sync_id: sync_id}, function (total) {
+		    var totalCategories = JSON.parse(total);
+		    step_size = 100 / totalCategories.total_rows;
+		    $('.progress-header').val('Идет процесс импорта товаров...Импортировано ' + Math.round(current_progress) + '% товаров');
+		    continueImport(totalCategories);
+		});
+	    }
+	});
+
+	function continueImport(totalCategories) {
+	    if (totalCategories.total_rows == 0) {
+                current_progress=0;
+		$('.progress-bar').width('100%');
+		$('.progress-header').html('Удаление отсутствующих товаров...');
+		$.post('index.php?route=extension/aruna/sellersync/deleteAbsentSellerProducts').done(function(){
+		    $('.progress-header').html('Импорт завершен');
+		    $('#spinner_icon').hide();
+		    $(".btn-secondary").attr('disabled', null);
+		    alert('Импорт завершен успешно!');
+		});
+		return;
+	    }
+	    $.post('index.php?route=extension/aruna/sellersync/importUserProducts', {sync_id: sync_id, group_id: totalCategories.groups[0]}, function (ok) {
+		if (ok && totalCategories.total_rows > 0) {
+		    current_progress += step_size;
+		    totalCategories.total_rows -= 1;
+		    totalCategories.groups.shift()
+		    $('.progress-header').html('Идет процесс импорта товаров...Импортировано ' + Math.round(current_progress) + '% товаров');
+		    $('.progress-bar').width(current_progress + '%');
+		    continueImport(totalCategories);
+		} else {
+                    current_progress=0;
+		    $('#spinner_icon').hide();
+		    $(".btn-secondary").attr('disabled', null);
+		    alert('Ошибка импорта!');
+		}
+	    });
+	}
 
     </script>
     <style>
@@ -192,4 +199,4 @@ zC<style>
         }
     </style>
 </div>
-    {{ footer }}
+{{ footer }}

@@ -2,7 +2,7 @@
 
 class ModelExtensionArunaImport extends Model {
     private $sync_id;
-    private $meta_description_prefix="Купить в симферополе ";
+    private $meta_description_prefix="Купить в Симферополе ";
     private $meta_keyword_prefix="Крым,Симферополь,купить,";
 
     public function __construct($registry) {
@@ -40,6 +40,7 @@ class ModelExtensionArunaImport extends Model {
 	foreach($result->rows as $group_data){
 	    $this->importSellerProductGroup($seller_id,$group_data);
 	}
+        $this->db->query("UPDATE ".DB_PREFIX."baycik_sync_entries AS bse SET is_changed=0 WHERE sync_id='$sync_id'");
 	return true;
     }
     
@@ -62,7 +63,7 @@ class ModelExtensionArunaImport extends Model {
 	    HAVING product_is_changed
             ";
         $rows = $this->db->query($sql)->rows;
-	if( !$rows ){
+	if( !count($rows) ){
 	    return 1;
 	}
         $this->createNeededProductProperties($this->sync_id);
@@ -124,8 +125,22 @@ class ModelExtensionArunaImport extends Model {
 	foreach($result->rows as $product){
 	    $this->model_catalog_product->deleteProduct($product['product_id']);
 	}
+        $this->deleteAbsentFiltersAndAttributes();
 	return true;
     }
+    
+    private function deleteAbsentFiltersAndAttributes(){
+        $sql_clean_filters="DELETE FROM ".DB_PREFIX."filter WHERE filter_id NOT IN (SELECT filter_id FROM ".DB_PREFIX."product_filter)";
+        $sql_clean_category_filters="DELETE FROM ".DB_PREFIX."category_filter WHERE filter_id NOT IN (SELECT filter_id FROM ".DB_PREFIX."filter)";
+        $sql_clean_attributes="DELETE a,ad FROM ".DB_PREFIX."attribute a JOIN ".DB_PREFIX."attribute_description ad USING(attribute_id) WHERE attribute_id NOT IN (SELECT attribute_id FROM ".DB_PREFIX."product_attribute);";
+        $sql_clean_attributes_groups="DELETE ag,agd FROM ".DB_PREFIX."attribute_group ag JOIN ".DB_PREFIX."attribute_group_description agd USING(attribute_group_id) WHERE attribute_group_id NOT IN (SELECT attribute_group_id FROM ".DB_PREFIX."attribute);";
+
+        $this->db->query($sql_clean_filters);
+        $this->db->query($sql_clean_category_filters);
+        $this->db->query($sql_clean_attributes);
+        $this->db->query($sql_clean_attributes_groups);
+    }
+    
     
     private $filterCategoryIds=[];
     private function assignFiltersToCategory($category_id){
@@ -365,7 +380,7 @@ class ModelExtensionArunaImport extends Model {
             foreach ($this->sync_config->attributes as $attributeConfig) {
                 $attribute_name = $row[$attributeConfig->field];
                 $product_attribute[] = [
-                    'attribute_id' => $this->getProductAttributeId($attribute_name, $attributeConfig->attribute_group_id),
+                    'attribute_id' => $this->getProductAttributeId($attributeConfig->name, $attributeConfig->attribute_group_id),
                     'product_attribute_description' => [
                         $this->language_id => [
                             'text' => $attribute_name
@@ -426,9 +441,9 @@ class ModelExtensionArunaImport extends Model {
             'sku' => '',
             'upc' => '',
             'ean' => '',
-            'jan' => $this->sync_id,
+            'jan' => '',
             'isbn' => '',
-            'mpn' => '',
+            'mpn' => $row['mpn'],
             'location' => '',
             'minimum' => 0,
             'subtract' => '',
@@ -525,7 +540,7 @@ class ModelExtensionArunaImport extends Model {
         if (isset($this->sync_config->attributes)) {
             $this->load_admin_model('catalog/attribute_group');
             foreach ($this->sync_config->attributes as &$attribute) {
-                $row = $this->db->query("SELECT attribute_group_id FROM " . DB_PREFIX . "attribute_group_description WHERE name='{$attribute->name}'")->row;
+                $row = $this->db->query("SELECT attribute_group_id FROM " . DB_PREFIX . "attribute_group_description WHERE name='{$attribute->group_description}'")->row;
                 if ($row && $row['attribute_group_id']) {
                     $attribute->attribute_group_id = $row['attribute_group_id'];
                 } else {
@@ -533,7 +548,7 @@ class ModelExtensionArunaImport extends Model {
                         'sort_order' => 1,
                         'attribute_group_description' => [
                             $this->language_id => [
-                                'name' => $attribute->name
+                                'name' => $attribute->group_description
                             ]
                         ]
                     ];

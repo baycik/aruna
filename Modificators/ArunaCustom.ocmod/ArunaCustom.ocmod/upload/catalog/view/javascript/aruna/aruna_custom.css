@@ -1,0 +1,211 @@
+
+/*============================
+            COMMON
+=============================*/
+#wrapper {
+    font-family: Century Gothic;
+}
+#content form {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid lightgrey;
+    box-shadow: 1px 1px 2px lightgrey;
+}
+.form-group label{
+    font-size: 14px;
+}
+.form-group input, .form-group textarea{
+    background-color: white !important;
+    border: 1px solid lightgrey !important;
+}
+form .buttons input{
+    border-radius: 0px;
+}
+
+/*============================
+            HEADER
+=============================*/
+#header{
+    box-shadow: 1px 0.2px 3px lightgrey;
+}
+
+.so-search {
+    width: 110% !important;
+}
+
+/*=============================
+            FILTER
+=============================*/
+
+.so-filter-options .so-filter-content-opts{
+    overflow-y: auto !important;
+    max-height: 300px; 
+}
+
+.so-filter-options .so-filter-content-opts .so-filter-content-opts-container{
+    padding-right: 20px !important;
+}
+
+@media (min-width: 1200px) {
+    .wrapper-fluid .fluid-sidebar {
+        width: 80% !important; 
+    }
+    .wrapper-fluid .fluid-allsidebar {
+        width: 66%; 
+    }
+    .wrapper-fluid .content-aside {
+        width: 20% !important;
+    } 
+}
+
+.so-option-container label{
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.module.so_filter_wrap .modcontent ul li.so-filter-options .so-filter-content-opts .so-filter-content-opts-container .so-option-container {
+
+    padding: 2px 0;
+
+}
+
+.module.so_filter_wrap .modcontent ul li.so-filter-options .so-filter-content-opts .so-filter-content-opts-container .so-option-container i{
+
+    top:-9px;
+
+}
+
+/*=============================
+        PRODUCT IMAGE
+=============================*/
+.product-item-container .left-block {
+    max-height: 228px;
+    overflow: hidden;
+}
+
+.product-image-container{
+    max-height: 270px;
+    margin: 10px; 
+    overflow: hidden;
+} 
+
+.product-image-container a img{
+    width:270px !important;
+    margin-top: -30px;
+
+}
+
+.product-layout .inner{
+    max-height: 270px;
+} 
+
+.product-layout .inner a img{
+    width:270px !important;
+}
+
+
+.item-img{
+    overflow: hidden;
+    height: 51px !important;
+}
+
+.item-img .lazyloaded{
+    width:47px !important;
+}
+
+.img-thumbnail{
+    width:100px !important;
+    height: auto;
+}
+.so-sp-cat .products-list .product-layout:hover .addToCart{
+    bottom: -10px !important;
+}
+
+
+/*==========================
+SEARCH IMAGE
+=======================*/
+
+.search a.media-left img{
+    width:70px !important;
+    margin-top: -5px;
+} 
+
+.search a.media-left{
+    max-height: 70px;  
+    overflow: hidden;
+} 
+
+/*========================
+BODY BACKGROUND COLORS
+=========================*/
+#wrapper{
+    background-color: rgb(250, 250, 250);
+}
+
+.product-layout {
+    max-height: 396px;
+    margin-bottom: 10px;
+
+}
+.product-item-container{
+    max-height: 396px; 
+    background-color: white !important;
+    border-radius: 0px !important;;
+    box-shadow: 1px 1px 2px  rgb(230, 230, 230);
+}
+.product-item-container .right-block{
+    background-color: white !important; 
+}
+
+.so-categories.module{
+    background-color: white; 
+}
+.so-categories.module .modtitle{
+    background-color: white !important;
+
+}
+
+/*==========================
+DASHBOARD
+============================*/
+.dashboard--top h2{
+    margin-bottom: 50px !important;
+    margin-left: 41%;
+    font-size: 24px !important;
+}
+.dashboard--top .boxicon--default{
+    border-radius: 0px!important;
+}
+.dashboard--top .boxicon--default:hover{
+    transform: translateY(0px) !important;
+    box-shadow: 0 1px 5px 0 rgba(50, 50, 50, 0.25), 0 0px 0px 1px rgba(50, 50, 50, 0.03),  0px -3px 0px #5ba2e4 inset !important;
+    color: #5ba2e4;
+
+}
+.row #content .dashboard--main{
+    background-color: rgb(250, 250, 250) !important;
+}
+
+
+/*==========================
+SELLERSYNC
+============================*/
+.pts-row div.form-group\> form{
+    display: flex;
+    margin-bottom: 10px; 
+    margin-top: 10px; 
+    border: 2px solid lightgray;
+}
+.pts-row form input {
+    background-color: white !important;
+}
+
+/*==========================
+SOCIAL LOGIN
+===========================*/
+
+.well div h3{
+    font-size: 18px;
+}

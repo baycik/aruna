@@ -183,7 +183,17 @@ class ControllerExtensionArunaSellersync extends Controller {
     }
     
     public function deleteAbsentSellerProducts(){
-	$seller_id = $this->customer->getId();
+	if (!$this->customer->isLogged()) {
+	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellersync', '', true);
+
+	    die('Access denied');
+	}
+	$store_detail = $this->customer->isSeller();
+	if (!isset($store_detail['store_status'])) {
+	    die('Access denied');
+	}
+
+        $seller_id = $this->customer->getId();
         $this->load->model('extension/aruna/import');
 	$ok=$this->model_extension_aruna_import->deleteAbsentSellerProducts($seller_id);
 	die($ok);
