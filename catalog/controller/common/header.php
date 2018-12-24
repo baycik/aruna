@@ -78,6 +78,29 @@ class ControllerCommonHeader extends Controller {
 		$data['cart'] = $this->load->controller('common/cart');
 		$data['menu'] = $this->load->controller('common/menu');
 
+                
+                
+                $data['edit'] = $this->url->link('account/edit', '', true);
+                
+                if ($this->customer->isLogged()) {
+			
+			$this->load->model('account/customer');
+			$this->load->model('tool/image');
+			
+			$data['customer_info'] = $this->model_account_customer->getCustomer($this->customer->getId());
+			if ($data['customer_info']['custom_field'] && !empty($data['customer_info']) && !empty(json_decode($data['customer_info']['custom_field'], true))) {
+				
+				$data['field_addimage'] = json_decode($data['customer_info']['custom_field'], true);
+				$data['thumbUrl'] = $this->model_tool_image->resize($data['field_addimage']['profileimage'], 100, 100);
+			} else {
+				$data['thumbUrl'] = 'image/placeholder.png';
+				
+			}
+		}
+                
+                
+                
+                
 		return $this->load->view('common/header', $data);
 	}
 }
