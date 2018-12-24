@@ -57,7 +57,7 @@ class ModelExtensionArunaParse extends Model {
         };
 	$sync_id = $sync['sync_id'];
 	$sql = "
-            LOAD DATA INFILE 
+            LOAD DATA LOCAL INFILE 
                 '$tmpfile'
             INTO TABLE 
                 " . DB_PREFIX . "baycik_sync_entries
