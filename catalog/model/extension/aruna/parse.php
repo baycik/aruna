@@ -74,6 +74,7 @@ class ModelExtensionArunaParse extends Model {
                 category_lvl3 = '',      
                 product_name = CONCAT(@col4,' ',@col7,' ',@col5), 
                 model = CONCAT(@col3,' ',@col5), 
+                mpn='@col14',
                 manufacturer = @col7,  
                 origin_country = @col8,                     
                 url = @col10, 
