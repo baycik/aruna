@@ -486,3 +486,22 @@ SOCIAL LOGIN
     overflow: hidden;
     overflow-y: auto;
 }
+
+/*============================
+    SUBHEADER BLOCK
+==============================*/
+.block-policy4 ul li{
+    float: none;
+    width: 100%;
+}
+.module ester-banner {
+    border: none;
+    max-height: 550px;
+    max-width: 1070px;
+}
+.col-lg-12.col-md-9.col-sm-12.col-xs-12.col_6s4m.box1-right{
+    margin: 0px;
+    width: 114%;
+    margin-left: -7%;
+    margin-right: auto;
+}
