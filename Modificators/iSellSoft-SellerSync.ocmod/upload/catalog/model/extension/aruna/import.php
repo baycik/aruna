@@ -40,7 +40,7 @@ class ModelExtensionArunaImport extends Model {
 	foreach($result->rows as $group_data){
 	    $this->importSellerProductGroup($seller_id,$group_data);
 	}
-        $this->db->query("UPDATE ".DB_PREFIX."baycik_sync_entries AS bse SET is_changed=0 WHERE sync_id='$sync_id'");
+        //$this->db->query("UPDATE ".DB_PREFIX."baycik_sync_entries AS bse SET is_changed=0 WHERE sync_id='$sync_id'");
 	return true;
     }
     

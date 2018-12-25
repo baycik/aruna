@@ -75,16 +75,18 @@ class ModelExtensionArunaParse extends Model {
                 model = CONCAT(@col3,' ',@col5), 
                 mpn=@col14,
                 manufacturer = @col7,  
-                origin_country = @col8,                     
+                origin_country = @col8,
                 url = @col10, 
                 description = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@col12,'{{emoji_183}}',''),'{{emoji_6}}',''),'{{emoji_9}}',''),'{{emoji_104}}',''),'{{emoji_223}}',''),'{{emoji_55}}',''),'{{emoji_271}}',''),'{{emoji_137}}',''),'{{emoji_147}}',''),'{{emoji_40}}',''),'{{emoji_66}}',''),'{{emoji_284}}',''),'{{emoji_239}}',''),'{{emoji_77}}',''),'{{emoji_129}}',''),'{{emoji_4}}',''), 
                 min_order_size = @col15, 
-                attribute1 = @col5,
-                attribute2 = @col6,
-                attribute3 = @col4,
+                stock_status='7-9 дней',
+                stock_count=0,
+                attribute1 = TRIM(REPLACE(REPLACE(REPLACE(@col5,',',', '),'  ',' '),'  ',' ')),
+                attribute2 = TRIM(REPLACE(REPLACE(REPLACE(@col6,',',', '),'  ',' '),'  ',' ')),
+                attribute3 = '',
                 attribute4 = '',
                 attribute5 = '',
-                option1 = @col9, 
+                option1 = TRIM(@col9), 
                 option2 = '', 
                 option3 = '', 
                 image = @col11,
@@ -99,7 +101,7 @@ class ModelExtensionArunaParse extends Model {
                 price4 = ''
             ";
 	$this->db->query($sql);
-        $this->db->query("DELETE FROM baycik_aruna.oc_baycik_sync_entries WHERE price1<1");//DELETING defective entries
+        $this->db->query("DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE price1<1");//DELETING defective entries
         $this->groupEntriesByCategories($sync_id);
 	unlink($tmpfile);
     }
