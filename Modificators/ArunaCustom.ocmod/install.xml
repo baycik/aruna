@@ -1,21 +1,387 @@
 <modification>
     <name>ArunaCustomInjection</name>
     <code>ArunaCustomInjection</code>
-    <version>0.9</version>
+    <version>1.0</version>
     <author>iSellSoft Team</author>
     <file path="catalog/view/theme/*/template/common/header.twig">
 	<operation error="skip"> 
 	    <search><![CDATA[</head>]]></search>
 	    <add offset="0" position="before"><![CDATA[
-					<link href="catalog/view/javascript/aruna/aruna_custom.css" rel="stylesheet">
-					<script src="catalog/view/javascript/aruna/aruna_custom.js" type="text/javascript"></script> 
+                        <link href="catalog/view/javascript/aruna/aruna_custom.css" rel="stylesheet">
+			<script src="catalog/view/javascript/aruna/aruna_custom.js" type="text/javascript"></script> 
 			]]></add>
 	</operation>
     </file>
     <file path="catalog/model/catalog/product.php">
 	<operation error="skip"> 
 	    <search><![CDATA[$implode[] = "pd.name LIKE '%" . $this->db->escape($word) . "%']]></search>
-	    <add offset="0" position="reolace"><![CDATA[$implode[] = "pd.name LIKE '%" . $this->db->escape($word) . "%' OR p.model LIKE '%" . $this->db->escape($word) . "%']]></add>
+	    <add offset="0" position="replace"><![CDATA[$implode[] = "pd.name LIKE '%" . $this->db->escape($word) . "%' OR p.model LIKE '%" . $this->db->escape($word) . "%']]></add>
 	</operation>
     </file>
+    <file path="catalog/controller/common/header.php">
+	<operation error="skip"> 
+	    <search><![CDATA[return $this->load->view('common/header', $data);]]></search>
+	    <add position="before"><![CDATA[
+	$data['edit'] = $this->url->link('account/edit', '', true);
+                
+                if ($this->customer->isLogged()) {
+			
+			$this->load->model('account/customer');
+			$this->load->model('tool/image');
+			
+			$data['customer_info'] = $this->model_account_customer->getCustomer($this->customer->getId());
+			if ($data['customer_info']['custom_field'] && !empty($data['customer_info']) && !empty(json_decode($data['customer_info']['custom_field'], true))) {
+				
+				$data['field_addimage'] = json_decode($data['customer_info']['custom_field'], true);
+				$data['thumbUrl'] = $this->model_tool_image->resize($data['field_addimage']['profileimage'], 100, 100);
+			} else {
+				$data['thumbUrl'] = 'image/placeholder.png';
+				
+			}
+		}
+                
+]]></add>
+	</operation>
+    </file>
+    <file path="catalog/view/theme/so-emarket/template/header/header17.twig">
+	<operation error="skip"> 
+	    <search><![CDATA[{% if soconfig.get_settings('welcome_message_status') %}]]></search>
+	    <add offset="0" position="before"><![CDATA[<!--]]></add>
+	</operation>
+        <operation error="skip"> 
+	    <search><![CDATA[<div class="header-top hidden-compact">]]></search>
+	    <add offset="0" position="before"><![CDATA[<!--]]></add>
+	</operation>
+         <operation error="skip"> 
+	    <search><![CDATA[<div class="header-top hidden-compact">]]></search>
+	    <add offset="0" position="before"><![CDATA[<!--]]></add>
+	</operation>
+        <operation error="skip"> 
+	    <search><![CDATA[<div class="header-middle {{hidden_headercenter}}">]]></search>
+	    <add offset="0" position="before"><![CDATA[-->]]></add>
+	</operation>
+        <operation error="skip"> 
+	    <search><![CDATA[</header>]]></search>
+	    <add offset="0" position="after"><![CDATA[-->
+	 {% if logged %}
+                                    <div class="hidden-sm hidden-xs welcome-msg">
+                                            <div>
+                                                 <div style="text-align: right;" class="col-md-10">
+                                                     <div style='margin-bottom:-5px'>
+                                                         <h3 style='font-size:16px;margin-bottom:0px !important'>{{customer_info.firstname}}</h3>
+                                                         <div>{{customer_info.email}}</div>
+                                                     </div>
+                                                         <div >
+                                                              <div class="account" id="my_account" ><a id="my_account" href="{{ account }}" title="{{ text_account }} " class="dropdown-toggle" data-toggle="dropdown"> <span class="hidden-xs">{{ text_account }} </span> <span class="fa fa-caret-down"></span></a>
+                                                                  <ul class="dropdown-menu dropdown-menu-right">
+                                                                    <li><a href="{{ account }}">{{ text_account_panel }}</a></li>
+                                                                    <li><a href="{{ order }}">{{ text_order }}</a></li>
+                                                                    <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
+                                                                    <li><a href="{{ wishlist }}"  title="{{ text_wishlist }}">{{ text_wishlist }}</a></li>
+                                                                    <li><a href="{{ compare }}" title="{{ text_compare }}">{{ text_compare }}</a></li>
+                                                                    <li><a href="{{ download }}">{{ text_download }}</a></li>
+                                                                    <li><a href="{{ logout }}">{{ text_logout }}</a></li>
+                                                                  </ul>
+                                                               </div>
+                                                            </div>    
+                                                 </div>
+                                                <div class="col-md-2">
+                                                     <a style="margin-bottom: 0px;width: 6em;border-radius: 9%;background-image: url('{{ thumbUrl }}');background-size: cover;background-position: center;height: 6em;" class="myprofile--thumb thumbnail" href="{{ edit }}" ></a>
+                                                 </div>
+                                         </div> 
+                                     </div>
+                                {% else %}
+                                    <div class="hidden-sm hidden-xs welcome-msg">
+                                            <div>
+                                                 <div style="text-align: right;" class="col-md-10">
+                                                     <div style='margin-bottom:-5px'>
+                                                         <h3 style='font-size:16px;margin-bottom:0px !important'>{{text_guest}}</h3>
+                                                        
+                                                     </div>
+                                                         <div style="margin-top: 1em;" >
+                                                                <a style="margin: 10px;border-right: 1px solid #666666;padding-right: 10px;" href="{{ register }}">{{ text_register }}</a>
+                                                                <a href="{{ login }}">{{ text_login }}</a>
+                                                            </div>
+                                                 </div>
+                                                <div class="col-md-2">
+                                                     <a style="margin-bottom: 0px;width: 6em;border-radius: 9%;background-image: url('{{ img_guest }}');background-size: cover;background-position: center;height: 6em;" class="myprofile--thumb thumbnail"></a>
+                                                 </div>
+                                         </div> 
+                                                 
+                                    </div>
+                                {% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="header-bottom {{hidden_headerbottom}}">
+		<div class="container">
+			
+				<div class="bottom2">
+					{{ content_menu1 }}
+                                        <div class="shopping_cart" style="position: relative; top: 0; padding-left: 3em;padding-right: 3em;background-color: #3c6d9c;">							
+                                        <div id="cart" class="btn-shopping-cart">
+
+                                            <a style="padding: 11px 0 11px 0;" data-loading-text="{{ text_loading }} " class="btn-group top_cart dropdown-toggle" data-toggle="dropdown">
+                                                <div class="shopcart" style="font-size: 15px;font-weight: bold;color: white">
+                                                    <span class="icon-c">
+                                                        <i style="color: white" class="fa fa-shopping-bag"></i>
+                                                    </span>
+                                                    <span>
+                                                        {{ text_shop_cart}}
+                                                        <span class="total-shopping-cart cart-total-full">
+                                                            <span class="items_cart">( {{text_items}})</span>
+                                                        </span>
+                                                    </span>
+
+                                                    <div class="shopcart-inner">
+                                                        <p class="text-shopping-cart">
+                                                            {{ text_shop_cart}}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                              <ul class="dropdown-menu pull-right shoppingcart-box">
+                                                {% if products or vouchers %}
+                                               <li class="content-item">
+                                                 <table class="table table-striped" style="margin-bottom:10px;">
+                                                   {% for product in products %}
+                                                   <tr>
+                                                     <td class="text-center size-img-cart">{% if product.thumb %} <a href="{{ product.href }}"><img class="img-thumbnail lazyload" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}"  /></a> {% endif %}</td>
+                                                     <td class="text-left"><a href="{{ product.href }}">{{ product.name }}</a> {% if product.option %}
+                                                       {% for option in product.option %} <br />
+                                                       - <small>{{ option.name }} {{ option.value }}</small> {% endfor %}
+                                                       {% endif %}
+                                                       {% if product.recurring %} <br />
+                                                       - <small>{{ text_recurring }} {{ product.recurring }}</small> {% endif %}</td>
+                                                     <td class="text-right">x {{ product.quantity }}</td>
+                                                     <td class="text-right">{{ product.total }}</td>
+                                                     <td class="text-center"><button type="button" onclick="cart.remove('{{ product.cart_id }}');" title="{{ button_remove }}" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button></td>
+                                                   </tr>
+                                                   {% endfor %}
+                                                   {% for voucher in vouchers %}
+                                                   <tr>
+                                                     <td class="text-center"></td>
+                                                     <td class="text-left">{{ voucher.description }}</td>
+                                                     <td class="text-right">x&nbsp;1</td>
+                                                     <td class="text-right">{{ voucher.amount }}</td>
+                                                     <td class="text-center text-danger"><button type="button" onclick="voucher.remove('{{ voucher.key }}');" title="{{ button_remove }}" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button></td>
+                                                   </tr>
+                                                   {% endfor %}
+                                                 </table>
+                                               </li>
+
+                                                   <li>
+                                                           <div class="checkout clearfix">
+                                                           <a href="{{ cart }}" class="btn btn-view-cart inverse"> {{ text_cart }}</a>
+                                                           <a href="{{ checkout }}" class="btn btn-checkout pull-right">{{ text_checkout }}</a>
+                                                           </div>
+                                                   </li>
+                                               {% else %}
+                                               <li>
+                                                 <p class="text-center empty">{{  text_empty_cart  }}</p>
+                                               </li>
+                                               {% endif %}
+                                             </ul>
+                                        </div>
+                                    </div>
+				</div>			
+			
+		</div>
+	</div>
+</header>
+            ]]></add>
+	</operation>
+    </file>
+     <!--
+   ====================
+   FORGOTTEN PAGE 
+   =================
+   --> 
+    <file path="catalog/view/theme/default/template/account/forgotten.twig">
+        <operation error="skip">
+            <search ><![CDATA[
+<h1>{{ heading_title }}</h1>
+]]>
+            </search>
+            <add position="replace"><![CDATA[ ]]></add>
+        </operation>
+         <operation error="skip">
+            <search ><![CDATA[
+             <p>{{ text_email }}</p>
+        ]]>
+            </search>
+            <add position="replace"><![CDATA[ ]]></add>
+            </operation>
+         <operation error="skip">
+            <search ><![CDATA[
+             <form action="{{ action }}" method="post" enctype="multipart/form-data" class="form-horizontal">
+        ]]>
+            </search>
+            <add position="after"><![CDATA[ <div class="well_logo"><img src="https://aruna.market/image/catalog/aruna/logos/aruna_logo.png"></div>]]></add>
+            </operation>
+            <operation error="skip">
+                <search ><![CDATA[
+                         <legend>{{ text_your_email }}</legend>
+                 ]]>
+                </search>
+                <add position="after"><![CDATA[
+                    <div id="error_empty_field" style="display:none; color: red">{{ error_empty_field }}</div>
+                ]]></add>
+            </operation>
+            <operation error="skip">
+                <search><![CDATA[
+                         {{ content_bottom }}
+                 ]]>
+                </search>
+                <add position="replace"><![CDATA[ ]]></add>
+            </operation>
+            <operation error="skip">
+                <search><![CDATA[
+                         {{ footer }}
+                 ]]>
+                </search>
+                <add position="after"><![CDATA[
+                <script>
+    $('.form-horizontal').on('submit', function(event){
+        $('#error_empty_field').hide();
+        var email = $('#input-email').val();
+        if (email == ""){
+            event.preventDefault();
+            $('#error_empty_field').show();
+            return false;
+        }else{
+            return true;
+        }
+    });
+    </script>
+            ]]></add>
+            </operation>
+    </file>
+   <!--
+   ====================
+   LOGIN PAGE 
+   =================
+   --> 
+   <file path="catalog/view/theme/so-emarket/template/account/login.twig">
+        <operation error="skip">
+            <search ><![CDATA[
+ <!--{{ header }}-->
+]]>
+            </search>
+            <add position="replace"><![CDATA[
+{{ header }}
+]]></add>
+        </operation>
+         <operation error="skip">
+            <search ><![CDATA[
+             <h2>{{ text_returning_customer }}</h2>
+        ]]>
+            </search>
+            <add position="replace"><![CDATA[ ]]></add>
+            </operation>
+         <operation error="skip">
+            <search ><![CDATA[
+             <p><strong>{{ text_i_am_returning_customer }}</strong></p>
+        ]]>
+            </search>
+            <add position="replace"><![CDATA[<div class="well_logo"><img src="https://aruna.market/image/catalog/aruna/logos/aruna_logo.png"></div>]]></add>
+            </operation>
+	    <operation error="skip">
+            <search ><![CDATA[
+             <input type="submit" value="{{ button_login }}" class="btn btn-primary" />
+        ]]>
+            </search>
+            <add position="after"><![CDATA[<a href="{{ register }}" class="btn btn-primary">{{ button_register }}</a></div>]]></add>
+        </operation>
+            <operation error="skip">
+                <search ><![CDATA[
+                         <a href="{{ forgotten }}">{{ text_forgotten }}</a></div>
+                 ]]>
+                </search>
+                <add position="after"><![CDATA[
+                    {{ content_bottom }}
+                ]]></add>
+            </operation>
+            <operation error="skip">
+                <search index="7"><![CDATA[
+                         </div>
+                 ]]>
+                </search>
+                <add position="after"><![CDATA[
+                    <div class="subwell" style="background-color:grey"></div>
+                    <div>
+                     <a class="subwell_link" href="//aruna.market/" >{{home_page}}</a>
+                     <a class="subwell_link" href="//aruna.market/index.php?route=information/information&information_id=3">{{privacy_policy}}</a>
+                    </div>
+                ]]></add>
+            </operation>
+    </file>
+     <!--
+   ====================
+   FILTER OPTIMIZTAION
+   =================
+   --> 
+    <file path="catalog/view/theme/default/template/extension/module/filter.twig">
+        <operation error="log">
+            <search ><![CDATA[
+ <div class="list-group"> {% for filter_group in filter_groups %} <a class="list-group-item">{{ filter_group.name }}</a>
+]]>
+            </search>
+            <add position="replace"><![CDATA[
+ <div class="list-group"> {% for filter_group in filter_groups %} 
+            <a class="list-group-item a" id="list-group-item_{{ filter_group.filter_group_id }}" data-toggle="collapse" href="#collapse_{{ filter_group.filter_group_id }}">{{ filter_group.name }}
+                <i class="fa fa-check-square" style="color:#5aa4ed; display:none"></i>
+                <span style="float:right; transform: rotate(90deg);     margin: 5%;" class="caret"></span>
+            </a>
+]]></add>
+        </operation>
+         <operation error="log">
+            <search ><![CDATA[
+                    <div id="filter-group{{ filter_group.filter_group_id }}">{% for filter in filter_group.filter %}
+        ]]>
+            </search>
+            <add position="replace"><![CDATA[
+                <div id="collapse_{{ filter_group.filter_group_id }}" class="panel-collapse collapse">{% for filter in filter_group.filter %}
+                ]]></add>
+            </operation>
+            <operation error="log">
+                <search ><![CDATA[
+                        </script> 
+                 ]]>
+                </search>
+                <add position="after"><![CDATA[
+                    <script type="text/javascript">
+    $( document ).ready(function() {
+        var boxes = $('input[name^=\'filter\']:checked');
+        
+        if (boxes.length > 0){
+            for (var i = 0; i<boxes.length; i++){
+                $(boxes[i].parentElement.parentElement.parentElement).removeClass('collapse');
+                $(boxes[i].parentElement.parentElement.parentElement).addClass('collapse in');
+                $(boxes[i].parentElement.parentElement.parentElement.parentElement.previousElementSibling.firstElementChild).css('display', "inline-block");
+                $(boxes[i].parentElement.parentElement.parentElement.parentElement.previousElementSibling.lastElementChild).css( "transform", "rotate(0deg)");
+            }
+        }
+    });
+    $('.list-group-item.a').on('click', function(){
+        var caret = "#" + event.target.id + ' span' ; 
+        console.log(event.target);
+        if(event.target.nextElementSibling.lastElementChild.className === "panel-collapse collapse in" || event.target.nextElementSibling.firstElementChild.className === "panel-collapse in collapse"){
+           $( caret ).css( "transform", "rotate(90deg)" );
+           return;
+        };
+        if(event.target.nextElementSibling.lastElementChild.className === "panel-collapse collapse"){
+           $( caret ).css( "transform", "rotate(0deg)");  
+           return;
+        };
+    });
+    
+</script> 
+                ]]></add>
+            </operation>
+
+    </file>
+    
 </modification>

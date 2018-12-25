@@ -51,7 +51,7 @@ class ControllerExtensionAccountPurpletreeMultivendorDashboardicons extends Cont
 				$data['sellerprofile'] = $this->url->link('extension/account/edit', '', true);
 				$data['downloadsitems'] = $this->url->link('extension/account/purpletree_multivendor/downloads', '', true);
 				$data['sellerstore'] = $this->url->link('extension/account/purpletree_multivendor/sellerstore', '', true);
-				$data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
+				$data['sellerproduct'] = $this->url->link('extension/aruna/sellerproduct', '', true);
                                 
 				$data['sellerparserlist'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
                                 

@@ -8,6 +8,7 @@ class ModelExtensionArunaParse extends Model {
     }
     
     public function initParser($sync_id){
+        set_time_limit(300);
         $sync=$this->db->query("SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$sync_id'")->row;
         if( !$sync ){
             return false;
@@ -35,14 +36,16 @@ class ModelExtensionArunaParse extends Model {
 	    UPDATE 
 		".DB_PREFIX."baycik_sync_entries 
 	    SET 
-		is_changed = 1;";
+		is_changed = 1
+            WHERE sync_id='$sync_id';";
 	$change_finder2_sql="
 	    UPDATE
 		".DB_PREFIX."baycik_sync_entries bse
 		    JOIN
 		baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
 	    SET
-		bse.is_changed=0;";
+		bse.is_changed=0
+            WHERE sync_id='$sync_id'";
 	$this->db->query($change_finder1_sql);
 	$this->db->query($change_finder2_sql);
     }
@@ -50,7 +53,6 @@ class ModelExtensionArunaParse extends Model {
     
     
     private function parse_happywear($sync) {
-        set_time_limit(300);
 	$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
 	if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
             die("Downloading failed");

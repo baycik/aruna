@@ -80,14 +80,48 @@
 					</div>					
 				</div>
 				<div class="middle-right col-lg-5 col-md-5 col-sm-6 col-xs-8">									
-					{% if soconfig.get_settings('welcome_message_status') %}
-						<div class="hidden-sm hidden-xs welcome-msg">
-							{% if soconfig.get_settings('welcome_message') is not empty %}
-								{{ soconfig.decode_entities( soconfig.get_settings('welcome_message') ) }}
-							{% endif %} 
-						</div>
-					{% endif %}
+					 {% if logged %}
+                                    <div class="hidden-sm hidden-xs welcome-msg">
+                                            <div class="myprofile">
+                                                 <div style="text-align: right;" class="col-md-10">
+                                                     <div style='margin-bottom:-5px'>
+                                                         <h3 style='font-size:16px;margin-bottom:0px !important'>{{customer_info.firstname}} {{customer_info.lastname}}</h3>
+                                                         <div>{{customer_info.email}}</div>
+                                                     </div>
+                                                         <div >
+                                                              <div class="account" id="my_account" ><a id="my_account" href="{{ account }}" title="{{ text_account }} " class="dropdown-toggle" data-toggle="dropdown"> <span class="hidden-xs">{{ text_account }} </span> <span class="fa fa-caret-down"></span></a>
+                                                                  <ul class="dropdown-menu dropdown-menu-right">
+                                                                    <li><a href="{{ account }}">{{ text_account }}</a></li>
+                                                                    <li><a href="{{ order }}">{{ text_order }}</a></li>
+                                                                    <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
+                                                                    <li><a href="{{ download }}">{{ text_download }}</a></li>
+                                                                    <li><a href="{{ logout }}">{{ text_logout }}</a></li>
+                                                                  </ul>
+                                                               </div>
+                                                            </div>    
+                                                 </div>
+                                                <div class="col-md-2">
+                                                     <a style="margin-bottom: 0px;width: 6em;border-radius: 9%;background-image: url('{{ thumbUrl }}');background-size: cover;background-position: center;height: 6em;" class="myprofile--thumb thumbnail" href="{{ edit }}" ></a>
+                                                 </div>
+                                         </div> 
+                                     </div>
+                                {% else %}
+                                    <div class="hidden-sm hidden-xs welcome-msg">
+                                        <div>
+                                                 <div style="text-align: right; margin-top: 0.5em;color:white" class="col-md-10" >
+                                                    <a class="btn btn-default" href="{{ register }}">{{ text_register }}</a>
+                                                    <a class="btn btn-default" href="{{ login }}">{{ text_login }}</a>
+                                                </div>
+                                        </div>
+                                     </div>
+                                {% endif %}
+      
+          
 				</div>
+                                
+                                
+                                
+                                
 			</div>
 		</div>
 	</div>
@@ -96,10 +130,78 @@
 		<div class="container">
 			
 				<div class="bottom2">
-					{{ content_menu1 }}								
+					{{ content_menu1 }}
+                                        <div class="shopping_cart" style="position: relative; top: 0; padding-left: 3em;padding-right: 3em;background-color: #3c6d9c;">							
+                                        <div id="cart" class="btn-shopping-cart">
+
+                                            <a style="padding: 11px 0 11px 0;" data-loading-text="{{ text_loading }} " class="btn-group top_cart dropdown-toggle" data-toggle="dropdown">
+                                                <div class="shopcart" style="font-size: 15px;font-weight: bold;color: white">
+                                                    <span class="icon-c">
+                                                        <i style="color: white" class="fa fa-shopping-bag"></i>
+                                                    </span>
+                                                    <span>
+                                                        {{ text_shop_cart}}
+                                                        <span class="total-shopping-cart cart-total-full">
+                                                            <span class="items_cart">( {{text_items}})</span>
+                                                        </span>
+                                                    </span>
+
+                                                    <div class="shopcart-inner">
+                                                        <p class="text-shopping-cart">
+                                                            {{ text_shop_cart}}
+                                                        </p>
+
+
+                                                    </div>
+                                                </div>
+                                            </a>
+
+                                              <ul class="dropdown-menu pull-right shoppingcart-box">
+                                                {% if products or vouchers %}
+                                               <li class="content-item">
+                                                 <table class="table table-striped" style="margin-bottom:10px;">
+                                                   {% for product in products %}
+                                                   <tr>
+                                                     <td class="text-center size-img-cart">{% if product.thumb %} <a href="{{ product.href }}"><img class="img-thumbnail lazyload" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}"  /></a> {% endif %}</td>
+                                                     <td class="text-left"><a href="{{ product.href }}">{{ product.name }}</a> {% if product.option %}
+                                                       {% for option in product.option %} <br />
+                                                       - <small>{{ option.name }} {{ option.value }}</small> {% endfor %}
+                                                       {% endif %}
+                                                       {% if product.recurring %} <br />
+                                                       - <small>{{ text_recurring }} {{ product.recurring }}</small> {% endif %}</td>
+                                                     <td class="text-right">x {{ product.quantity }}</td>
+                                                     <td class="text-right">{{ product.total }}</td>
+                                                     <td class="text-center"><button type="button" onclick="cart.remove('{{ product.cart_id }}');" title="{{ button_remove }}" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button></td>
+                                                   </tr>
+                                                   {% endfor %}
+                                                   {% for voucher in vouchers %}
+                                                   <tr>
+                                                     <td class="text-center"></td>
+                                                     <td class="text-left">{{ voucher.description }}</td>
+                                                     <td class="text-right">x&nbsp;1</td>
+                                                     <td class="text-right">{{ voucher.amount }}</td>
+                                                     <td class="text-center text-danger"><button type="button" onclick="voucher.remove('{{ voucher.key }}');" title="{{ button_remove }}" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button></td>
+                                                   </tr>
+                                                   {% endfor %}
+                                                 </table>
+                                               </li>
+
+                                                   <li>
+                                                           <div class="checkout clearfix">
+                                                           <a href="{{ cart }}" class="btn btn-view-cart inverse"> {{ text_cart }}</a>
+                                                           <a href="{{ checkout }}" class="btn btn-checkout pull-right">{{ text_checkout }}</a>
+                                                           </div>
+                                                   </li>
+                                               {% else %}
+                                               <li>
+                                                 <p class="text-center empty">{{  text_empty_cart  }}</p>
+                                               </li>
+                                               {% endif %}
+                                             </ul>
+                                        </div>
+                                    </div>
 				</div>			
 			
 		</div>
 	</div>
-		
 </header>

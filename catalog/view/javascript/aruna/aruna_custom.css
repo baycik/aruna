@@ -38,6 +38,10 @@ form .buttons input{
     width: 110% !important;
 }
 
+.responsive.megamenu-style-dev{
+    max-height: 0px;
+}
+
 /*=============================
             FILTER
 =============================*/
@@ -67,7 +71,7 @@ ACCOUNT LOGIN PAGES
 =================================*/
 
 .account-login, html, .account-login #wrapper{
-    height: 100%;
+    height: 1000px;
 }
  
 .account-login #header, .account-login .container aside, .account-login footer, .account-login ul.breadcrumb, .account-login #content .row .col-sm-6:nth-child(1){
@@ -171,6 +175,61 @@ ACCOUNT FORGOTTEN PAGES
     margin-top: 2em;
 }
 
+/*===============================
+        INFORMATION PAGE
+=================================*/
+body.information-information #wrapper .container:nth-last-of-type(2){
+    max-width: 1920px;
+    margin-left: 0px;
+    margin-right: 0px;   
+    width:100%;
+} 
+body.information-information #wrapper .container:nth-last-of-type(2) .row{
+    margin-left: 0px;
+    margin-right:0px;
+}
+#content{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+/*=============================
+        POLICY PAGE
+===============================*/
+
+.policy-page #wrapper .container:nth-last-of-type(2){
+            background-image: url('//aruna.market/image/catalog/articles/policy_back_new.jpg');
+            background-size: cover;
+            max-width: 100vw;
+            width: 100%;
+        }
+        .policy-page .text-policy{
+            margin-left: 34%;
+            margin-top: 8%;
+            margin-right: 36%;
+            max-height: 57%;
+            overflow: hidden;
+            overflow-y: hidden;
+            overflow-y: auto;
+            padding: 10px;
+            color: #3f3f3f;
+        }
+        .policy-page #content{
+            height: 1280px;
+        }
+        .policy-page footer{
+            margin-top: 0px !important;
+        }
+/*=============================
+        DELIVERY PAGE
+================================*/
+
+ .info-table-row{
+            -moz-transition: opacity 1s;
+            -webkit-transition:  opacity 1s;
+            transition: transform 1s ease-out, opacity 2s ease-out;
+            opacity:0;
+            transform: translateX(-120%)
+       }
 /*=============================
         PRODUCT CATEGORY PAGE
 ===============================*/
@@ -409,7 +468,7 @@ SELLERSYNC
     margin-top: 10px; 
     border: 2px solid lightgray;
 }
-.pts-row form input {
+.pts-row form input:not(.pts-btn) {
     background-color: white !important;
 }
 

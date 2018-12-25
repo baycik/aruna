@@ -14,14 +14,19 @@
 .form-group label{
     font-size: 14px;
 }
-.form-group input, .form-group textarea{
+.form-group input, .form-group textarea, .form-group select{
     background-color: white !important;
     border: 1px solid lightgrey !important;
 }
 form .buttons input{
     border-radius: 0px;
 }
-
+.btn.btn-primary{
+    background-color: #5AA4ED;
+}
+.btn.btn-primary:hover{
+    background-color: #00589A;
+}
 /*============================
             HEADER
 =============================*/
@@ -33,19 +38,22 @@ form .buttons input{
     width: 110% !important;
 }
 
+.responsive.megamenu-style-dev{
+    max-height: 0px;
+}
+
 /*=============================
             FILTER
 =============================*/
-
-.so-filter-options .so-filter-content-opts{
-    overflow-y: auto !important;
-    max-height: 300px; 
+.list-group div.list-group-item{
+    padding-bottom: 0px !important; 
+    padding-top: 0px!important; 
+    border-bottom: none; 
+    max-height: 28em;
+    overflow: hidden;
+    overflow-y: auto;
+    
 }
-
-.so-filter-options .so-filter-content-opts .so-filter-content-opts-container{
-    padding-right: 20px !important;
-}
-
 @media (min-width: 1200px) {
     .wrapper-fluid .fluid-sidebar {
         width: 80% !important; 
@@ -58,22 +66,284 @@ form .buttons input{
     } 
 }
 
-.so-option-container label{
-    max-width: 120px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/*===============================
+ACCOUNT LOGIN PAGES
+=================================*/
+
+.account-login, html, .account-login #wrapper{
+    height: 100%;
 }
-.module.so_filter_wrap .modcontent ul li.so-filter-options .so-filter-content-opts .so-filter-content-opts-container .so-option-container {
-
-    padding: 2px 0;
-
+ 
+.account-login #header, .account-login .container aside, .account-login footer, .account-login ul.breadcrumb, .account-login #content .row .col-sm-6:nth-child(1){
+    display:none;
+}
+.account-login #content form{
+    box-shadow: none;
+    border:none;
 }
 
-.module.so_filter_wrap .modcontent ul li.so-filter-options .so-filter-content-opts .so-filter-content-opts-container .so-option-container i{
+.account-login #content .row .col-sm-6{
+    margin-top: 8%;
+    margin-bottom: 8%;
 
-    top:-9px;
+}
+.account-login #content .row .col-sm-6 .well{
+   box-shadow: 0px 0px 15px #5f5f5f; 
+}
 
+.account-login #wrapper{
+    background-image: url('//aruna.market/image/catalog/articles/login.jpeg');
+    background-size: cover;
+}
+
+.subwell{
+    background-color: grey;
+    height: 4em;
+    opacity: 0.7;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.subwell_link{
+    position: relative;
+    top: -39px;
+    color: white;
+    padding: 10px;
+}
+.well_logo{
+    text-align: center;
+}
+.well_logo img{
+    width: 40%;
+    margin-bottom: 2em;
+    margin-top: 2em;
+}
+.account-login .well{
+    margin-bottom: 0px !important;
+    text-align: left !important;
+}
+
+.account-login a.btn.btn-primary{
+    float:right;
+}
+.account-login .col-sm-6:nth-child(2){
+    text-align:center;
+}
+
+/*===============================
+ACCOUNT FORGOTTEN PAGES
+=================================*/
+
+.account-forgotten, html, .account-forgotten #wrapper{
+    height: 100%;
+}
+ 
+.account-forgotten #header, .account-forgotten .container aside, .account-forgotten footer, .account-forgotten ul.breadcrumb{
+    display:none;
+}
+.account-forgotten .form-horizontal{
+    margin-top: 8%;
+    margin-bottom: 8%;
+    width: 52%;
+    box-shadow: 0px 0px 15px #5f5f5f !important;
+    border-radius: 4px;
+}
+
+.account-forgotten #wrapper{
+    background-image: url('//aruna.market/image/catalog/articles/login.jpeg');
+    background-size: cover;
+}
+
+.account-forgotten .subwell{
+    background-color: grey;
+    height: 4em;
+    opacity: 0.7;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.account-forgotten .subwell_link{
+    position: relative;
+    top: -39px;
+    color: white;
+    padding: 10px;
+}
+.account-forgotten .well_logo{
+    text-align: center;
+}
+.account-forgotten .well_logo img{
+    width: 40%;
+    margin-bottom: 2em;
+    margin-top: 2em;
+}
+
+/*===============================
+        INFORMATION PAGE
+=================================*/
+body.information-information #wrapper .container:nth-last-of-type(2){
+    max-width: 1920px;
+    margin-left: 0px;
+    margin-right: 0px;   
+    width:100%;
+} 
+body.information-information #wrapper .container:nth-last-of-type(2) .row{
+    margin-left: 0px;
+    margin-right:0px;
+}
+#content{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+/*=============================
+        POLICY PAGE
+===============================*/
+
+.policy-page #wrapper .container:nth-last-of-type(2){
+            background-image: url('//aruna.market/image/catalog/articles/policy_back_new.jpg');
+            background-size: cover;
+            max-width: 100vw;
+            width: 100%;
+        }
+        .policy-page .text-policy{
+            margin-left: 34%;
+            margin-top: 8%;
+            margin-right: 36%;
+            max-height: 57%;
+            overflow: hidden;
+            overflow-y: hidden;
+            overflow-y: auto;
+            padding: 10px;
+            color: #3f3f3f;
+        }
+        .policy-page #content{
+            height: 1280px;
+        }
+        .policy-page footer{
+            margin-top: 0px !important;
+        }
+/*=============================
+        DELIVERY PAGE
+================================*/
+
+ .info-table-row{
+            -moz-transition: opacity 1s;
+            -webkit-transition:  opacity 1s;
+            transition: transform 1s ease-out, opacity 2s ease-out;
+            opacity:0;
+            transform: translateX(-120%)
+       }
+/*=============================
+        PRODUCT CATEGORY PAGE
+===============================*/
+.product-layout.product-list.col-xs-12 .product-item-container{
+    height: 22em;
+    margin-bottom: 10px !important;
+}
+
+.product-filter.product-filter-top.filters-panel{
+    background-color: white;
+    padding: 2em;
+    box-shadow: 1px 1px 3px #dedede;
+}
+/*=============================
+        PRODUCT PAGE
+=============================*/
+
+.product-product .cart input.btn{ 
+    background-color: rgb(90, 164, 237) !important;
+    
+}
+
+.product-product .cart input.btn:hover{ 
+    background-color: RGB(0, 88, 154)!important;
+    
+}
+
+.product-product .inner-box-desc a{
+    color: rgb(90, 164, 237) !important;
+}
+
+.product-product .inner-box-desc a:hover{
+    color: RGB(0, 88, 154)!important;
+}
+.product-product .content-product-mainheader{
+     background-color: white;
+    padding: 3em;
+    box-shadow: 1px 1px 2px lightgray;
+    height: 100% !important;
+}
+
+.product-product .content-product-mainheader .row{
+    width: 101% !important;
+}
+.product-product .content-product-right {
+   
+    }
+
+
+.product-product .tabsslider{
+    box-shadow: 1px 1px 2px lightgray;
+    width: 100% !important;
+}
+
+.product-product .tabsslider .nav{
+    background-color: white !important;
+    padding: 2em !important; 
+}
+
+.product-product .tab-content{
+   padding: 2em !important; 
+}
+
+.product-product .product-property-list{
+    display: grid !important;
+}
+.product-product .content-product-midde{
+    margin-top: 10px;
+}
+
+.product-product .blank.list-inline li a i{
+    vertical-align: middle;
+    background-color: rgb(90, 164, 237) !important;
+    color: white;
+    border: none !important;
+}  
+
+.product-product .blank.list-inline li:hover i{
+    background-color: white !important;
+    color: RGB(0, 88, 154);
+    font-size: 19px;
+    border: none !important;
+}  
+.product-product #form-review{
+    border: none;
+    box-shadow: none;
+}
+.product-product .box-review{
+    margin-left: 0.4em;
+}
+
+
+.product-product .product-box-desc .inner-box-desc li{
+    display: block; 
+}
+.product-product .product-box-desc .inner-box-desc li div.rating .fa-stack:nth-child(1) {
+    margin-left:4px !important; 
+}
+
+.product-product .product-box-desc .inner-box-desc a{
+    padding: 0px !important;
+}
+.product-product .option-content-box{
+    background-color: white !important;
+    border:  1px solid darkgray;
+}
+
+.product-product .option-content-box:hover{
+   background-color: rgb(90, 164, 237) !important;
+    color: white;
+}
+
+.product-product .option-content-box.active{
+    background-color: RGB(0, 88, 154) !important;
 }
 
 /*=============================
@@ -198,7 +468,7 @@ SELLERSYNC
     margin-top: 10px; 
     border: 2px solid lightgray;
 }
-.pts-row form input {
+.pts-row form input:not(.pts-btn) {
     background-color: white !important;
 }
 
@@ -208,4 +478,11 @@ SOCIAL LOGIN
 
 .well div h3{
     font-size: 18px;
+}
+
+/*==========OTHER=============*/
+.seller-usergroup{
+ max-height: 18em;
+    overflow: hidden;
+    overflow-y: auto;
 }
