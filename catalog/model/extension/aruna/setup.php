@@ -12,7 +12,6 @@ class ModelExtensionArunaSetup extends Model {
         'happywear'=>[
             'name'=>'Сайт одежды happywear.ru',
             'attributes'=>[
-                ''=>
                 [
                     'field'=>'origin_country',
                     'name'=>'Страна',
@@ -34,7 +33,7 @@ class ModelExtensionArunaSetup extends Model {
                     'group_description'=>'Свойства товара'
                 ],
                 [
-                    'field'=>'category_lvl3',
+                    'field'=>'attribute3',
                     'name'=>'Тип',
                     'group_description'=>'Свойства товара'
                 ]
