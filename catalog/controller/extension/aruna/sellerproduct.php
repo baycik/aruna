@@ -17,10 +17,10 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		$this->document->setTitle($this->language->get('sellerproduct'));
                 
 		 $this->load_admin_model('catalog/product');
-                 $this->load->model('catalog/product');
+                 //$this->load->model('catalog/product');
                  
                  
-                 
+               
 		$this->getList();
 	}
 
@@ -78,6 +78,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 	}
 
 	public function edit() {
+             error_reporting(0);
 		$this->load->language('catalog/product');
 
 		$this->document->setTitle($this->language->get('sellerproductedit'));
@@ -127,6 +128,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		}
 
 		$this->getForm();
+                  error_reporting(1);
 	}
 
 	public function delete() {
@@ -442,6 +444,8 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
+                $data['column_right'] = $this->load->controller('common/column_right');
+                $data['content_bottom'] = $this->load->controller('common/content_bottom');
 		$data['footer'] = $this->load->controller('common/footer');
 
 		$this->response->setOutput($this->load->view('extension/aruna/sellerproduct_list', $data));
@@ -451,7 +455,11 @@ class ControllerExtensionArunaSellerProduct extends Controller{
         
         
         protected function getForm() {
-           
+                $this->load->model('extension/aruna/sellerproduct');
+                if($this->model_extension_aruna_sellerproduct->checkProductOfSeller($this->request->get['product_id'],$this->customer->getId()) < 1){
+                    $this->response->redirect($this->url->link('account/account', '', true));
+                }
+                
 		$data['text_form'] = !isset($this->request->get['product_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
 
 		if (isset($this->error['warning'])) {
@@ -856,10 +864,10 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 			$category_info = $this->model_catalog_category->getCategory($category_id);
                         
 			if ($category_info) {
-				$data['product_categories'][] = array(
+				$data['product_categories'][] = [
 					'category_id' => $category_info['category_id'],
 					'name'        => ($category_info['path']) ? $category_info['path'] . ' &gt; ' . $category_info['name'] : $category_info['name']
-				);
+				];
 			}
                 
 		}

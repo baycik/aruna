@@ -41,6 +41,9 @@ form .buttons input{
 .responsive.megamenu-style-dev{
     max-height: 0px;
 }
+.header-bottom{
+    background-image: linear-gradient(to right, #3b8de7, #3ab0bd);
+}
 
 /*=============================
             FILTER
@@ -485,4 +488,27 @@ SOCIAL LOGIN
  max-height: 18em;
     overflow: hidden;
     overflow-y: auto;
+}
+
+/*============================
+    SUBHEADER BLOCK
+==============================*/
+.block-policy4 ul li{
+    float: none;
+    width: 100%;
+   
+}
+.module.ester-banner {
+    border: none !important;
+    max-height: 550px;
+    max-width: 1070px;
+}
+
+
+header{
+    margin-bottom: 0px !important;
+}
+
+.block-policy4 ul li .item-inner, .block-policy4 ul li .item-inner .inner{
+    background-color:white;
 }

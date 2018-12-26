@@ -30,8 +30,10 @@ $_['text_show_cate']          		= ' Показать все категории '
 $_['button_quickview']        		= 'Добавить к быстрому просмотру';
 $_['text_hotline']       	  		= 'Горячая линия';
 $_['text_compare']       	  		= 'Сравнение';
+$_['text_compare2']       	  		= 'My <b>Compare</b>';
 $_['text_sidebar']       	  		= 'Боковая панель';
 $_['text_gridview']       	  		= 'Табличный вид:';
+$_['text_alertaddtocart']       	= 'Товар добавлен в корзину! Что дальше?';
 
 $_['text_neo1']       = 'Популярное';
 $_['text_neo2']       = 'Быстрая продажа';
@@ -47,6 +49,10 @@ $_['text_product_orders'] 				  	= 'Заказы (%s)';
 $_['text_product_orders_detail'] 				  	= '<span>Заказы </span> <span class="number"> (%s)  </span>';
 $_['text_reviews']             = '(%s)';
 
+$_['text_product_view'] 				  	= '%s просмотр';
+$_['text_product_viewed'] 				  	= '%s просмотров';
+$_['text_viewed'] 				  	= 'Просмотрено';
+
 $_['text_viewdeals']  		  		= 'Показать все сделки';
 $_['text_new'] 				  		= 'Новинки';
 $_['text_sale'] 				  	= 'Продажа';
@@ -60,6 +66,8 @@ $_['text_upsell'] 				  	= 'UPSELL PRODUCTS';
 
 // Product page
 $_['text_sharethis']  		  = 'Поделиться';
+$_['text_addwishlist']  		  = 'Добавить в Закладки';
+$_['text_addcompare']  		  = 'Добавить в список сравнения';
 
 $_['text_sidebar']        = 'Боковая панель';
 $_['text_size_chart']        = 'Размер списка';
@@ -70,3 +78,7 @@ $_['text_product_description']        = 'Описание товара';
 $_['text_or']        = 'или';
 $_['show_more']       = 'Больше';
 $_['show_less']       = 'Меньше';
+
+$_['back_totop']       = 'Наверх';
+
+$_['text_buynow']       = 'Купить';
