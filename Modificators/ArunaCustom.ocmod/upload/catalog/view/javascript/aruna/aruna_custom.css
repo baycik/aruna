@@ -41,6 +41,9 @@ form .buttons input{
 .responsive.megamenu-style-dev{
     max-height: 0px;
 }
+.header-bottom{
+    background-image: linear-gradient(to right, #3b8de7, #3ab0bd);
+}
 
 /*=============================
             FILTER
@@ -493,15 +496,19 @@ SOCIAL LOGIN
 .block-policy4 ul li{
     float: none;
     width: 100%;
+   
 }
-.module ester-banner {
-    border: none;
+.module.ester-banner {
+    border: none !important;
     max-height: 550px;
     max-width: 1070px;
 }
-.col-lg-12.col-md-9.col-sm-12.col-xs-12.col_6s4m.box1-right{
-    margin: 0px;
-    width: 114%;
-    margin-left: -7%;
-    margin-right: auto;
+
+
+header{
+    margin-bottom: 0px !important;
+}
+
+.block-policy4 ul li .item-inner, .block-policy4 ul li .item-inner .inner{
+    background-color:white;
 }

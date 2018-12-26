@@ -1,13 +1,13 @@
 CREATE TABLE `oc_baycik_sync_entries` (
   `sync_entry_id` int(11) NOT NULL AUTO_INCREMENT,
   `sync_id` int(11) DEFAULT NULL,
-  `is_changed' int(3) DEFAULT 1,
-  'is_removed' int(3) DEFAULT 0,
+  `is_changed` int(3) DEFAULT '1',
   `category_lvl1` varchar(45) DEFAULT NULL,
   `category_lvl2` varchar(45) DEFAULT NULL,
   `category_lvl3` varchar(45) DEFAULT NULL,
   `product_name` varchar(255) DEFAULT NULL,
   `model` varchar(64) DEFAULT NULL,
+  `mpn` varchar(45) DEFAULT NULL,
   `url` varchar(512) DEFAULT NULL,
   `description` varchar(2048) DEFAULT NULL,
   `min_order_size` varchar(45) DEFAULT NULL,
@@ -37,6 +37,7 @@ CREATE TABLE `oc_baycik_sync_entries` (
   KEY `index2` (`category_lvl1`,`category_lvl2`,`category_lvl3`),
   KEY `index3` (`model`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 
 CREATE TABLE `oc_baycik_sync_groups` (
