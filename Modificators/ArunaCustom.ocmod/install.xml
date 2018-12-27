@@ -104,7 +104,7 @@
                                                             </div>
                                                  </div>
                                                 <div class="col-md-2">
-                                                     <a style="margin-bottom: 0px;width: 6em;border-radius: 9%;background-image: url('{{ img_guest }}');background-size: cover;background-position: center;height: 6em;" class="myprofile--thumb thumbnail"></a>
+                                                     <a style="margin-bottom: 0px;width: 6em;border-radius: 9%;background-image: url('./image/aruna/catalog/common/guest.png');background-size: cover;background-position: center;height: 6em;" class="myprofile--thumb thumbnail"></a>
                                                  </div>
                                          </div> 
                                                  
@@ -120,7 +120,7 @@
 			
 				<div class="bottom2">
 					{{ content_menu1 }}
-                                        <div class="shopping_cart" style="position: relative; top: 0; padding-left: 3em;padding-right: 3em;background-color: #3c6d9c;">							
+                                        <div class="shopping_cart visible-lg-block" style="position: relative; top: 0; padding-left: 3em;padding-right: 3em;background-color: #3c6d9c;">							
                                         <div id="cart" class="btn-shopping-cart">
 
                                             <a style="padding: 11px 0 11px 0;" data-loading-text="{{ text_loading }} " class="btn-group top_cart dropdown-toggle" data-toggle="dropdown">

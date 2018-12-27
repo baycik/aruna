@@ -41,6 +41,9 @@ form .buttons input{
 .responsive.megamenu-style-dev{
     max-height: 0px;
 }
+.header-bottom{
+    background-image: linear-gradient(to right, #3b8de7, #3ab0bd);
+}
 
 /*=============================
             FILTER
@@ -71,7 +74,7 @@ ACCOUNT LOGIN PAGES
 =================================*/
 
 .account-login, html, .account-login #wrapper{
-    height: 1000px;
+    height: 100%;
 }
  
 .account-login #header, .account-login .container aside, .account-login footer, .account-login ul.breadcrumb, .account-login #content .row .col-sm-6:nth-child(1){
@@ -485,4 +488,47 @@ SOCIAL LOGIN
  max-height: 18em;
     overflow: hidden;
     overflow-y: auto;
+}
+
+/*============================
+    SUBHEADER BLOCK
+==============================*/
+
+@media screen and (min-width: 1200px){
+    .layout-5.common-home .block-policy4 ul li{
+        width:25% !important;
+    }
+}
+
+.layout-5.common-home .module.ester-banner {
+    border: none !important;
+    max-height: 550px;
+    max-width: 1070px;
+}
+
+
+.layout-5.common-home header{
+    margin-bottom: 0px !important;
+}
+.block-policy4, .layout-5.common-home #content .module{
+    border:none !important;
+}
+.block-policy4 ul li .item-inner, .block-policy4 ul li .item-inner .inner{
+    background-color:white;
+}
+
+.home-banner-row .row-style{
+    width: 93%;
+    max-width: 1680px;
+    margin: 0 auto;
+    padding: 30px 15px;
+}
+
+.layout-5.common-home .owl2-carousel .owl2-item img{
+    width:auto;
+    display:inline-block;
+}
+
+#sub-head-banner{
+    border: 1px solid #e5e5e5;
 }
