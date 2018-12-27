@@ -53,7 +53,7 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function importSellerProductGroup($seller_id, $group_data) {
-	echo $sql = "
+	$sql = "
             SELECT 
                 bse.*,
 		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id,
@@ -115,18 +115,18 @@ class ModelExtensionArunaImport extends Model {
     public function deleteAbsentSellerProducts($seller_id) {
 	set_time_limit(300);
 	$sql = "SELECT 
-		    product_id
+		    p.product_id
 		FROM
 		    " . DB_PREFIX . "product p
 			JOIN
-		    " . DB_PREFIX . "purpletree_vendor_products vp USING (product_id)
+		    " . DB_PREFIX . "purpletree_vendor_products vp ON p.product_id=vp.product_id AND vp.seller_id = '$seller_id'
 			LEFT JOIN
 		    " . DB_PREFIX . "baycik_sync_entries bse USING(model)
 			LEFT JOIN
-		    " . DB_PREFIX . "baycik_sync_list sl ON bse.sync_id =sl.sync_id AND sl.seller_id='$seller_id'
+		    " . DB_PREFIX . "baycik_sync_groups AS bsg USING(category_lvl1,category_lvl2,category_lvl3)
 		WHERE
-		    vp.seller_id = '$seller_id'
-		    AND sl.sync_id IS NULL
+		    bse.sync_id NOT IN (SELECT sync_id FROM oc_baycik_sync_list WHERE seller_id='$seller_id')
+		    OR destination_category_id=0
 		";
 	$result = $this->db->query($sql);
 	if (!$result->num_rows) {
@@ -393,6 +393,9 @@ class ModelExtensionArunaImport extends Model {
 	if ($this->sync_config->attributes) {
 	    foreach ($this->sync_config->attributes as $attributeConfig) {
 		$attribute_name = $row[$attributeConfig->field];
+                if( !$attribute_name ){
+                    continue;
+                }
 		$product_attribute[] = [
 		    'attribute_id' => $this->getProductAttributeId($attributeConfig->name, $attributeConfig->attribute_group_id),
 		    'product_attribute_description' => [
