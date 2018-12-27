@@ -92,8 +92,8 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function importProductAdd($item) {
-	$this->load->model('extension/aruna/product');
-	$product_id = $this->model_extension_aruna_product->addProduct($item);
+	$this->load_admin_model('catalog/product');
+	$product_id = $this->model_catalog_product->addProduct($item);
 	$sql = "
             INSERT INTO
                 " . DB_PREFIX . "purpletree_vendor_products
@@ -108,8 +108,8 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function importProductUpdate($item) {
-	$this->load->model('extension/aruna/product');
-	$product_id = $this->model_extension_aruna_product->editProduct($item['product_id'], $item);
+	$this->load_admin_model('catalog/product');
+	return $this->model_catalog_product->editProduct($item['product_id'], $item);
     }
 
     public function deleteAbsentSellerProducts($seller_id) {
@@ -132,9 +132,9 @@ class ModelExtensionArunaImport extends Model {
 	if (!$result->num_rows) {
 	    return true;
 	}
-	$this->load->model('extension/aruna/product');
+	$this->load_admin_model('catalog/product');
 	foreach ($result->rows as $product) {
-	    $this->model_extension_aruna_product->deleteProduct($product['product_id']);
+	    $this->model_catalog_product->deleteProduct($product['product_id']);
 	}
 	$this->deleteAbsentFiltersAndAttributes();
 	return true;
@@ -201,7 +201,7 @@ class ModelExtensionArunaImport extends Model {
 		}
 	    }
 	}
-	return $product_filters;
+	return array_unique($product_filters);
     }
 
     private function composeProductImageObject($row) {
@@ -442,12 +442,13 @@ class ModelExtensionArunaImport extends Model {
 	////////////////////////////////
 	//DESCRIPTION SECTION
 	////////////////////////////////
+        $row['description']=preg_replace('/{{\w+}}/','',$row['description']);
 	$product_description = [
 	    $this->language_id => [
 		'name' => $row['product_name'],
 		'description' => $row['description'],
 		'meta_title' => strip_tags($row['category_lvl3'] . ' ' . $row['manufacturer']),
-		'meta_description' => $this->meta_description_prefix . preg_replace('/{{\w+}}/','',strip_tags($row['description'])),
+		'meta_description' => $this->meta_description_prefix . strip_tags($row['description']),
 		'meta_keyword' => $this->meta_keyword_prefix . str_replace(' ', ',', strip_tags($row['product_name'])),
 		'tag' => '',
 	    ]

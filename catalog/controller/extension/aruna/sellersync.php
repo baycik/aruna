@@ -52,6 +52,8 @@ class ControllerExtensionArunaSellersync extends Controller {
 	    'href' => $this->url->link('extension/aruna/sellersync', $url, true)
 	);
 
+        $data['back_link']=$this->url->link('extension/aruna/sellerparserlist', $url, true);
+        
 	if (isset($this->request->get['sort'])) {
 	    $sort = $this->request->get['sort'];
 	} else {
