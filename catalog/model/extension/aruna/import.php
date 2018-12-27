@@ -408,9 +408,14 @@ class ModelExtensionArunaImport extends Model {
 
     private function composeProductCategory($destination_category_id) {
 	$query = $this->db->query("
-                SELECT path_id AS category
-                FROM " . DB_PREFIX . "category_path
-                WHERE category_id = '" . (int) $destination_category_id . "'");
+                SELECT 
+		    path_id AS category
+                FROM 
+		    " . DB_PREFIX . "category_path
+                WHERE 
+		    category_id = '".(int) $destination_category_id."'
+		ORDER BY level DESC
+		LIMIT 2");
 	$categories = array();
 	foreach ($query->rows as $row) {
 	    array_push($categories, $row['category']);
