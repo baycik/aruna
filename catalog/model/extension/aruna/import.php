@@ -87,7 +87,7 @@ class ModelExtensionArunaImport extends Model {
 	}
 	$this->profile("import entries");
 	$this->reorderOptions();
-	$this->assignFiltersToCategory($group_data['destination_category_id']);
+	$this->assignFiltersToCategory($product['product_category']);
 	return 1;
     }
 
@@ -100,7 +100,7 @@ class ModelExtensionArunaImport extends Model {
             SET
                 seller_id = '$this->seller_id',
                 product_id = '$product_id',
-                is_approved = '0',
+                is_approved = '1',
                 created_at = NOW(),
                 updated_at = NOW()
             ";
@@ -115,18 +115,18 @@ class ModelExtensionArunaImport extends Model {
     public function deleteAbsentSellerProducts($seller_id) {
 	set_time_limit(300);
 	$sql = "SELECT 
-		    product_id
+		    p.product_id
 		FROM
 		    " . DB_PREFIX . "product p
 			JOIN
-		    " . DB_PREFIX . "purpletree_vendor_products vp USING (product_id)
+		    " . DB_PREFIX . "purpletree_vendor_products vp ON p.product_id=vp.product_id AND vp.seller_id = '$seller_id'
 			LEFT JOIN
 		    " . DB_PREFIX . "baycik_sync_entries bse USING(model)
 			LEFT JOIN
-		    " . DB_PREFIX . "baycik_sync_list sl ON bse.sync_id =sl.sync_id AND sl.seller_id='$seller_id'
+		    " . DB_PREFIX . "baycik_sync_groups AS bsg USING(category_lvl1,category_lvl2,category_lvl3)
 		WHERE
-		    vp.seller_id = '$seller_id'
-		    AND sl.sync_id IS NULL
+		    bse.sync_id NOT IN (SELECT sync_id FROM oc_baycik_sync_list WHERE seller_id='$seller_id')
+		    OR destination_category_id=0
 		";
 	$result = $this->db->query($sql);
 	if (!$result->num_rows) {
@@ -154,15 +154,17 @@ class ModelExtensionArunaImport extends Model {
 
     private $filterCategoryIds = [];
 
-    private function assignFiltersToCategory($category_id) {
+    private function assignFiltersToCategory($category_ids) {
 	$filter_ids = array_keys($this->filterCategoryIds);
 	if (count($filter_ids) > 0) {
 	    $insert_values = '';
-	    foreach ($filter_ids as $filter_id) {
-		$insert_values .= ",($category_id,$filter_id)";
-	    }
+            foreach ($category_ids as $category_id){
+                foreach ($filter_ids as $filter_id) {
+                    $insert_values .= ",($category_id,$filter_id)";
+                }
+            }
 	    $insert_values = substr($insert_values, 1);
-	    $this->db->query("INSERT IGNORE INTO " . DB_PREFIX . "category_filter (category_id, filter_id) VALUES $insert_values");
+	    $this->db->query("INSERT IGNORE INTO ".DB_PREFIX."category_filter (category_id, filter_id) VALUES $insert_values");
 	}
 	$this->filterCategoryIds = [];
     }
@@ -199,7 +201,7 @@ class ModelExtensionArunaImport extends Model {
 		}
 	    }
 	}
-	return $product_filters;
+	return array_unique($product_filters);
     }
 
     private function composeProductImageObject($row) {
@@ -391,6 +393,9 @@ class ModelExtensionArunaImport extends Model {
 	if ($this->sync_config->attributes) {
 	    foreach ($this->sync_config->attributes as $attributeConfig) {
 		$attribute_name = $row[$attributeConfig->field];
+                if( !$attribute_name ){
+                    continue;
+                }
 		$product_attribute[] = [
 		    'attribute_id' => $this->getProductAttributeId($attributeConfig->name, $attributeConfig->attribute_group_id),
 		    'product_attribute_description' => [
@@ -440,6 +445,7 @@ class ModelExtensionArunaImport extends Model {
 	////////////////////////////////
 	//DESCRIPTION SECTION
 	////////////////////////////////
+        $row['description']=preg_replace('/{{\w+}}/','',$row['description']);
 	$product_description = [
 	    $this->language_id => [
 		'name' => $row['product_name'],

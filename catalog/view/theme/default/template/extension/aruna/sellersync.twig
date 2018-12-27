@@ -53,6 +53,7 @@
             {% set class = 'pts-col-sm-12' %}
         {% endif %}
         <div id="content" class="{{ class }}">{{ content_top }}
+            <div style="padding-bottom: 10px;"><a href="{{back_link}}"><i class="fa fa-backward"></i> {{text_select_parser}}</a></div>
             <button style="width:100%" type="button" id="button-import" class="btn btn-secondary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> {{button_import}}</button>  
             <div class="progress-header" style="margin-top: 15px; margin-bottom:15px"></div>
             <div class="progress" style="height: 10px">
