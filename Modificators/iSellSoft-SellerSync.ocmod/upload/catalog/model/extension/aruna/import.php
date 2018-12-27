@@ -53,7 +53,7 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function importSellerProductGroup($seller_id, $group_data) {
-	$sql = "
+	echo $sql = "
             SELECT 
                 bse.*,
 		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id,
@@ -100,7 +100,7 @@ class ModelExtensionArunaImport extends Model {
             SET
                 seller_id = '$this->seller_id',
                 product_id = '$product_id',
-                is_approved = '0',
+                is_approved = '1',
                 created_at = NOW(),
                 updated_at = NOW()
             ";
@@ -201,7 +201,7 @@ class ModelExtensionArunaImport extends Model {
 		}
 	    }
 	}
-	return $product_filters;
+	return array_unique($product_filters);
     }
 
     private function composeProductImageObject($row) {
@@ -408,9 +408,14 @@ class ModelExtensionArunaImport extends Model {
 
     private function composeProductCategory($destination_category_id) {
 	$query = $this->db->query("
-                SELECT path_id AS category
-                FROM " . DB_PREFIX . "category_path
-                WHERE category_id = '" . (int) $destination_category_id . "'");
+                SELECT 
+		    path_id AS category
+                FROM 
+		    " . DB_PREFIX . "category_path
+                WHERE 
+		    category_id = '".(int) $destination_category_id."'
+		ORDER BY level DESC
+		LIMIT 2");
 	$categories = array();
 	foreach ($query->rows as $row) {
 	    array_push($categories, $row['category']);
@@ -437,6 +442,7 @@ class ModelExtensionArunaImport extends Model {
 	////////////////////////////////
 	//DESCRIPTION SECTION
 	////////////////////////////////
+        $row['description']=preg_replace('/{{\w+}}/','',$row['description']);
 	$product_description = [
 	    $this->language_id => [
 		'name' => $row['product_name'],
