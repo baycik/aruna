@@ -8,6 +8,7 @@ class ModelExtensionArunaParse extends Model {
     }
     
     public function initParser($sync_id){
+        set_time_limit(300);
         $sync=$this->db->query("SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$sync_id'")->row;
         if( !$sync ){
             return false;
@@ -35,14 +36,16 @@ class ModelExtensionArunaParse extends Model {
 	    UPDATE 
 		".DB_PREFIX."baycik_sync_entries 
 	    SET 
-		is_changed = 1;";
+		is_changed = 1
+            WHERE sync_id='$sync_id';";
 	$change_finder2_sql="
 	    UPDATE
 		".DB_PREFIX."baycik_sync_entries bse
 		    JOIN
 		baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
 	    SET
-		bse.is_changed=0;";
+		bse.is_changed=0
+            WHERE sync_id='$sync_id'";
 	$this->db->query($change_finder1_sql);
 	$this->db->query($change_finder2_sql);
     }
@@ -50,9 +53,10 @@ class ModelExtensionArunaParse extends Model {
     
     
     private function parse_happywear($sync) {
-        set_time_limit(300);
+        //$source_file="/price-list2.csv";
+        $source_file="https://happywear.ru/exchange/xml/price-list.csv";
 	$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
-	if(!copy("https://happywear.ru/exchange/xml/price-list.csv", $tmpfile)){
+	if(!copy($source_file, $tmpfile)){
             die("Downloading failed");
         };
 	$sync_id = $sync['sync_id'];
@@ -73,16 +77,18 @@ class ModelExtensionArunaParse extends Model {
                 model = CONCAT(@col3,' ',@col5), 
                 mpn=@col14,
                 manufacturer = @col7,  
-                origin_country = @col8,                     
+                origin_country = @col8,
                 url = @col10, 
                 description = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@col12,'{{emoji_183}}',''),'{{emoji_6}}',''),'{{emoji_9}}',''),'{{emoji_104}}',''),'{{emoji_223}}',''),'{{emoji_55}}',''),'{{emoji_271}}',''),'{{emoji_137}}',''),'{{emoji_147}}',''),'{{emoji_40}}',''),'{{emoji_66}}',''),'{{emoji_284}}',''),'{{emoji_239}}',''),'{{emoji_77}}',''),'{{emoji_129}}',''),'{{emoji_4}}',''), 
                 min_order_size = @col15, 
-                attribute1 = @col5,
-                attribute2 = @col6,
-                attribute3 = @col4,
+                stock_status='7-9 дней',
+                stock_count=0,
+                attribute1 = TRIM(REPLACE(REPLACE(REPLACE(@col5,',',', '),'  ',' '),'  ',' ')),
+                attribute2 = TRIM(REPLACE(REPLACE(REPLACE(@col6,',',', '),'  ',' '),'  ',' ')),
+                attribute3 = '',
                 attribute4 = '',
                 attribute5 = '',
-                option1 = @col9, 
+                option1 = TRIM(@col9), 
                 option2 = '', 
                 option3 = '', 
                 image = @col11,
@@ -97,7 +103,7 @@ class ModelExtensionArunaParse extends Model {
                 price4 = ''
             ";
 	$this->db->query($sql);
-        $this->db->query("DELETE FROM baycik_aruna.oc_baycik_sync_entries WHERE price1<1");//DELETING defective entries
+        $this->db->query("DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE price1<1");//DELETING defective entries
         $this->groupEntriesByCategories($sync_id);
 	unlink($tmpfile);
     }

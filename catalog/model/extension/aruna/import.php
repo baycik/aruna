@@ -87,7 +87,7 @@ class ModelExtensionArunaImport extends Model {
 	}
 	$this->profile("import entries");
 	$this->reorderOptions();
-	$this->assignFiltersToCategory($group_data['destination_category_id']);
+	$this->assignFiltersToCategory($product['product_category']);
 	return 1;
     }
 
@@ -154,15 +154,17 @@ class ModelExtensionArunaImport extends Model {
 
     private $filterCategoryIds = [];
 
-    private function assignFiltersToCategory($category_id) {
+    private function assignFiltersToCategory($category_ids) {
 	$filter_ids = array_keys($this->filterCategoryIds);
 	if (count($filter_ids) > 0) {
 	    $insert_values = '';
-	    foreach ($filter_ids as $filter_id) {
-		$insert_values .= ",($category_id,$filter_id)";
-	    }
+            foreach ($category_ids as $category_id){
+                foreach ($filter_ids as $filter_id) {
+                    $insert_values .= ",($category_id,$filter_id)";
+                }
+            }
 	    $insert_values = substr($insert_values, 1);
-	    $this->db->query("INSERT IGNORE INTO " . DB_PREFIX . "category_filter (category_id, filter_id) VALUES $insert_values");
+	    $this->db->query("INSERT IGNORE INTO ".DB_PREFIX."category_filter (category_id, filter_id) VALUES $insert_values");
 	}
 	$this->filterCategoryIds = [];
     }
@@ -440,7 +442,7 @@ class ModelExtensionArunaImport extends Model {
 		'name' => $row['product_name'],
 		'description' => $row['description'],
 		'meta_title' => strip_tags($row['category_lvl3'] . ' ' . $row['manufacturer']),
-		'meta_description' => $this->meta_description_prefix . strip_tags($row['description']),
+		'meta_description' => $this->meta_description_prefix . preg_replace('/{{\w+}}/','',strip_tags($row['description'])),
 		'meta_keyword' => $this->meta_keyword_prefix . str_replace(' ', ',', strip_tags($row['product_name'])),
 		'tag' => '',
 	    ]
