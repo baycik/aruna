@@ -100,7 +100,7 @@ class ModelExtensionArunaImport extends Model {
             SET
                 seller_id = '$this->seller_id',
                 product_id = '$product_id',
-                is_approved = '0',
+                is_approved = '1',
                 created_at = NOW(),
                 updated_at = NOW()
             ";
