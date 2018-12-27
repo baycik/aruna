@@ -53,7 +53,7 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function importSellerProductGroup($seller_id, $group_data) {
-	$sql = "
+	echo $sql = "
             SELECT 
                 bse.*,
 		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id,
@@ -92,8 +92,8 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function importProductAdd($item) {
-	$this->load_admin_model('catalog/product');
-	$product_id = $this->model_catalog_product->addProduct($item);
+	$this->load->model('extension/aruna/product');
+	$product_id = $this->model_extension_aruna_product->addProduct($item);
 	$sql = "
             INSERT INTO
                 " . DB_PREFIX . "purpletree_vendor_products
@@ -108,8 +108,8 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function importProductUpdate($item) {
-	$this->load_admin_model('catalog/product');
-	return $this->model_catalog_product->editProduct($item['product_id'], $item);
+	$this->load->model('extension/aruna/product');
+	$product_id = $this->model_extension_aruna_product->editProduct($item['product_id'], $item);
     }
 
     public function deleteAbsentSellerProducts($seller_id) {
@@ -132,9 +132,9 @@ class ModelExtensionArunaImport extends Model {
 	if (!$result->num_rows) {
 	    return true;
 	}
-	$this->load_admin_model('catalog/product');
+	$this->load->model('extension/aruna/product');
 	foreach ($result->rows as $product) {
-	    $this->model_catalog_product->deleteProduct($product['product_id']);
+	    $this->model_extension_aruna_product->deleteProduct($product['product_id']);
 	}
 	$this->deleteAbsentFiltersAndAttributes();
 	return true;
