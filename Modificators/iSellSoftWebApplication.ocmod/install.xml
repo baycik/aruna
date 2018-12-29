@@ -1,0 +1,49 @@
+<modification>
+    <name>iSellSoft WebApplication</name>
+    <code>iSellSoft WebApplication</code>
+    <version>1.0</version>
+    <author>iSellSoft Team</author>
+    <file path="catalog/view/theme/*/template/common/header.twig">
+	<operation error="skip"> 
+	    <search><![CDATA[
+            </title>
+            ]]></search>
+	    <add offset="0" position="after"><![CDATA[
+                {% if OpenGraphData %}
+                <meta property="og:title" content="{{OpenGraphData.title}}" />
+                <meta property="og:type" content="{{OpenGraphData.type}}" />
+                <meta property="og:url" content="{{OpenGraphData.url}}" />
+                <meta property="og:image" content="{{OpenGraphData.image}}" />
+                {% endif %}
+            ]]></add>
+	</operation>
+    </file>
+    <file path="catalog/controller/product/product.php">
+	<operation error="skip"> 
+	    <search><![CDATA[
+			if ($product_info['minimum']) {
+            ]]></search>
+	    <add offset="0" position="before"><![CDATA[
+                        $og_title=$data['price'];
+                        $og_title.=' ('.implode(', ',array_column($product_option_value_data, 'name')).')';
+                        $og_title.=' '.$product_info['name'];
+                        $this->registry->set('OpenGraphData', [
+                            'image'=>$data['thumb'],
+                            'title'=>$og_title,
+                            'type'=>'website',
+                            'url'=>$this->url->link('product/product', $url . '&product_id=' . $this->request->get['product_id'])
+                        ]);
+            ]]></add>
+	</operation>
+    </file>
+    <file path="catalog/controller/common/header.php">
+	<operation error="skip"> 
+	    <search><![CDATA[
+		$data['base'] = $server;
+            ]]></search>
+	    <add offset="0" position="before"><![CDATA[
+                $data['OpenGraphData']=$this->registry->get('OpenGraphData');                
+            ]]></add>
+	</operation>
+    </file>
+</modification>
