@@ -15,6 +15,14 @@
                 <meta property="og:url" content="{{OpenGraphData.url}}" />
                 <meta property="og:image" content="{{OpenGraphData.image}}" />
                 {% endif %}
+		<script src="?route=extension/module/isellsoft_webapplication/service_worker" type="text/javascript"></script>
+		<script language="text/javascript">
+		if ( localStorage.getItem("disableSW")!=1 && ('serviceWorker' in navigator) ) {
+		    navigator.serviceWorker.register('?route=extension/module/isellsoft_webapplication/service_worker', {scope: './'}).catch(function(error) {
+			console.log('serviceWorker Registration failed with ' + error);
+		    });
+		}
+		</script>
             ]]></add>
 	</operation>
     </file>
