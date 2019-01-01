@@ -451,7 +451,7 @@ class ModelExtensionArunaImport extends Model {
 		'name' => $row['product_name'],
 		'description' => $row['description'],
 		'meta_title' => strip_tags($row['category_lvl3'] . ' ' . $row['manufacturer']),
-		'meta_description' => $this->meta_description_prefix . strip_tags($row['description']),
+		'meta_description' => mb_substr ($this->meta_description_prefix . strip_tags($row['description']),0,500),
 		'meta_keyword' => $this->meta_keyword_prefix . str_replace(' ', ',', strip_tags($row['product_name'])),
 		'tag' => '',
 	    ]

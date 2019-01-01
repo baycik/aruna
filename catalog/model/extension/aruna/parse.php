@@ -67,7 +67,7 @@ class ModelExtensionArunaParse extends Model {
                 " . DB_PREFIX . "baycik_sync_entries
             CHARACTER SET 'cp1251'
             FIELDS TERMINATED BY '\;'
-                (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18)
+                (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18,@col19,@col20,@col21,@col22)
             SET
                 sync_id = '$sync_id',
                 category_lvl1 = @col1,    
@@ -79,7 +79,7 @@ class ModelExtensionArunaParse extends Model {
                 manufacturer = @col7,  
                 origin_country = @col8,
                 url = @col10, 
-                description = REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(@col12,'{{emoji_183}}',''),'{{emoji_6}}',''),'{{emoji_9}}',''),'{{emoji_104}}',''),'{{emoji_223}}',''),'{{emoji_55}}',''),'{{emoji_271}}',''),'{{emoji_137}}',''),'{{emoji_147}}',''),'{{emoji_40}}',''),'{{emoji_66}}',''),'{{emoji_284}}',''),'{{emoji_239}}',''),'{{emoji_77}}',''),'{{emoji_129}}',''),'{{emoji_4}}',''), 
+                description = CONCAT(@col12,' <hr> ',@col22), 
                 min_order_size = @col15, 
                 stock_status='7-9 дней',
                 stock_count=0,
