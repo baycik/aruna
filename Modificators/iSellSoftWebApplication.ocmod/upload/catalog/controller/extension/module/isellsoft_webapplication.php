@@ -2,6 +2,7 @@
 
 class ControllerExtensionModuleIsellsoftWebApplication extends controller{
     public function index(){
+        echo '------';
     }
     
     public function manifest(){
@@ -9,15 +10,13 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
 	$config=$this->model_setting_setting->getSetting('config');
         $data=[
             'name'=>$config['config_meta_title'],
-            'short_name'=>$config['config_name'],
             'start_url'=>HTTPS_SERVER,
             "display"=> "standalone",
             "background_color"=> "#00f",
-            "theme_color"=>"#f00",
             "description"=> $config['config_meta_description'],
             "icons"=> [
                 [
-                    "src"=> $config['config_icon']
+                    "src"=> $config['config_logo']
                 ]
             ]
         ];
@@ -25,11 +24,9 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
         exit(json_encode($data));
     }
     public function service_worker(){
-        header("Content-type:text/javascript");
-        $cacheVersionNumber=date('z');
 	?>
-	var cacheVersion="iSellSoftCache<?php echo $cacheVersionNumber?>";
-	var autoupdate=0;
+	var cacheVersion="iSellSoftCache";
+	var autoupdate=1;
 	var resourcePattern=new RegExp(".+(.jpg|.jpeg|.png|.gif|.css|.js)$");
 	
 	this.addEventListener('install', function (event) {
@@ -46,15 +43,16 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
 	this.addEventListener('fetch', function (event) {
 	    event.respondWith(
 		caches.match(event.request).then(function (cached_response) {
-                    if ( cached_response && resourcePattern.test(event.request.url) ) {
-                        return cached_response;
-                    
-                    }
+		    if( cached_response && !autoupdate ){
+			return cached_response;
+		    }
 		    var fetched_response=fetch(event.request).then(function (response) {
-                        var resp2 = response.clone();
-                        caches.open(cacheVersion).then(function (cache) {
-                            cache.put(event.request, resp2);
-                        });
+			if ( resourcePattern.test(event.request.url) ) {
+			    var resp2 = response.clone();
+			    caches.open('iSellSoftCache').then(function (cache) {
+				cache.put(event.request, resp2);
+			    });
+			}
 			return response;
 		    }).catch(function (e) {
 			console.log('isell-error',e);
@@ -65,6 +63,5 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
 	    );
 	});
 	<?php
-        exit;
     }
 }

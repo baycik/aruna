@@ -125,7 +125,7 @@ class ModelExtensionArunaImport extends Model {
 			LEFT JOIN
 		    " . DB_PREFIX . "baycik_sync_groups AS bsg USING(category_lvl1,category_lvl2,category_lvl3)
 		WHERE
-		    bse.sync_id NOT IN (SELECT sync_id FROM oc_baycik_sync_list WHERE seller_id='$seller_id')
+		    bse.sync_id IS NULL
 		    OR destination_category_id=0
 		";
 	$result = $this->db->query($sql);
@@ -459,6 +459,7 @@ class ModelExtensionArunaImport extends Model {
 	////////////////////////////////
 	//COMPOSING SECTION
 	////////////////////////////////
+        $sort_order=1700000000-time();
 	$product = [
 	    'model' => $row['model'],
 	    'sku' => '',
@@ -480,7 +481,7 @@ class ModelExtensionArunaImport extends Model {
 	    'height' => 0,
 	    'length_class_id' => 0,
 	    'tax_class_id' => 0,
-	    'sort_order' => 1,
+	    'sort_order' => $sort_order,
 	    'name' => $row['product_name'],
 	    'image' => $row['image'],
 	    'manufacturer_id' => $this->composeProductManufacturer($row['manufacturer']),

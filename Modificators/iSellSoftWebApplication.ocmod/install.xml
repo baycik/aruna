@@ -6,17 +6,18 @@
     <file path="catalog/view/theme/*/template/common/header.twig">
 	<operation error="skip"> 
 	    <search><![CDATA[
-            </title>
+            </head>
             ]]></search>
-	    <add offset="0" position="after"><![CDATA[
+	    <add offset="0" position="before"><![CDATA[
                 {% if OpenGraphData %}
                 <meta property="og:title" content="{{OpenGraphData.title}}" />
                 <meta property="og:type" content="{{OpenGraphData.type}}" />
                 <meta property="og:url" content="{{OpenGraphData.url}}" />
                 <meta property="og:image" content="{{OpenGraphData.image}}" />
                 {% endif %}
+                <link rel="manifest" href="?route=extension/module/isellsoft_webapplication/manifest">
 		<script src="?route=extension/module/isellsoft_webapplication/service_worker" type="text/javascript"></script>
-		<script language="text/javascript">
+		<script type="text/javascript">
 		if ( localStorage.getItem("disableSW")!=1 && ('serviceWorker' in navigator) ) {
 		    navigator.serviceWorker.register('?route=extension/module/isellsoft_webapplication/service_worker', {scope: './'}).catch(function(error) {
 			console.log('serviceWorker Registration failed with ' + error);
