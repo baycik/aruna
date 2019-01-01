@@ -673,8 +673,9 @@
                     }
                 });
             });
-
+            
             $(document).on('so_checkout_reload_shipping', function () {
+                
                 $.ajax({
                     url: 'index.php?route=checkout/checkout/shipping',
                     type: 'get',
@@ -688,7 +689,7 @@
                         $('.checkout-shipping-methods').removeClass('checkout-loading');
                     },
                     success: function (html) {
-                        $('.checkout-shipping-methods').replaceWith(html);
+                        //$('.checkout-shipping-methods').replaceWith(html);
                         $(document).trigger('so_checkout_reload_cart');
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
@@ -745,8 +746,8 @@
                     }
                 });
             });
-
-
+            
+            
 
             $(document).delegate('.so-onepagecheckout .checkout-product .input-group .btn-update', 'click', function () {
                 var key = $(this).attr('data-product-key');
@@ -786,7 +787,8 @@
                 });
             });
 
-            $(document).delegate('.checkout-product .input-group .btn-delete', 'click', function () {
+            $(document).delegate('.checkout-product .input-group-btn .btn-delete', 'click', function () {
+                console.log('delete!');
                 var key = $(this).attr('data-product-key');
                 $.ajax({
                     url: 'index.php?route=checkout/checkout/cart_delete',

@@ -43,7 +43,39 @@ form .buttons input{
 }
 .header-bottom{
     background-image: linear-gradient(to right, #3b8de7, #3ab0bd);
+    min-height: 44px !important;
 }
+
+.shopping_cart{
+    background:none !important;
+}
+
+.header-bottom #cart button.dropdown-toggle{
+    font-size: 14px;
+    height: 44px;
+    font-weight: bold;
+    border-radius: 0px !important;
+    background-color: #328cb9;
+    border-radius: 5px;
+}
+ .header-bottom #cart button .fa.fa-shopping-cart{
+    font-size: 18px; 
+ }
+ .header-bottom #cart .dropdown-menu.pull-right{
+   width: 200%;
+ }
+
+ .header-bottom #cart .dropdown-menu.pull-right tbody td:nth-child(1) a{
+    overflow: hidden;
+    max-height: 90px;
+    display: block;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+ }
+ .header-bottom #cart .dropdown-menu.pull-right tbody td:nth-child(1) a img{
+    border: none;
+ }
+ 
 
 /*=============================
             FILTER
