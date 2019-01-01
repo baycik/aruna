@@ -56,27 +56,6 @@
 {{soconfig.scss_compass}}
 {{soconfig.css_out(soconfig.get_settings('cssExclude'))}}
 {{soconfig.js_out(soconfig.get_settings('jsExclude'))}}
-
-
-
-
-
-<script src="catalog/view/javascript/aruna/aruna_custom.js" type="text/javascript"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 {# =========== Begin Google Font ==============#}
 {% if soconfig.get_settings('url_body')  and  soconfig.get_settings('body_status') ==  'google' %} <link href='{{ soconfig.get_settings('url_body') }}' rel='stylesheet' type='text/css'> {% endif %} 	
 {% if soconfig.get_settings('url_menu')  and  soconfig.get_settings('menu_status')  ==  'google' %} <link href='{{ soconfig.get_settings('url_menu') }}' rel='stylesheet' type='text/css'> {% endif %} 	
