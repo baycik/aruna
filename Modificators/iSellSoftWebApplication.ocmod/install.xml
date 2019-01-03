@@ -15,15 +15,6 @@
                 <meta property="og:url" content="{{OpenGraphData.url}}" />
                 <meta property="og:image" content="{{OpenGraphData.image}}" />
                 {% endif %}
-                <link rel="manifest" href="?route=extension/module/isellsoft_webapplication/manifest">
-		<script src="?route=extension/module/isellsoft_webapplication/service_worker" type="text/javascript"></script>
-		<script type="text/javascript">
-		if ( localStorage.getItem("disableSW")!=1 && ('serviceWorker' in navigator) ) {
-		    navigator.serviceWorker.register('?route=extension/module/isellsoft_webapplication/service_worker', {scope: './'}).catch(function(error) {
-			console.log('serviceWorker Registration failed with ' + error);
-		    });
-		}
-		</script>
             ]]></add>
 	</operation>
     </file>
@@ -51,7 +42,7 @@
 		$data['base'] = $server;
             ]]></search>
 	    <add offset="0" position="before"><![CDATA[
-                $data['OpenGraphData']=$this->registry->get('OpenGraphData');                
+                $data['OpenGraphData']=$this->registry->get('OpenGraphData');          
             ]]></add>
 	</operation>
     </file>

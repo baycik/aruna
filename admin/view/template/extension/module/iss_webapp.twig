@@ -1,0 +1,159 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+            <h1>{{ heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                    {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        {% if error_warning %}
+            <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        {% if mod_refresh_url %}
+            <div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i>
+                {{ mod_refresh_needed }} <a href="{{mod_refresh_url}}" target="_modificator_window">{{button_refresh}}</a>
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+            </div>
+            <div class="panel-body">
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+                        <div class="col-sm-10">
+                            <select name="iss_webapp_status" id="input-status" class="form-control">
+                                {% if iss_webapp_status %}
+                                    <option value="1" selected="selected">{{ text_enabled }}</option>
+                                    <option value="0">{{ text_disabled }}</option>
+                                {% else %}
+                                    <option value="1">{{ text_enabled }}</option>
+                                    <option value="0" selected="selected">{{ text_disabled }}</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h3 style="margin: 10px;">{{manifest_settings}}</h3>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_name">{{ name }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="iss_webapp_name" id="iss_webapp_name" class="form-control" value="{{iss_webapp_name}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_shortname">{{ short_name }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="iss_webapp_shortname" id="iss_webapp_name" class="form-control" value="{{iss_webapp_shortname}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_description">{{ description }}</label>
+                        <div class="col-sm-10">
+                            <textarea type="color" name="iss_webapp_description" id="iss_webapp_description" class="form-control">{{iss_webapp_description}}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_starturl">{{ starturl }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="iss_webapp_starturl" id="iss_webapp_name" class="form-control" value="{{iss_webapp_starturl}}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_bgcolor">{{ bgcolor }}</label>
+                        <div class="col-sm-10">
+                            <input type="color" name="iss_webapp_bgcolor" id="iss_webapp_bgcolor" class="form-control" value="{{iss_webapp_bgcolor}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_themecolor">{{ themecolor }}</label>
+                        <div class="col-sm-10">
+                            <input type="color" name="iss_webapp_themecolor" id="iss_webapp_themecolor" class="form-control" value="{{iss_webapp_themecolor}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_icon"><span data-toggle="tooltip" title="{{ help_icon }}">{{ icon }}</span></label>
+                        <div class="col-sm-10"><a href="" id="iss_webapp_icon_thumb" data-toggle="image" class="img-thumbnail"><img src="{{ iss_webapp_icon_thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>
+                            <input type="hidden" name="iss_webapp_icon" value="{{ iss_webapp_icon }}" id="iss_webapp_icon" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_display">{{ display }}</label>
+                        <div class="col-sm-10">
+                            <select name="iss_webapp_display" id="iss_webapp_display" class="form-control">
+                                <option value="fullscreen">{{ display_fullscreen }}</option>
+                                <option value="standalone" selected="selected">{{ display_standalone }}</option>
+                                <option value="minimal-ui">{{ display_minimal_ui }}</option>
+                                <option value="browser">{{ display_browser }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                    <h3 style="margin: 10px;">{{sw_settings}}</h3>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_swpattern">{{ sw_static_files }}</label>
+                        <div class="col-sm-10">
+                            <select name="iss_webapp_swpattern" id="iss_webapp_swpattern" class="form-control" >
+                                <option value="">{{button_disable}}</option>
+                                <option value=".+(.jpg|.jpeg|.png|.gif)$">.+(.jpg|.jpeg|.png|.gif)$</option>
+                                <option value=".+(.jpg|.jpeg|.png|.gif|.css|.js)$">.+(.jpg|.jpeg|.png|.gif|.css|.js)$</option>
+                            </select>
+                        </div>
+                        <label class="col-sm-2 control-label" for="iss_webapp_swclear">{{ sw_static_clear }}</label>
+                        <div class="col-sm-10">
+                            <select name="iss_webapp_swclear" id="iss_webapp_swclear" class="form-control">
+                                <option value="1">{{ sw_static_clear1 }}</option>
+                                <option value="3">{{ sw_static_clear3 }}</option>
+                                <option value="7" selected="selected">{{ sw_static_clear7 }}</option>
+                                <option value="30">{{ sw_static_clear30 }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                            
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_swdynamic">{{ sw_dynamic_pages }}</label>
+                        <div class="col-sm-10">
+                            <select name="iss_webapp_swdynamic" id="iss_webapp_swdynamic" class="form-control" >
+                                <option value="disabled" selected="selected">{{ text_disabled }}</option>
+                                <option value="autoupdate">{{sw_dynamic_autoupdate}}</option>
+                            </select>
+                        </div>
+                    </div>
+                            
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="iss_webapp_swclear"></label>
+                        <div class="col-sm-10">
+                            <button type="submit" id="iss_webapp_swclear" class="btn btn-warning" style="display: inline-block" onclick="$('#iss_webapp_swversion').val( parseInt(Math.random()*1000) )"><i class="fa fa-eraser"></i> {{ sw_clear }}</button>
+                            <i class="fa fa-exclamation-circle"></i> {{ sw_clear_wrn }}
+                            <input type="hidden" name="iss_webapp_swversion" id="iss_webapp_swversion" value="{{iss_webapp_swversion}}">
+                        </div>
+                    </div>
+                    <script>
+                        $("#iss_webapp_display").val('{{iss_webapp_display}}'||'standalone');
+                        $("#iss_webapp_swpattern").val('{{iss_webapp_swpattern}}'||'');
+                        $("#iss_webapp_swclear").val('{{iss_webapp_swclear}}'||'7');
+                        $("#iss_webapp_swdynamic").val('{{iss_webapp_swdynamic}}'||'disabled');
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ footer }}
