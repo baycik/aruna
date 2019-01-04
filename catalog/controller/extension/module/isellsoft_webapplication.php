@@ -7,7 +7,6 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
     public function manifest(){
         $this->load->model('setting/setting');
 	$config=$this->model_setting_setting->getSetting('iss_webapp');
-        
 	header("Content-type: application/manifest+json");
         if( !isset($config['iss_webapp_status']) || !$config['iss_webapp_status'] ){
             exit;
@@ -32,15 +31,20 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
     }
     public function service_worker(){
         header("Content-type:text/javascript");
+        header("Cache-Control: no-cache, no-store, must-revalidate");
         $this->load->model('setting/setting');
 	$config=$this->model_setting_setting->getSetting('iss_webapp');
-        $dayPeriod=date('z')%$config['iss_webapp_swclear'];
-        $cacheVersionNumber="_v".$config['iss_webapp_swversion']."_".$dayPeriod;
+        $dayPeriod=floor(date('z')/$config['iss_webapp_swclear']);
+        $cacheVersionNumber="_v".$config['iss_webapp_swversion'].".".$dayPeriod;
+        $staticPattern=(isset($config['iss_webapp_swpattern']) && $config['iss_webapp_swpattern'])?"new RegExp( '{$config['iss_webapp_swpattern']}' )":'null';
+        
+        if( !$config['iss_webapp_swpattern'] && $config['iss_webapp_swdynamic']=="disabled" ){
+            exit;
+        }
 	?>
 	var cacheVersion="iSellSoftCache<?php echo $cacheVersionNumber?>";
 	var cacheDynamicFiles="<?php echo $config['iss_webapp_swdynamic']?>";
-	var staticPattern=new RegExp("<?php echo $config['iss_webapp_swpattern']?>");
-	
+	var staticPattern=<?php echo $staticPattern?>;
 	this.addEventListener('install', function (event) {
 	    console.log('iSellSoft Service Worker installed!!!');
 	});
@@ -55,18 +59,17 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
 	this.addEventListener('fetch', function (event) {
 	    event.respondWith(
 		caches.match(event.request).then(function (cached_response) {
-                    if ( cached_response && staticPattern.test(event.request.url) ) {
+                    if ( cached_response && staticPattern && staticPattern.test(event.request.url) ) {
                         return cached_response;
                     }
 		    var fetched_response=fetch(event.request).then(function (response) {
-                    
-                        console.log(event.request.url,event.request.url.indexOf('/admin'));
                         if ( event.request.method !== 'GET' || event.request.url.indexOf('/admin')>-1 ){
                             return response;
                         }
-                        if( cacheDynamicFiles=="autoupdate" || staticPattern.test(event.request.url) ){
+                        if( cacheDynamicFiles=="autoupdate" || staticPattern && staticPattern.test(event.request.url) ){
                             var resp2 = response.clone();
                             caches.open(cacheVersion).then(function (cache) {
+                                console.log('iSellSoftSW Cached!',cacheVersion,event.request.url);
                                 cache.put(event.request, resp2);
                             });
                         }
