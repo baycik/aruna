@@ -197,12 +197,22 @@
                 ]]></add>
             </operation>
             <operation error="log">
-                <search ><![CDATA[
-                        </script> 
-                 ]]>
-                </search>
+                <search regex="true" limit="1"><![CDATA[($)]]></search>
                 <add position="after"><![CDATA[
-                    <script type="text/javascript">
+<script type="text/javascript">
+    var global_filter_clock;
+    $('.checkbox').on('change', function() {
+        function do_filter(){
+            filter = [];
+            $('input[name^=\'filter\']:checked').each(function(element) {
+                    filter.push(this.value);
+            });
+            location = '{{ action }}&filter=' + filter.join(',');
+        }
+        clearTimeout(global_filter_clock);
+        global_filter_clock=setTimeout(do_filter,1000);
+    });
+
     $( document ).ready(function() {
         var boxes = $('input[name^=\'filter\']:checked');
         
@@ -227,7 +237,6 @@
            return;
         };
     });
-    
 </script> 
                 ]]></add>
             </operation>
