@@ -126,7 +126,7 @@ class ModelExtensionArunaSetup extends Model {
 	  if(isset($filter_data['seller_id'])){
 	  $where .= " AND seller_id =  '{$filter_data['seller_id']}'";
 	  } */
-	$sql = "
+	echo $sql = "
                 SELECT * FROM 
                     " . DB_PREFIX . "baycik_sync_groups
                 $where
@@ -142,7 +142,7 @@ class ModelExtensionArunaSetup extends Model {
 	if ( isset($filter_data['filter_name']) ) {
 	    $where .= " AND category_path LIKE '%{$filter_data['filter_name']}%'";
 	}
-	$sql = "SELECT 
+	echo $sql = "SELECT 
 		COUNT(*) AS num 
 	    FROM 
                " . DB_PREFIX . "baycik_sync_groups  

@@ -33,22 +33,20 @@ class ModelExtensionArunaParse extends Model {
 	$this->db->query("CREATE TEMPORARY TABLE baycik_tmp_current_sync LIKE ".DB_PREFIX."baycik_sync_entries");
     }
     private function finish_parsing($sync_id){
+	$clear_previous_sync_sql = "DELETE FROM ".DB_PREFIX."baycik_sync_entries WHERE sync_id = '$sync_id'";
+	$this->db->query($clear_previous_sync_sql);
         $fill_entries_table_sql = "
             INSERT INTO 
                 ".DB_PREFIX."baycik_sync_entries 
-                SELECT *,
-                        GROUP_CONCAT(option1
-                            SEPARATOR '|') AS option_group1,
-                        GROUP_CONCAT(price1
-                            SEPARATOR '|') AS price_group1,
-                        MIN(price1) AS price 
+                    (`is_changed`,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` ,`option_group1`,`price_group1`,`price`)
+                SELECT          1,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `image` , `image1` , `image2` , `image3` , `image4` , `image5`,
+                    GROUP_CONCAT(option1 SEPARATOR '|') AS `option_group1`,
+                    GROUP_CONCAT(price1 SEPARATOR '|') AS `price_group1`,
+                    MIN(price1) AS `price`
                 FROM 
                     baycik_tmp_current_sync
                 GROUP BY (model)";
 	$this->db->query($fill_entries_table_sql);
-        
-	$clear_previous_sync_sql = "DELETE FROM ".DB_PREFIX."baycik_sync_entries WHERE sync_id = '$sync_id'";
-	$this->db->query($clear_previous_sync_sql);
 	$change_finder_sql="
 	    UPDATE
 		".DB_PREFIX."baycik_sync_entries bse
@@ -63,8 +61,8 @@ class ModelExtensionArunaParse extends Model {
     
     
     private function parse_happywear($sync) {
-        //$source_file="/price-list2.csv";
-        $source_file="https://happywear.ru/exchange/xml/price-list.csv";
+        $source_file="/price-list.csv";
+        //$source_file="https://happywear.ru/exchange/xml/price-list.csv";
 	$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
 	if(!copy($source_file, $tmpfile)){
             die("Downloading failed");
@@ -147,7 +145,7 @@ class ModelExtensionArunaParse extends Model {
                 " . DB_PREFIX . "baycik_sync_groups ( sync_id, category_lvl1, category_lvl2, category_lvl3, category_path, total_products )
             SELECT * FROM
                 (SELECT 
-                    sync_id, category_lvl1, category_lvl2, category_lvl3, CONCAT(category_lvl1,'/',category_lvl2 , '/' , category_lvl3), COUNT(DISTINCT(model)) AS tp
+                    sync_id, category_lvl1, category_lvl2, category_lvl3, CONCAT(category_lvl1,'/',category_lvl2 , '/' , category_lvl3), COUNT(model) AS tp
                 FROM 	
                     " . DB_PREFIX . "baycik_sync_entries AS bse    
                 WHERE bse.sync_id = '$sync_id'
