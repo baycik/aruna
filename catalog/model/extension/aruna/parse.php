@@ -28,17 +28,28 @@ class ModelExtensionArunaParse extends Model {
     private function prepare_parsing($sync_id){
 	$this->db->query("DROP TEMPORARY TABLE IF EXISTS baycik_tmp_previous_sync");#TEMPORARY
 	$this->db->query("CREATE TEMPORARY TABLE baycik_tmp_previous_sync AS (SELECT * FROM " . DB_PREFIX . "baycik_sync_entries WHERE sync_id='$sync_id')");
-	$clear_previous_sync_sql = "DELETE FROM ".DB_PREFIX."baycik_sync_entries WHERE sync_id = '$sync_id'";
-	$this->db->query($clear_previous_sync_sql);
+
+	$this->db->query("DROP TEMPORARY TABLE IF EXISTS baycik_tmp_current_sync");#TEMPORARY
+	$this->db->query("CREATE TEMPORARY TABLE baycik_tmp_current_sync LIKE ".DB_PREFIX."baycik_sync_entries");
     }
     private function finish_parsing($sync_id){
-	$change_finder1_sql="
-	    UPDATE 
-		".DB_PREFIX."baycik_sync_entries 
-	    SET 
-		is_changed = 1
-            WHERE sync_id='$sync_id';";
-	$change_finder2_sql="
+        $fill_entries_table_sql = "
+            INSERT INTO 
+                ".DB_PREFIX."baycik_sync_entries 
+                SELECT *,
+                        GROUP_CONCAT(option1
+                            SEPARATOR '|') AS option_group1,
+                        GROUP_CONCAT(price1
+                            SEPARATOR '|') AS price_group1,
+                        MIN(price1) AS price 
+                FROM 
+                    baycik_tmp_current_sync
+                GROUP BY (model)";
+	$this->db->query($fill_entries_table_sql);
+        
+	$clear_previous_sync_sql = "DELETE FROM ".DB_PREFIX."baycik_sync_entries WHERE sync_id = '$sync_id'";
+	$this->db->query($clear_previous_sync_sql);
+	$change_finder_sql="
 	    UPDATE
 		".DB_PREFIX."baycik_sync_entries bse
 		    JOIN
@@ -46,8 +57,7 @@ class ModelExtensionArunaParse extends Model {
 	    SET
 		bse.is_changed=0
             WHERE sync_id='$sync_id'";
-	$this->db->query($change_finder1_sql);
-	$this->db->query($change_finder2_sql);
+	$this->db->query($change_finder_sql);
     }
     
     
@@ -64,12 +74,13 @@ class ModelExtensionArunaParse extends Model {
             LOAD DATA LOCAL INFILE 
                 '$tmpfile'
             INTO TABLE 
-                " . DB_PREFIX . "baycik_sync_entries
+                baycik_tmp_current_sync
             CHARACTER SET 'cp1251'
             FIELDS TERMINATED BY '\;'
                 (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18,@col19,@col20,@col21,@col22)
             SET
                 sync_id = '$sync_id',
+                is_changed=1,
                 category_lvl1 = @col1,    
                 category_lvl2 = @col2,      
                 category_lvl3 = '',      
