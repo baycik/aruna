@@ -56,19 +56,14 @@ class ModelExtensionArunaImport extends Model {
 	$sql = "
             SELECT 
                 bse.*,
-		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id,
-                GROUP_CONCAT(option1 SEPARATOR '|') AS option_group1,
-                GROUP_CONCAT(price1 SEPARATOR '|') AS price_group1,
-                MIN(price1) AS price,
-		MAX(is_changed) AS product_is_changed
+		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id
             FROM
                 " . DB_PREFIX . "baycik_sync_entries AS bse
             WHERE
-                category_lvl1 = '{$group_data['category_lvl1']}'
+                is_changed
+                AND category_lvl1 = '{$group_data['category_lvl1']}'
                 AND category_lvl2 = '{$group_data['category_lvl2']}'
                 AND category_lvl3 = '{$group_data['category_lvl3']}'
-            GROUP BY model
-	    HAVING product_is_changed
             ";
 	$rows = $this->db->query($sql)->rows;
 	$this->profile("select entries");
@@ -125,7 +120,7 @@ class ModelExtensionArunaImport extends Model {
 			LEFT JOIN
 		    " . DB_PREFIX . "baycik_sync_groups AS bsg USING(category_lvl1,category_lvl2,category_lvl3)
 		WHERE
-		    bse.sync_id NOT IN (SELECT sync_id FROM oc_baycik_sync_list WHERE seller_id='$seller_id')
+		    bse.sync_id IS NULL
 		    OR destination_category_id=0
 		";
 	$result = $this->db->query($sql);
@@ -459,6 +454,7 @@ class ModelExtensionArunaImport extends Model {
 	////////////////////////////////
 	//COMPOSING SECTION
 	////////////////////////////////
+        $sort_order=1700000000-time();
 	$product = [
 	    'model' => $row['model'],
 	    'sku' => '',
@@ -468,7 +464,7 @@ class ModelExtensionArunaImport extends Model {
 	    'isbn' => '',
 	    'mpn' => $row['mpn'],
 	    'location' => '',
-	    'minimum' => 0,
+	    'minimum' => $row['min_order_size'],
 	    'subtract' => '',
 	    'date_available' => '',
 	    'price' => round($row['price'] * $category_comission, 0),
@@ -480,7 +476,7 @@ class ModelExtensionArunaImport extends Model {
 	    'height' => 0,
 	    'length_class_id' => 0,
 	    'tax_class_id' => 0,
-	    'sort_order' => 1,
+	    'sort_order' => $sort_order,
 	    'name' => $row['product_name'],
 	    'image' => $row['image'],
 	    'manufacturer_id' => $this->composeProductManufacturer($row['manufacturer']),

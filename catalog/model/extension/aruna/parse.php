@@ -61,8 +61,8 @@ class ModelExtensionArunaParse extends Model {
     
     
     private function parse_happywear($sync) {
-        $source_file="/price-list.csv";
-        //$source_file="https://happywear.ru/exchange/xml/price-list.csv";
+        //$source_file="/price-list.csv";
+        $source_file="https://happywear.ru/exchange/xml/price-list.csv";
 	$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
 	if(!copy($source_file, $tmpfile)){
             die("Downloading failed");
