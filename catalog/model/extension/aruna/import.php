@@ -3,8 +3,8 @@
 class ModelExtensionArunaImport extends Model {
 
     private $sync_id;
-    private $meta_description_prefix = "Купить в Симферополе ";
-    private $meta_keyword_prefix = "Крым,Симферополь,купить,";
+    private $meta_description_prefix = "РљСѓРїРёС‚СЊ РІ РЎРёРјС„РµСЂРѕРїРѕР»Рµ ";
+    private $meta_keyword_prefix = "РљСЂС‹Рј,РЎРёРјС„РµСЂРѕРїРѕР»СЊ,РєСѓРїРёС‚СЊ,";
 
     public function __construct($registry) {
 	parent::__construct($registry);
@@ -79,6 +79,7 @@ class ModelExtensionArunaImport extends Model {
 	    } else {
 		$this->importProductAdd($product);
 	    }
+            $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_entries SET is_changed=0 WHERE sync_entry_id='{$row['sync_entry_id']}'");
 	}
 	$this->profile("import entries");
 	$this->reorderOptions();
