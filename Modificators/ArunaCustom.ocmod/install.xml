@@ -210,7 +210,7 @@
             location = '{{ action }}&filter=' + filter.join(',');
         }
         clearTimeout(global_filter_clock);
-        global_filter_clock=setTimeout(do_filter,1000);
+        global_filter_clock=setTimeout(do_filter,2500);
     });
 
     $( document ).ready(function() {
