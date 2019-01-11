@@ -10,7 +10,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'id'=>'happywearParse',
             'model'=>'extension/aruna/parse',
             'method'=>'initParser',
-            'arguments'=>[3]
+            'arguments'=>[3,'detect_unchanged_entries']
         ],
         [
             'id'=>'happywearImport',
@@ -35,7 +35,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             }
             echo $this->executeTask($task);
             $this->doneJobs[$task['id']]['last_executed']=time();
-            //break;//only one job at a time
+            break;//only one job at a time
         }
         $this->saveDoneJob();
         die;

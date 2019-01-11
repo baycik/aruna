@@ -11,7 +11,7 @@
 			<add position="replace" offset="0"><![CDATA[ 
                             <div class="col-md-3 col-sm-6 col-xs-6">
                                     <a class="boxicon--default" href="{{ sellerparserlist }}">
-                                        <span class="icon_cart">  <i class="fa fa-cloud-download" aria-hidden="true"></i></span>
+                                        <span class="icon_cart">  <i class="fa fa-refresh" aria-hidden="true"></i></span>
                                         <h4>{{ text_SellerParserList }}</h4>
                                     </a>
                                 </div>

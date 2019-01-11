@@ -7,7 +7,7 @@ class ModelExtensionArunaParse extends Model {
 	$this->store_id = (int) $this->config->get('config_store_id');
     }
     
-    public function initParser($sync_id){
+    public function initParser($sync_id,$mode='detect_unchanged_entries'){
         set_time_limit(300);
         $sync=$this->db->query("SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$sync_id'")->row;
         if( !$sync ){
@@ -19,7 +19,7 @@ class ModelExtensionArunaParse extends Model {
         $parser_method='parse_'.$sync['sync_parser_name'];
         $this->$parser_method($sync);
 	
-	$this->finish_parsing($sync_id);
+	$this->finish_parsing($sync_id,$mode);
 	
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_last_started=NOW() WHERE sync_id='{$sync['sync_id']}'");
         return true;
@@ -32,7 +32,7 @@ class ModelExtensionArunaParse extends Model {
 	$this->db->query("DROP TEMPORARY TABLE IF EXISTS baycik_tmp_current_sync");#TEMPORARY
 	$this->db->query("CREATE TEMPORARY TABLE baycik_tmp_current_sync LIKE ".DB_PREFIX."baycik_sync_entries");
     }
-    private function finish_parsing($sync_id){
+    private function finish_parsing($sync_id,$mode){
 	$clear_previous_sync_sql = "DELETE FROM ".DB_PREFIX."baycik_sync_entries WHERE sync_id = '$sync_id'";
 	$this->db->query($clear_previous_sync_sql);
         $fill_entries_table_sql = "
@@ -45,24 +45,27 @@ class ModelExtensionArunaParse extends Model {
                     MIN(price1) AS `price`
                 FROM 
                     baycik_tmp_current_sync
-                GROUP BY (model)";
+                GROUP BY CONCAT(`category_lvl1`,'/',`category_lvl2`,'/',`category_lvl3`), model";
 	$this->db->query($fill_entries_table_sql);
-	$change_finder_sql="
-	    UPDATE
-		".DB_PREFIX."baycik_sync_entries bse
-		    JOIN
-		baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
-	    SET
-		bse.is_changed=0
-            WHERE sync_id='$sync_id'";
-	$this->db->query($change_finder_sql);
+        
+        if( $mode=='detect_unchanged_entries' ){
+            $change_finder_sql="
+                UPDATE
+                    ".DB_PREFIX."baycik_sync_entries bse
+                        JOIN
+                    baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
+                SET
+                    bse.is_changed=0
+                WHERE sync_id='$sync_id'";
+            $this->db->query($change_finder_sql);
+        }
     }
     
     
     
     private function parse_happywear($sync) {
-        $source_file="/price-list.csv";
-        //$source_file="https://happywear.ru/exchange/xml/price-list.csv";
+        //$source_file="/price-list.csv";
+        $source_file="https://happywear.ru/exchange/xml/price-list.csv";
 	$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
 	if(!copy($source_file, $tmpfile)){
             die("Downloading failed");

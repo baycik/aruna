@@ -10,6 +10,7 @@ class ModelExtensionArunaSetup extends Model {
 
     private $parser_registry=[
         'happywear'=>[
+            'exclusive_owner'=>[2],
             'name'=>'Сайт одежды happywear.ru',
             'attributes'=>[
                 [
@@ -89,6 +90,9 @@ class ModelExtensionArunaSetup extends Model {
         $added_parsers=$this->getSyncList($seller_id);
         $allowed_parsers=[];
         foreach($this->parser_registry as $parser_id=>$available){
+            if( isset($available['exclusive_owner']) && !in_array($seller_id, $available['exclusive_owner']) ){
+                continue;
+            }
             foreach($added_parsers as $added){
                 if( $added['sync_parser_name']==$parser_id ){
                     continue 2;
@@ -126,7 +130,7 @@ class ModelExtensionArunaSetup extends Model {
 	  if(isset($filter_data['seller_id'])){
 	  $where .= " AND seller_id =  '{$filter_data['seller_id']}'";
 	  } */
-	echo $sql = "
+	$sql = "
                 SELECT * FROM 
                     " . DB_PREFIX . "baycik_sync_groups
                 $where
@@ -142,7 +146,7 @@ class ModelExtensionArunaSetup extends Model {
 	if ( isset($filter_data['filter_name']) ) {
 	    $where .= " AND category_path LIKE '%{$filter_data['filter_name']}%'";
 	}
-	echo $sql = "SELECT 
+	$sql = "SELECT 
 		COUNT(*) AS num 
 	    FROM 
                " . DB_PREFIX . "baycik_sync_groups  
