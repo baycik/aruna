@@ -45,7 +45,7 @@ class ModelExtensionArunaParse extends Model {
                     MIN(price1) AS `price`
                 FROM 
                     baycik_tmp_current_sync
-                GROUP BY (model)";
+                GROUP BY CONCAT(`category_lvl1`,'/',`category_lvl2`,'/',`category_lvl3`), model";
 	$this->db->query($fill_entries_table_sql);
 	$change_finder_sql="
 	    UPDATE
