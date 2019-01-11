@@ -35,7 +35,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             }
             echo $this->executeTask($task);
             $this->doneJobs[$task['id']]['last_executed']=time();
-            //break;//only one job at a time
+            break;//only one job at a time
         }
         $this->saveDoneJob();
         die;
