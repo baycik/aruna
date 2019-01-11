@@ -10,7 +10,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'id'=>'happywearParse',
             'model'=>'extension/aruna/parse',
             'method'=>'initParser',
-            'arguments'=>[3]
+            'arguments'=>[3,'detect_unchanged_entries']
         ],
         [
             'id'=>'happywearImport',

@@ -10,6 +10,7 @@ class ModelExtensionArunaSetup extends Model {
 
     private $parser_registry=[
         'happywear'=>[
+            'exclusive_owner'=>[2],
             'name'=>'Сайт одежды happywear.ru',
             'attributes'=>[
                 [
@@ -89,6 +90,9 @@ class ModelExtensionArunaSetup extends Model {
         $added_parsers=$this->getSyncList($seller_id);
         $allowed_parsers=[];
         foreach($this->parser_registry as $parser_id=>$available){
+            if( isset($available['exclusive_owner']) && !in_array($seller_id, $available['exclusive_owner']) ){
+                continue;
+            }
             foreach($added_parsers as $added){
                 if( $added['sync_parser_name']==$parser_id ){
                     continue 2;
