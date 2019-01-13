@@ -115,7 +115,7 @@ class ModelExtensionArunaParse extends Model {
                 price4 = ''
             ";
 	$this->db->query($sql);
-        $this->db->query("DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE price1<1");//DELETING defective entries
+        $this->db->query("DELETE FROM " . DB_PREFIX . "baycik_sync_entries WHERE price<1 OR price IS NULL");//DELETING defective entries
         $this->groupEntriesByCategories($sync_id);
 	unlink($tmpfile);
     }
