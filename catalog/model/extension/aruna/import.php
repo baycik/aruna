@@ -88,8 +88,8 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function importProductAdd($item) {
-	$this->load_admin_model('catalog/product');
-	$product_id = $this->model_catalog_product->addProduct($item);
+	$this->load->model('extension/aruna/product');
+	$product_id = $this->model_extension_aruna_product->addProduct($item);
 	$sql = "
             INSERT INTO
                 " . DB_PREFIX . "purpletree_vendor_products
@@ -104,8 +104,8 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function importProductUpdate($item) {
-	$this->load_admin_model('catalog/product');
-	return $this->model_catalog_product->editProduct($item['product_id'], $item);
+	$this->load->model('extension/aruna/product');
+	return $this->model_extension_aruna_product->editProduct($item['product_id'], $item);
     }
 
     public function deleteAbsentSellerProducts($seller_id) {
@@ -206,40 +206,41 @@ class ModelExtensionArunaImport extends Model {
 	}
 	return array_unique($product_filters);
     }
-
+    
+    private function filenamePrepare($str){
+        $translit=array(
+            "А"=>"a","Б"=>"b","В"=>"v","Г"=>"g","Д"=>"d","Е"=>"e","Ё"=>"e","Ж"=>"zh","З"=>"z","И"=>"i","Й"=>"y","К"=>"k","Л"=>"l","М"=>"m","Н"=>"n","О"=>"o","П"=>"p","Р"=>"r","С"=>"s","Т"=>"t","У"=>"u","Ф"=>"f","Х"=>"h","Ц"=>"ts","Ч"=>"ch","Ш"=>"sh","Щ"=>"shch","Ъ"=>"","Ы"=>"y","Ь"=>"","Э"=>"e","Ю"=>"yu","Я"=>"ya",
+            "а"=>"a","б"=>"b","в"=>"v","г"=>"g","д"=>"d","е"=>"e","ё"=>"e","ж"=>"zh","з"=>"z","и"=>"i","й"=>"y","к"=>"k","л"=>"l","м"=>"m","н"=>"n","о"=>"o","п"=>"p","р"=>"r","с"=>"s","т"=>"t","у"=>"u","ф"=>"f","х"=>"h","ц"=>"ts","ч"=>"ch","ш"=>"sh","щ"=>"shch","ъ"=>"","ы"=>"y","ь"=>"","э"=>"e","ю"=>"yu","я"=>"ya",
+            "A"=>"a","B"=>"b","C"=>"c","D"=>"d","E"=>"e","F"=>"f","G"=>"g","H"=>"h","I"=>"i","J"=>"j","K"=>"k","L"=>"l","M"=>"m","N"=>"n","O"=>"o","P"=>"p","Q"=>"q","R"=>"r","S"=>"s","T"=>"t","U"=>"u","V"=>"v","W"=>"w","X"=>"x","Y"=>"y","Z"=>"z"
+        );
+        $result=strtr($str,$translit);
+        $result=preg_replace("/[^a-zA-Z0-9_]/i","-",$result);
+        $result=preg_replace("/\-+/i","-",$result);
+        $result=preg_replace("/(^\-)|(\-$)/i","",$result);
+        return $result;
+    }
+    private function copyImage($url,$name=null){
+        $ext = pathinfo($url, PATHINFO_EXTENSION);
+        $basename = pathinfo($url, PATHINFO_BASENAME );
+        $dest="Seller_{$this->seller_id}/sync/";
+        if($name){
+            $dest.=$this->filenamePrepare($name).$ext;
+        } else {
+            $dest.=$basename;
+        }
+        if( copy($url,DIR_IMAGE.$dest) ){
+            return $dest;
+        }
+        return null;
+    }
     private function composeProductImageObject($row) {
-	return $product_image = [
-	    [
-		'product_image_id' => '',
-		'product_id' => '',
-		'image' => $row['image1'],
-		'sort_order' => '1'
-	    ],
-	    [
-		'product_image_id' => '',
-		'product_id' => '',
-		'image' => $row['image2'],
-		'sort_order' => '2'
-	    ],
-	    [
-		'product_image_id' => '',
-		'product_id' => '',
-		'image' => $row['image3'],
-		'sort_order' => '3'
-	    ],
-	    [
-		'product_image_id' => '',
-		'product_id' => '',
-		'image' => $row['image4'],
-		'sort_order' => '4'
-	    ],
-	    [
-		'product_image_id' => '',
-		'product_id' => '',
-		'image' => $row['image5'],
-		'sort_order' => '5'
-	    ]
-	];
+        $product_image=[];
+        for($i=1;$i<=5;$i++){
+            $product_image[]=[
+                'image' => $this->copyImage($row['image'.$i],$row['product_name'])
+            ];
+        }
+        return $product_image;
     }
 
     private $optionsCache = [];
@@ -486,9 +487,7 @@ class ModelExtensionArunaImport extends Model {
 	    'tax_class_id' => 0,
 	    'sort_order' => $sort_order,
 	    'name' => $row['product_name'],
-	    'image' => $row['image'],
 	    'manufacturer_id' => $this->composeProductManufacturer($row['manufacturer']),
-	    'product_image' => $this->composeProductImageObject($row),
 	    'product_attribute' => $this->composeProductAttributeObject($row),
 	    'product_category' => $this->composeProductCategory($destination_category_id),
 	    'product_option' => $this->composeProductOptionsObject($row, $category_comission),
@@ -500,6 +499,10 @@ class ModelExtensionArunaImport extends Model {
 	    'product_store' => [$this->store_id],
 	    'status' => 1
 	];
+        if( !$row['product_id'] ){
+            $product['image']=$this->copyImage($row['image'],$row['product_name']);
+            $product['product_image']=$this->composeProductImageObject($row);
+        }
 	//print_r($product);die("$category_comission-");
 	return $product;
     }
