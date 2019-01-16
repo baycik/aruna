@@ -2,6 +2,7 @@
 class ModelExtensionArunaSellerProduct extends Model {
         
         public function checkProductOfSeller ($product_id, $seller_id){
+           
             $sql = "
                 SELECT * 
                 FROM " . DB_PREFIX . "purpletree_vendor_products pvp
@@ -9,7 +10,21 @@ class ModelExtensionArunaSellerProduct extends Model {
                     AND product_id = '$product_id'
                 ";
             $query = $this->db->query($sql);
+            
             return $query->num_rows;
+        }
+        
+        public function addProductToSeller ($product_id, $seller_id){
+            $sql = "
+                INSERT INTO " .DB_PREFIX. "purpletree_vendor_products 
+                SET 
+                    seller_id = $seller_id, 
+                    product_id = $product_id, 
+                    is_approved = 1, 
+                    created_at = NOW(),
+                    updated_at = NOW()
+            ";
+            return $this->db->query($sql);
         }
         
 	public function getProduct($product_id) {
@@ -572,6 +587,50 @@ class ModelExtensionArunaSellerProduct extends Model {
 			return $query->row['total'];
 		} else {
 			return 0;
+		}
+	}
+        public function imageResize($filename, $width, $height) {
+		if (!is_file(DIR_IMAGE . $filename) || substr(str_replace('\\', '/', realpath(DIR_IMAGE . $filename)), 0, strlen(DIR_IMAGE)) != str_replace('\\', '/', DIR_IMAGE)) {
+			return;
+		}
+
+		$extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+		$image_old = $filename;
+		$image_new = 'cache/' . utf8_substr($filename, 0, utf8_strrpos($filename, '.')) . '-' . $width . 'x' . $height . '.' . $extension;
+
+		if (!is_file(DIR_IMAGE . $image_new) || (filemtime(DIR_IMAGE . $image_old) > filemtime(DIR_IMAGE . $image_new))) {
+			list($width_orig, $height_orig, $image_type) = getimagesize(DIR_IMAGE . $image_old);
+				 
+			if (!in_array($image_type, array(IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF))) { 
+				return DIR_IMAGE . $image_old;
+			}
+ 
+			$path = '';
+
+			$directories = explode('/', dirname($image_new));
+
+			foreach ($directories as $directory) {
+				$path = $path . '/' . $directory;
+
+				if (!is_dir(DIR_IMAGE . $path)) {
+					@mkdir(DIR_IMAGE . $path, 0777);
+				}
+			}
+
+			if ($width_orig != $width || $height_orig != $height) {
+				$image = new Image(DIR_IMAGE . $image_old);
+				$image->resize($width, $height);
+				$image->save(DIR_IMAGE . $image_new);
+			} else {
+				copy(DIR_IMAGE . $image_old, DIR_IMAGE . $image_new);
+			}
+		}
+
+		if ($this->request->server['HTTPS']) {
+			return HTTPS_SERVER . 'image/' . $image_new;
+		} else {
+			return HTTP_SERVER . 'image/' . $image_new;
 		}
 	}
 }

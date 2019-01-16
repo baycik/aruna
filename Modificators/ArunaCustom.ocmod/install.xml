@@ -163,7 +163,7 @@
                     <div class="subwell" style="background-color:grey"></div>
                     <div>
                      <a class="subwell_link" href="//aruna.market/" >{{home_page}}</a>
-                     <a class="subwell_link" href="//aruna.market/index.php?route=information/information&information_id=3">{{privacy_policy}}</a>
+                     <a class="subwell_link" href="//aruna.market/index.php?route=information/information&information_id=5">{{privacy_policy}}</a>
                     </div>
                 ]]></add>
             </operation>
@@ -210,7 +210,7 @@
             location = '{{ action }}&filter=' + filter.join(',');
         }
         clearTimeout(global_filter_clock);
-        global_filter_clock=setTimeout(do_filter,2500);
+        global_filter_clock=setTimeout(do_filter,1000);
     });
 
     $( document ).ready(function() {
@@ -238,6 +238,39 @@
         };
     });
 </script> 
+                ]]></add>
+            </operation>
+
+    </file>
+    
+    
+    <!--
+   ====================
+   CART OPTIMIZTAION
+   =================
+   --> 
+     <file path="catalog/controller/common/cart.php">
+        
+         <operation error="log">
+            <search ><![CDATA[
+                     sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+        ]]>
+            </search>
+            <add position="replace"><![CDATA[
+               sprintf($this->language->get('text_items'), $this->cart->countProducts(), $this->currency->format($total, $this->session->data['currency']));
+                ]]></add>
+            </operation>
+
+    </file>
+   <file path="catalog/view/theme/so-emarket/template/soconfig/quickcart.twig">
+        
+         <operation error="log">
+            <search ><![CDATA[
+                    Continue shopping
+        ]]>
+            </search>
+            <add position="replace"><![CDATA[
+                {{ button_shopping }}
                 ]]></add>
             </operation>
 

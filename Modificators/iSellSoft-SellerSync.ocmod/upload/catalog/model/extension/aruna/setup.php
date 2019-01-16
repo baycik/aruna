@@ -52,7 +52,7 @@ class ModelExtensionArunaSetup extends Model {
                 [
                     'field'=>'option_group1',
                     'name'=>'Размер',
-                    'delimeter'=>'|'
+                    'delimeter'=>['|',' ','.','-','_','/',',']
                 ],
                 [
                     'field'=>'origin_country',

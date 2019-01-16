@@ -9,6 +9,12 @@ $_['text_success']           = '<a href="%s">%s</a> теперь в вашей <
 $_['text_items']     	     = '<span class="items_cart">%s</span><span class="items_cart2"> товар(ов)</span><span class="items_carts"> - %s </span> ';
 $_['text_shop']  			  = 'Купить сейчас';
 $_['text_shop_cart']		  = 'Моя корзина';
+
+//QuickCart
+$_['text_subtotal']  = 'Итого <span class="previewCartCheckout-price">%s</span> <span class="cart-popup-total">Кличество товаров в вашей корзине: %s</span>';
+
+
+
 // Error
 $_['error_required']         = 'Требуется %s !';	
 

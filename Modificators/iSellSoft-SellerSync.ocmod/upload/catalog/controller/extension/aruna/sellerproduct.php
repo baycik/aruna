@@ -16,8 +16,8 @@ class ControllerExtensionArunaSellerProduct extends Controller{
                 
 		$this->document->setTitle($this->language->get('sellerproduct'));
                 
-		 $this->load_admin_model('catalog/product');
-                 //$this->load->model('catalog/product');
+		 //$this->load_admin_model('catalog/product');
+                 $this->load->model('catalog/product');
                  
                  
                
@@ -26,11 +26,11 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 
         
 	public function add() {
+            error_reporting(0);
 		$this->load->language('catalog/product');
 
 		$this->document->setTitle($this->language->get('sellerproductadd'));
-
-		$this->load_admin_model('catalog/product');
+$this->load->model('catalog/product');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$this->model_catalog_product->addProduct($this->request->post);
@@ -75,6 +75,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		}
 
 		$this->getForm();
+                  error_reporting(1);
 	}
 
 	public function edit() {
@@ -455,11 +456,12 @@ class ControllerExtensionArunaSellerProduct extends Controller{
         
         
         protected function getForm() {
+            /*
                 $this->load->model('extension/aruna/sellerproduct');
                 if($this->model_extension_aruna_sellerproduct->checkProductOfSeller($this->request->get['product_id'],$this->customer->getId()) < 1){
                     $this->response->redirect($this->url->link('account/account', '', true));
                 }
-                
+                */
 		$data['text_form'] = !isset($this->request->get['product_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
 
 		if (isset($this->error['warning'])) {

@@ -3,8 +3,8 @@
 class ModelExtensionArunaImport extends Model {
 
     private $sync_id;
-    private $meta_description_prefix = "РљСѓРїРёС‚СЊ РІ РЎРёРјС„РµСЂРѕРїРѕР»Рµ ";
-    private $meta_keyword_prefix = "РљСЂС‹Рј,РЎРёРјС„РµСЂРѕРїРѕР»СЊ,РєСѓРїРёС‚СЊ,";
+    private $meta_description_prefix = "Купить в Симферополе ";
+    private $meta_keyword_prefix = "Крым,Симферополь,купить,";
 
     public function __construct($registry) {
 	parent::__construct($registry);
@@ -173,7 +173,14 @@ class ModelExtensionArunaImport extends Model {
 	    foreach ($this->sync_config->filters as $filterConfig) {
 		$filter_group_id = $filterConfig->filter_group_id;
 		if (isset($filterConfig->delimeter)) {
-		    $filter_names = explode($filterConfig->delimeter, $row[$filterConfig->field]);
+                    $filter_value=$row[$filterConfig->field];
+                    if( is_array($filterConfig->delimeter) ){
+                        $filter_value= str_replace($filterConfig->delimeter, '|', $filter_value);
+                        $delimeter='|';
+                    } else {
+                        $delimeter=$filterConfig->delimeter;
+                    }
+		    $filter_names = explode($delimeter, $filter_value);
 		} else {
 		    $filter_names = [$row[$filterConfig->field]];
 		}

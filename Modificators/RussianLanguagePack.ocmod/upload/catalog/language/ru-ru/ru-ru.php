@@ -61,6 +61,7 @@ $_['button_upload']                 = 'Загрузить';
 $_['button_submit']                 = 'Сохранить';
 $_['button_invoice_print']          = 'Показать счет';
 $_['button_shipping_print']         = 'Распечатать список доставки';
+$_['button_shopping']       = 'Вернуться к покупкам';
 $_['button_address_add']            = 'Добавить';
 $_['button_attribute_add']          = 'Добавить';
 $_['button_banner_add']             = 'Добавить';

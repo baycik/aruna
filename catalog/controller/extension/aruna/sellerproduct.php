@@ -16,8 +16,8 @@ class ControllerExtensionArunaSellerProduct extends Controller{
                 
 		$this->document->setTitle($this->language->get('sellerproduct'));
                 
-		 $this->load_admin_model('catalog/product');
-                 //$this->load->model('catalog/product');
+		 $this->load->model('extension/aruna/product');
+                 $this->load->model('catalog/product');
                  
                  
                
@@ -26,68 +26,21 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 
         
 	public function add() {
+            error_reporting(0);
 		$this->load->language('catalog/product');
 
 		$this->document->setTitle($this->language->get('sellerproductadd'));
-
-		$this->load_admin_model('catalog/product');
-
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_catalog_product->addProduct($this->request->post);
-
-			$this->session->data['success'] = $this->language->get('text_success');
-
-			$url = '';
-
-			if (isset($this->request->get['filter_name'])) {
-				$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
-			}
-
-			if (isset($this->request->get['filter_model'])) {
-				$url .= '&filter_model=' . urlencode(html_entity_decode($this->request->get['filter_model'], ENT_QUOTES, 'UTF-8'));
-			}
-
-			if (isset($this->request->get['filter_price'])) {
-				$url .= '&filter_price=' . $this->request->get['filter_price'];
-			}
-
-			if (isset($this->request->get['filter_quantity'])) {
-				$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
-			}
-
-			if (isset($this->request->get['filter_status'])) {
-				$url .= '&filter_status=' . $this->request->get['filter_status'];
-			}
-
-			if (isset($this->request->get['sort'])) {
-				$url .= '&sort=' . $this->request->get['sort'];
-			}
-
-			if (isset($this->request->get['order'])) {
-				$url .= '&order=' . $this->request->get['order'];
-			}
-
-			if (isset($this->request->get['page'])) {
-				$url .= '&page=' . $this->request->get['page'];
-			}
-
-			$this->response->redirect($this->url->link('extension/aruna/sellerproduct',  $url, true));
-		}
-
-		$this->getForm();
-	}
-
-	public function edit() {
-             error_reporting(0);
-		$this->load->language('catalog/product');
-
-		$this->document->setTitle($this->language->get('sellerproductedit'));
-
-		$this->load_admin_model('catalog/product');
+                
+                $this->load->model('extension/aruna/product');
+                $this->load->model('extension/aruna/sellerproduct');
+                
+                
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_catalog_product->editProduct($this->request->get['product_id'], $this->request->post);
-
+                       
+                        $this->model_extension_aruna_sellerproduct->addProductToSeller($this->model_extension_aruna_product->addProduct($this->request->post),$this->customer->getId());
+                        
+                         
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$url = '';
@@ -131,16 +84,78 @@ class ControllerExtensionArunaSellerProduct extends Controller{
                   error_reporting(1);
 	}
 
+	public function edit() {
+             error_reporting(0);
+		$this->load->language('catalog/product');
+
+		$this->document->setTitle($this->language->get('sellerproductedit'));
+                
+               
+		$this->load->model('extension/aruna/product');
+               
+                
+                $this->load->model('extension/aruna/sellerproduct');
+                if($this->model_extension_aruna_sellerproduct->checkProductOfSeller($this->request->get['product_id'],$this->customer->getId()) < 1){
+                    $this->response->redirect($this->url->link('account/account', '', true));
+                }
+          
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+                  
+			$this->model_extension_aruna_product->editProduct($this->request->get['product_id'], $this->request->post);
+                        
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$url = '';
+
+			if (isset($this->request->get['filter_name'])) {
+				$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_model'])) {
+				$url .= '&filter_model=' . urlencode(html_entity_decode($this->request->get['filter_model'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_price'])) {
+				$url .= '&filter_price=' . $this->request->get['filter_price'];
+			}
+
+			if (isset($this->request->get['filter_quantity'])) {
+				$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
+			}
+
+			if (isset($this->request->get['filter_status'])) {
+				$url .= '&filter_status=' . $this->request->get['filter_status'];
+			}
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
+			$this->response->redirect($this->url->link('extension/aruna/sellerproduct',  $url, true));
+		}
+
+		$this->getForm();
+                 error_reporting(1);
+	}
+
 	public function delete() {
 		$this->load->language('catalog/product');
                 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		$this->load_admin_model('catalog/product');
+		$this->load->model('extension/aruna/product');
 
 		if (isset($this->request->post['selected']) && $this->validateDelete()) {
 			foreach ($this->request->post['selected'] as $product_id) {
-				$this->model_catalog_product->deleteProduct($product_id);
+				$this->model_extension_aruna_product->deleteProduct($product_id);
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -302,9 +317,9 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 
 		foreach ($results as $result) {
 			if (is_file(DIR_IMAGE . $result['image'])) {
-				$image = $this->model_tool_image->resize($result['image'], 40, 40);
+				$image = $this->model_extension_aruna_sellerproduct->imageResize($result['image'], 40, 40);
 			} else {
-				$image = $this->model_tool_image->resize('no_image.png', 40, 40);
+				$image = $this->model_extension_aruna_sellerproduct->imageResize('no_image.png', 40, 40);
 			}
 
 			$special = false;
@@ -455,11 +470,9 @@ class ControllerExtensionArunaSellerProduct extends Controller{
         
         
         protected function getForm() {
-                $this->load->model('extension/aruna/sellerproduct');
-                if($this->model_extension_aruna_sellerproduct->checkProductOfSeller($this->request->get['product_id'],$this->customer->getId()) < 1){
-                    $this->response->redirect($this->url->link('account/account', '', true));
-                }
-                
+            
+                $this->load->model('extension/aruna/product');
+                  $this->load->model('extension/aruna/sellerproduct');
 		$data['text_form'] = !isset($this->request->get['product_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
 
 		if (isset($this->error['warning'])) {
@@ -553,7 +566,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		$data['cancel'] = $this->url->link('extension/aruna/sellerproduct');
 
 		if (isset($this->request->get['product_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-			$product_info = $this->model_catalog_product->getProduct($this->request->get['product_id']);
+			$product_info = $this->model_extension_aruna_product->getProduct($this->request->get['product_id']);
 		}
                 
 		$this->load->model('localisation/language');
@@ -563,7 +576,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
                 if (isset($this->request->post['product_description'])) {
 			$data['product_description'] = $this->request->post['product_description'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$data['product_description'] = $this->model_catalog_product->getProductDescriptions($this->request->get['product_id']);
+			$data['product_description'] = $this->model_extension_aruna_product->getProductDescriptions($this->request->get['product_id']);
 		} else {
 			$data['product_description'] = array();
 		}
@@ -656,7 +669,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_store'])) {
 			$data['product_store'] = $this->request->post['product_store'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$data['product_store'] = $this->model_catalog_product->getProductStores($this->request->get['product_id']);
+			$data['product_store'] = $this->model_extension_aruna_product->getProductStores($this->request->get['product_id']);
 		} else {
 			$data['product_store'] = array(0);
 		}
@@ -685,7 +698,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_recurrings'])) {
 			$data['product_recurrings'] = $this->request->post['product_recurrings'];
 		} elseif (!empty($product_info)) {
-			$data['product_recurrings'] = $this->model_catalog_product->getRecurrings($product_info['product_id']);
+			$data['product_recurrings'] = $this->model_extension_aruna_product->getRecurrings($product_info['product_id']);
 		} else {
 			$data['product_recurrings'] = array();
 		}
@@ -853,7 +866,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_category'])) {
 			$categories = $this->request->post['product_category'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$categories = $this->model_catalog_product->getProductCategories($this->request->get['product_id']);
+			$categories = $this->model_extension_aruna_product->getProductCategories($this->request->get['product_id']);
 		} else {
 			$categories = array();
 		}
@@ -878,7 +891,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_filter'])) {
 			$filters = $this->request->post['product_filter'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$filters = $this->model_catalog_product->getProductFilters($this->request->get['product_id']);
+			$filters = $this->model_extension_aruna_product->getProductFilters($this->request->get['product_id']);
 		} else {
 			$filters = array();
 		}
@@ -902,7 +915,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_attribute'])) {
 			$product_attributes = $this->request->post['product_attribute'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$product_attributes = $this->model_catalog_product->getProductAttributes($this->request->get['product_id']);
+			$product_attributes = $this->model_extension_aruna_product->getProductAttributes($this->request->get['product_id']);
 		} else {
 			$product_attributes = array();
 		}
@@ -927,7 +940,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_option'])) {
 			$product_options = $this->request->post['product_option'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$product_options = $this->model_catalog_product->getProductOptions($this->request->get['product_id']);
+			$product_options = $this->model_extension_aruna_product->getProductOptions($this->request->get['product_id']);
 		} else {
 			$product_options = array();
 		}
@@ -981,7 +994,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_discount'])) {
 			$product_discounts = $this->request->post['product_discount'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$product_discounts = $this->model_catalog_product->getProductDiscounts($this->request->get['product_id']);
+			$product_discounts = $this->model_extension_aruna_product->getProductDiscounts($this->request->get['product_id']);
 		} else {
 			$product_discounts = array();
 		}
@@ -1001,7 +1014,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_special'])) {
 			$product_specials = $this->request->post['product_special'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$product_specials = $this->model_catalog_product->getProductSpecials($this->request->get['product_id']);
+			$product_specials = $this->model_extension_aruna_product->getProductSpecials($this->request->get['product_id']);
 		} else {
 			$product_specials = array();
 		}
@@ -1029,20 +1042,20 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		$this->load_admin_model('tool/image');
 
 		if (isset($this->request->post['image']) && is_file(DIR_IMAGE . $this->request->post['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], 100, 100);
+			$data['thumb'] = $this->model_extension_aruna_sellerproduct->imageResize($this->request->post['image'], 100, 100);
 		} elseif (!empty($product_info) && is_file(DIR_IMAGE . $product_info['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($product_info['image'], 100, 100);
+			$data['thumb'] = $this->model_extension_aruna_sellerproduct->imageResize($product_info['image'], 100, 100);
 		} else {
-			$data['thumb'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+			$data['thumb'] = $this->model_extension_aruna_sellerproduct->imageResize('no_image.png', 100, 100);
 		}
 
-		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 100, 100);
-
+		$data['placeholder'] = $this->model_extension_aruna_sellerproduct->imageResize('no_image.png', 100, 100);
+               
 		// Images
 		if (isset($this->request->post['product_image'])) {
 			$product_images = $this->request->post['product_image'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$product_images = $this->model_catalog_product->getProductImages($this->request->get['product_id']);
+			$product_images = $this->model_extension_aruna_product->getProductImages($this->request->get['product_id']);
 		} else {
 			$product_images = array();
 		}
@@ -1060,7 +1073,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 
 			$data['product_images'][] = array(
 				'image'      => $image,
-				'thumb'      => $this->model_tool_image->resize($thumb, 100, 100),
+				'thumb'      => $this->model_extension_aruna_sellerproduct->imageResize($thumb, 100, 100),
 				'sort_order' => $product_image['sort_order']
 			);
 		}
@@ -1071,7 +1084,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_download'])) {
 			$product_downloads = $this->request->post['product_download'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$product_downloads = $this->model_catalog_product->getProductDownloads($this->request->get['product_id']);
+			$product_downloads = $this->model_extension_aruna_product->getProductDownloads($this->request->get['product_id']);
 		} else {
 			$product_downloads = array();
 		}
@@ -1091,7 +1104,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_related'])) {
 			$products = $this->request->post['product_related'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$products = $this->model_catalog_product->getProductRelated($this->request->get['product_id']);
+			$products = $this->model_extension_aruna_product->getProductRelated($this->request->get['product_id']);
 		} else {
 			$products = array();
 		}
@@ -1099,7 +1112,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		$data['product_relateds'] = array();
                 
 		foreach ($products as $product_id) {
-			$related_info = $this->model_catalog_product->getProduct($product_id);
+			$related_info = $this->model_extension_aruna_product->getProduct($product_id);
 
 			if ($related_info) {
 				$data['product_relateds'][] = array(
@@ -1119,14 +1132,14 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->post['product_reward'])) {
 			$data['product_reward'] = $this->request->post['product_reward'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$data['product_reward'] = $this->model_catalog_product->getProductRewards($this->request->get['product_id']);
+			$data['product_reward'] = $this->model_extension_aruna_product->getProductRewards($this->request->get['product_id']);
 		} else {
 			$data['product_reward'] = array();
 		}
 		if (isset($this->request->post['product_seo_url'])) {
 			$data['product_seo_url'] = $this->request->post['product_seo_url'];
 		} elseif (isset($this->request->get['product_id'])) {
-			$data['product_seo_url'] = $this->model_catalog_product->getProductSeoUrls($this->request->get['product_id']);
+			$data['product_seo_url'] = $this->model_extension_aruna_product->getProductSeoUrls($this->request->get['product_id']);
 		} else {
 			$data['product_seo_url'] = array();
 		}
@@ -1148,6 +1161,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
         
         
 	protected function validateForm() {
+              
 		foreach ($this->request->post['product_description'] as $language_id => $value) {
 			if ((utf8_strlen($value['name']) < 1) || (utf8_strlen($value['name']) > 255)) {
 				$this->error['name'][$language_id] = $this->language->get('error_name');
@@ -1279,7 +1293,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 		if (isset($this->request->get['filter_name']) || isset($this->request->get['filter_model'])) {
 			$this->load->model('extension/aruna/sellerproduct');
 			$this->load_admin_model('catalog/option');
-                        $this->load_admin_model('catalog/product');
+                        $this->load->model('extension/aruna/product');
 
 			if (isset($this->request->get['filter_name'])) {
 				$filter_name = $this->request->get['filter_name'];
@@ -1311,7 +1325,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 			foreach ($results as $result) {
 				$option_data = array();
 
-				$product_options = $this->model_catalog_product->getProductOptions($result['product_id']);
+				$product_options = $this->model_extension_aruna_product->getProductOptions($result['product_id']);
 
 				foreach ($product_options as $product_option) {
 					$option_info = $this->model_catalog_option->getOption($product_option['option_id']);
@@ -1403,7 +1417,7 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 			$this->load_admin_model('catalog/option');
 
 			$this->load_admin_model('tool/image');
-
+                        $this->load_model('extension/aruna/sellerproduct');
 			$filter_data = array(
 				'filter_name' => $this->request->get['filter_name'],
 				'start'       => 0,
@@ -1420,9 +1434,9 @@ class ControllerExtensionArunaSellerProduct extends Controller{
 
 					foreach ($option_values as $option_value) {
 						if (is_file(DIR_IMAGE . $option_value['image'])) {
-							$image = $this->model_tool_image->resize($option_value['image'], 50, 50);
+							$image = $this->model_extension_aruna_sellerproduct->imageResize($option_value['image'], 50, 50);
 						} else {
-							$image = $this->model_tool_image->resize('no_image.png', 50, 50);
+							$image = $this->model_extension_aruna_sellerproduct->imageResize('no_image.png', 50, 50);
 						}
 
 						$option_value_data[] = array(
