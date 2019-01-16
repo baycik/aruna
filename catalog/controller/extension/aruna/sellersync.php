@@ -165,6 +165,15 @@ class ControllerExtensionArunaSellersync extends Controller {
 	echo 1;
     }
 
+    public function importProduct(){
+        $seller_id=2;
+        $sync_id=3;
+        $group_id=782;
+        $this->load->model('extension/aruna/import');
+        //$this->model_extension_aruna_import->setImagesAlwaysDownload(true);
+	$ok=$this->model_extension_aruna_import->importSellerProduct($seller_id,$sync_id, $group_id);
+    }
+    
     public function importUserProducts() {
 	if (!$this->customer->isLogged()) {
 	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellersync', '', true);
