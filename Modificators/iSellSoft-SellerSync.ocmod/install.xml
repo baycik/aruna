@@ -28,4 +28,48 @@
 			]]></add>
 		</operation>
 	</file>
+        <file path="catalog/controller/product/product.php">
+		<operation error="skip">
+			<search><![CDATA[  $og_title=$data['price'];
+                        ]]>
+                        </search>
+			<add position="before"><![CDATA[ 
+                           if($product_option_value_data!=null){
+			]]></add>
+		</operation>
+		  <operation error="skip">
+			<search><![CDATA[  if ($product_info['minimum']) {
+                        ]]>
+                        </search>
+			<add position="before"><![CDATA[ 
+                      }
+
+			]]></add>
+		</operation>
+		 <operation error="skip">
+			<search><![CDATA[ $product_option_value_data = array();
+                        ]]>
+                        </search>
+			<add position="before"><![CDATA[ 
+						if ($option){
+			]]></add>
+		</operation>
+		  <operation error="skip">
+			<search><![CDATA[  if($product_option_value_data!=null){
+                        ]]>
+                        </search>
+			<add position="before"><![CDATA[ 
+                           }
+
+			]]></add>
+		</operation>
+		   <operation error="skip">
+			<search><![CDATA[  $data['options'] = array();
+                        ]]>
+                        </search>
+			<add position="after"><![CDATA[    
+					$product_option_value_data = array();
+			]]></add>
+		</operation>
+	</file>
 </modification>

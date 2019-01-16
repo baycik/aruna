@@ -49,7 +49,9 @@
                             <div class="radio">
                                 <label><input type="radio" name="account" value="login">{{ text_returning_customer }}</label>
                             </div>
-
+                            <div class="col-xs-12 social_login">
+                            {{ content_bottom }}
+                            </div>
                         </div>
                     </div>     
                     <script type="text/javascript">
@@ -115,7 +117,7 @@
                             
                          
                             <div class="ship-payment">
-                                {% if is_shipping_required %}
+
                                     {{ shipping_methods }}
                              
                                     <fieldset id="shipping-address" style="display:none">
@@ -124,8 +126,6 @@
                                        
                                         
                                     </fieldset>
-                            
-                                {% endif %}
                                 
                                 
                             </div>
@@ -168,7 +168,6 @@
                         </section>
                     </div>
                 </div>
-                {{ content_bottom }}
             </div>
         </div>
     </div>
@@ -180,7 +179,11 @@
                  .checkout-content.confirm-section textarea{
                      height: 152px;
                  }
-                {% endif %}    
+                {% endif %}   
+                .social_login h3{
+                    font-size:16px;
+                    
+                }
                 h2 {
                     margin: 0px !important;
                 }
