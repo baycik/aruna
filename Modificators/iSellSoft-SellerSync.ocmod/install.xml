@@ -18,7 +18,7 @@
 			]]></add>
 		</operation>
 	</file>
-        <file path="catalog/controller/extension/account/purpletree_multivendor/dashboardicons.php">
+         <file path="catalog/controller/extension/account/purpletree_multivendor/dashboardicons.php">
 		<operation error="skip">
 			<search><![CDATA[ $data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
                         ]]>
@@ -27,7 +27,24 @@
                             $data['sellerparserlist'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
 			]]></add>
 		</operation>
-                
+		  <operation error="skip">
+			<search><![CDATA[ $data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
+                        ]]>
+                        </search>
+			<add position="replace" offset="0"><![CDATA[ 
+                           $data['sellerproduct'] = $this->url->link('extension/aruna/sellerproduct', '', true);
+			]]></add>
+		</operation>
+	</file>
+  <file path="catalog/controller/extension/module/purpletree_sellerpanel.php">
+		<operation error="skip">
+			<search><![CDATA[$data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
+                        ]]>
+                        </search>
+			<add position="replace" offset="0"><![CDATA[ 
+                           $data['sellerproduct'] = $this->url->link('extension/aruna/sellerproduct', '', true);
+			]]></add>
+		</operation>
 	</file>
         <file path="catalog/controller/product/product.php">
 		<operation error="skip">
