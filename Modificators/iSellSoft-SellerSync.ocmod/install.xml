@@ -27,6 +27,7 @@
                             $data['sellerparserlist'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
 			]]></add>
 		</operation>
+                
 	</file>
         <file path="catalog/controller/product/product.php">
 		<operation error="skip">
