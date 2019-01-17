@@ -45,10 +45,10 @@ class ModelExtensionArunaParse extends Model {
                     MIN(price1) AS `price`
                 FROM 
                     baycik_tmp_current_sync
-                WHERE price>0 AND price IS NOT NULL
-                GROUP BY CONCAT(`category_lvl1`,'/',`category_lvl2`,'/',`category_lvl3`), model";
+                GROUP BY CONCAT(`category_lvl1`,'/',`category_lvl2`,'/',`category_lvl3`), model
+                HAVING price>0 AND price IS NOT NULL";
 	$this->db->query($fill_entries_table_sql);
-        
+        $this->groupEntriesByCategories($sync_id);
         if( $mode=='detect_unchanged_entries' ){
             $change_finder_sql="
                 UPDATE
@@ -116,7 +116,6 @@ class ModelExtensionArunaParse extends Model {
                 price4 = ''
             ";
 	$this->db->query($sql);
-        $this->groupEntriesByCategories($sync_id);
 	unlink($tmpfile);
     }
     
