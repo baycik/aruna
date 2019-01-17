@@ -1,0 +1,58 @@
+<modification>
+    <name>iSellSoft RemoteImage</name>
+    <code>iSellSoft-RemoteImage</code>
+    <version>1.0</version>
+    <author>iSellSoft Team</author>
+    <file path="admin/model/tool/image.php">
+	<operation error="skip"> 
+	    <search><![CDATA[return;]]></search>
+	    <add offset="0" position="replace"><![CDATA[return $filename;]]></add>
+	</operation>
+    </file>
+    <file path="catalog/model/tool/image.php">
+	<operation error="skip"> 
+	    <search><![CDATA[return;]]></search>
+	    <add offset="0" position="replace"><![CDATA[return $filename;]]></add>
+	</operation>
+    </file>
+    <file path="admin/controller/catalog/product.php">
+	<operation error="skip"> 
+	    <search><![CDATA[is_file(DIR_IMAGE . $result['image'])]]></search>
+	    <add offset="0" position="replace"><![CDATA[ is_file(DIR_IMAGE . $result['image']) || 1 ]]></add>
+	</operation>
+	<operation error="skip"> 
+	    <search><![CDATA[is_file(DIR_IMAGE . $product_info['image'])]]></search>
+	    <add offset="0" position="replace"><![CDATA[ is_file(DIR_IMAGE . $product_info['image']) || 1 ]]></add>
+	</operation>
+	<operation error="skip"> 
+	    <search><![CDATA[is_file(DIR_IMAGE . $product_image['image'])]]></search>
+	    <add offset="0" position="replace"><![CDATA[ is_file(DIR_IMAGE . $product_info['image']) || 1 ]]></add>
+	</operation>
+    </file>
+    <file path="admin/view/template/catalog/product_form.twig">
+	<operation error="skip"> 
+	    <search><![CDATA[
+                <input type="hidden" name="image" value="{{ image }}" id="input-image" />
+            ]]></search>
+	    <add offset="0" position="replace"><![CDATA[ 
+                <input type="text"  class="form-control" name="image" value="{{ image }}" id="input-image" />
+             ]]></add>
+	</operation>
+	<operation error="skip"> 
+	    <search><![CDATA[
+                <input type="hidden" name="product_image[{{ image_row }}][image]" value="{{ product_image.image }}" id="input-image{{ image_row }}" />
+            ]]></search>
+	    <add offset="0" position="replace"><![CDATA[ 
+                <input type="text"  class="form-control" name="product_image[{{ image_row }}][image]" value="{{ product_image.image }}" id="input-image{{ image_row }}" />
+             ]]></add>
+	</operation>
+	<operation error="skip"> 
+	    <search><![CDATA[<img src="{{ product_image.thumb }}"]]></search>
+	    <add offset="0" position="replace"><![CDATA[<img src="{{ product_image.thumb }}" style="max-width:100px;height:auto" ]]></add>
+	</operation>
+	<operation error="skip"> 
+	    <search><![CDATA[<img src="{{ thumb }}"]]></search>
+	    <add offset="0" position="replace"><![CDATA[<img src="{{ thumb }}" style="max-width:100px;height:auto" ]]></add>
+	</operation>
+    </file>
+</modification>
