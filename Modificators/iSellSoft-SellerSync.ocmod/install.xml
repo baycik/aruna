@@ -1,14 +1,14 @@
 <modification>
-	<name><![CDATA[iSellSoft-SellerSync]]></name>
-	<code><![CDATA[iSellSoft-SellerSync]]></code>
-	<version>1.0</version>
-	<author>iSellSoft</author>
-	<file path="catalog/view/theme/default/template/account/purpletree_multivendor/dashboardicons.twig">
-		<operation error="skip">
-			<search><![CDATA[<div class="col-md-3 col-sm-6 col-xs-6" style='display:none'></div>
+    <name><![CDATA[iSellSoft-SellerSync]]></name>
+    <code><![CDATA[iSellSoft-SellerSync]]></code>
+    <version>1.0</version>
+    <author>iSellSoft</author>
+    <file path="catalog/view/theme/default/template/account/purpletree_multivendor/dashboardicons.twig">
+        <operation error="skip">
+            <search><![CDATA[<div class="col-md-3 col-sm-6 col-xs-6" style='display:none'></div>
                         ]]>
-                        </search>
-			<add position="replace" offset="0"><![CDATA[ 
+            </search>
+            <add position="replace" offset="0"><![CDATA[ 
                             <div class="col-md-3 col-sm-6 col-xs-6">
                                     <a class="boxicon--default" href="{{ sellerparserlist }}">
                                         <span class="icon_cart">  <i class="fa fa-refresh" aria-hidden="true"></i></span>
@@ -16,78 +16,84 @@
                                     </a>
                                 </div>
 			]]></add>
-		</operation>
-	</file>
-         <file path="catalog/controller/extension/account/purpletree_multivendor/dashboardicons.php">
-		<operation error="skip">
-			<search><![CDATA[ $data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
+        </operation>
+    </file>
+    <file path="catalog/controller/extension/account/purpletree_multivendor/sellerstore.php">
+        <operation error="skip">
+            <search><![CDATA[is_file(DIR_IMAGE . $seller_product['image'])]]></search>
+            <add position="replace"><![CDATA[ (1) ]]></add>
+        </operation>        
+    </file>
+    <file path="catalog/controller/extension/account/purpletree_multivendor/dashboardicons.php">
+        <operation error="skip">
+            <search><![CDATA[ $data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
                         ]]>
-                        </search>
-			<add position="after" offset="0"><![CDATA[ 
+            </search>
+            <add position="after" offset="0"><![CDATA[ 
                             $data['sellerparserlist'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
 			]]></add>
-		</operation>
-		  <operation error="skip">
-			<search><![CDATA[ $data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[ $data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
                         ]]>
-                        </search>
-			<add position="replace" offset="0"><![CDATA[ 
+            </search>
+            <add position="replace" offset="0"><![CDATA[ 
                            $data['sellerproduct'] = $this->url->link('extension/aruna/sellerproduct', '', true);
 			]]></add>
-		</operation>
-	</file>
-  <file path="catalog/controller/extension/module/purpletree_sellerpanel.php">
-		<operation error="skip">
-			<search><![CDATA[$data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
+        </operation>
+    </file>
+    <file path="catalog/controller/extension/module/purpletree_sellerpanel.php">
+        <operation error="skip">
+            <search><![CDATA[$data['sellerproduct'] = $this->url->link('extension/account/purpletree_multivendor/sellerproduct', '', true);
                         ]]>
-                        </search>
-			<add position="replace" offset="0"><![CDATA[ 
+            </search>
+            <add position="replace" offset="0"><![CDATA[ 
                            $data['sellerproduct'] = $this->url->link('extension/aruna/sellerproduct', '', true);
 			]]></add>
-		</operation>
-	</file>
-        <file path="catalog/controller/product/product.php">
-		<operation error="skip">
-			<search><![CDATA[  $og_title=$data['price'];
+        </operation>
+    </file>
+    <file path="catalog/controller/product/product.php">
+        <operation error="skip">
+            <search><![CDATA[  $og_title=$data['price'];
                         ]]>
-                        </search>
-			<add position="before"><![CDATA[ 
+            </search>
+            <add position="before"><![CDATA[ 
                            if($product_option_value_data!=null){
 			]]></add>
-		</operation>
-		  <operation error="skip">
-			<search><![CDATA[  if ($product_info['minimum']) {
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[  if ($product_info['minimum']) {
                         ]]>
-                        </search>
-			<add position="before"><![CDATA[ 
+            </search>
+            <add position="before"><![CDATA[ 
                       }
 
 			]]></add>
-		</operation>
-		 <operation error="skip">
-			<search><![CDATA[ $product_option_value_data = array();
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[ $product_option_value_data = array();
                         ]]>
-                        </search>
-			<add position="before"><![CDATA[ 
+            </search>
+            <add position="before"><![CDATA[ 
 						if ($option){
 			]]></add>
-		</operation>
-		  <operation error="skip">
-			<search><![CDATA[  if($product_option_value_data!=null){
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[  if($product_option_value_data!=null){
                         ]]>
-                        </search>
-			<add position="before"><![CDATA[ 
+            </search>
+            <add position="before"><![CDATA[ 
                            }
 
 			]]></add>
-		</operation>
-		   <operation error="skip">
-			<search><![CDATA[  $data['options'] = array();
+        </operation>
+        <operation error="skip">
+            <search><![CDATA[  $data['options'] = array();
                         ]]>
-                        </search>
-			<add position="after"><![CDATA[    
+            </search>
+            <add position="after"><![CDATA[    
 					$product_option_value_data = array();
 			]]></add>
-		</operation>
-	</file>
+        </operation>
+    </file>
 </modification>
