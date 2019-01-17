@@ -1,12 +1,6 @@
 <?php
 
 class ModelExtensionArunaImport extends Model {
-
-    private $always_download_images='sdfasf3333';
-    public function setImagesAlwaysDownload( $always ){
-        $this->always_download_images=$always;
-    }
-    
     private $sync_id;
     private $meta_description_prefix = "Купить в Симферополе ";
     private $meta_keyword_prefix = "Крым,Симферополь,купить,";
@@ -53,7 +47,6 @@ class ModelExtensionArunaImport extends Model {
             $this->importSellerProductGroup($seller_id, $group_data);
         }
         $this->profile("finish");
-        //$this->db->query("UPDATE ".DB_PREFIX."baycik_sync_entries AS bse SET is_changed=0 WHERE sync_id='$sync_id'");
         return true;
     }
 
@@ -78,18 +71,13 @@ class ModelExtensionArunaImport extends Model {
         $this->createNeededProductProperties($this->sync_id);
         foreach ($rows as $row) {
             $product = $this->composeProductObject($row, $group_data['comission'], $group_data['destination_category_id']);
-            print_r($product);
-            die();
-            
-            
-            
             if ($row['product_id']) {
                 $product['product_id'] = $row['product_id'];
                 $this->importProductUpdate($product); //is this right???
             } else {
                 $this->importProductAdd($product);
             }
-            //$this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_entries SET is_changed=0 WHERE sync_entry_id='{$row['sync_entry_id']}'");
+            $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_entries SET is_changed=0 WHERE sync_entry_id='{$row['sync_entry_id']}'");
         }
         $this->profile("import entries");
         $this->reorderOptions();
@@ -432,7 +420,14 @@ class ModelExtensionArunaImport extends Model {
         return $result;
     }
 
-    private function copyImage($url, $name = null) {
+    private function remoteFileExists($url){
+        return (false !== file_get_contents($url,0,null,0,1));
+    }
+    
+    private function getImage($url, $name = null) {
+        if( empty($this->sync_config->download_images) ){
+            return $this->remoteFileExists($url)?$url:null;
+        }
         $ext = pathinfo($url, PATHINFO_EXTENSION);
         $basename = pathinfo($url, PATHINFO_BASENAME);
         $dest = "catalog/Seller_{$this->seller_id}/sync/";
@@ -452,19 +447,24 @@ class ModelExtensionArunaImport extends Model {
         }
         return null;
     }
+    
+    private function composeProductImage($row) {
+        return $this->getImage($row['image'],$row['model'].$row['product_name']);
+    }
 
     private function composeProductImageObject($row) {
-        $product_image = [];
+        $product_images = [];
         for ($i = 1; $i <= 5; $i++) {
-            $img=$this->copyImage($row['image' . $i], $row['model'].$row['product_name'] . "_$i");
+            $img=$this->getImage($row['image' . $i], $row['model'].$row['product_name'] . "_$i");
             if( $img ){
-                $product_image[] = ['image' => $img];
+                $product_images[] = ['image' => $img,'sort_order'=>$i];
             }
         }
-        return $product_image;
+        return $product_images;
     }
 
     private function composeProductObject($row, $category_comission, $destination_category_id) {
+        $product_is_new=!$row['product_id'];
         ////////////////////////////////
         //DESCRIPTION SECTION
         ////////////////////////////////
@@ -518,8 +518,8 @@ class ModelExtensionArunaImport extends Model {
             'product_store' => [$this->store_id],
             'status' => 1
         ];
-        if ( $this->always_download_images || !$row['product_id'] ) {
-            $product['image'] = $this->copyImage($row['image'],$row['model'].$row['product_name']);
+        if ( $product_is_new ) {
+            $product['image'] =         $this->composeProductImage($row);
             $product['product_image'] = $this->composeProductImageObject($row);
         }
         //print_r($product);die("$category_comission-");
