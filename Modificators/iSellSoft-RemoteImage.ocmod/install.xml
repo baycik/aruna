@@ -18,15 +18,15 @@
     <file path="admin/controller/catalog/product.php">
 	<operation error="skip"> 
 	    <search><![CDATA[is_file(DIR_IMAGE . $result['image'])]]></search>
-	    <add offset="0" position="replace"><![CDATA[ is_file(DIR_IMAGE . $result['image']) || 1 ]]></add>
+	    <add offset="0" position="replace"><![CDATA[ ( 1 ) ]]></add>
 	</operation>
 	<operation error="skip"> 
 	    <search><![CDATA[is_file(DIR_IMAGE . $product_info['image'])]]></search>
-	    <add offset="0" position="replace"><![CDATA[ is_file(DIR_IMAGE . $product_info['image']) || 1 ]]></add>
+	    <add offset="0" position="replace"><![CDATA[ ( 1 ) ]]></add>
 	</operation>
 	<operation error="skip"> 
 	    <search><![CDATA[is_file(DIR_IMAGE . $product_image['image'])]]></search>
-	    <add offset="0" position="replace"><![CDATA[ is_file(DIR_IMAGE . $product_info['image']) || 1 ]]></add>
+	    <add offset="0" position="replace"><![CDATA[ ( 1 ) ]]></add>
 	</operation>
     </file>
     <file path="admin/view/template/catalog/product_form.twig">
