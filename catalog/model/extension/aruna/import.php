@@ -421,7 +421,15 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function remoteFileExists($url){
-        return (false !== file_get_contents($url,0,null,0,1));
+        stream_context_set_default(
+            [
+                'http' => [
+                    'method' => 'HEAD'
+                ]
+            ]
+        );
+        $headers = get_headers($url);
+        return strpos($headers[0],'200')!==false;
     }
     
     private function getImage($url, $name = null) {
