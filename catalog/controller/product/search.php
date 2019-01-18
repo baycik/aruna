@@ -186,6 +186,25 @@ class ControllerProductSearch extends Controller {
 				'limit'               => $limit
 			);
 
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        $this->load->language('extension/module/so_searchpro');
+                        $products_arr = $this->model_extension_module_so_searchpro->getProducts_iSell($filter_data);
+
+                        print_r($products_arr);
+                        
+                        die();
+                        
+                        
+                        
+                        
+                        
+                        
 			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
 
 			$results = $this->model_catalog_product->getProducts($filter_data);

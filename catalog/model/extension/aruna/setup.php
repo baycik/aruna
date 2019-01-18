@@ -12,7 +12,7 @@ class ModelExtensionArunaSetup extends Model {
         'happywear'=>[
             'exclusive_owner'=>[2],
             'name'=>'Сайт одежды happywear.ru',
-            'download_images'=>true,
+            'download_images'=>0,
             'attributes'=>[
                 [
                     'field'=>'origin_country',

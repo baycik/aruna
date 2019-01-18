@@ -154,7 +154,7 @@ class ControllerExtensionModuleSosearchpro extends Controller {
 		
 		$this->load->language('extension/module/so_searchpro');
 		
-		$products_arr = $this->model_extension_module_so_searchpro->getProducts($filter_data);
+		$products_arr = $this->model_extension_module_so_searchpro->getProducts_iSell($filter_data);
 		
 		foreach($products_arr as $product_info){
 			$name = $product_info['name'];
