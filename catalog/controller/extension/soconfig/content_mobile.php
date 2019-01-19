@@ -47,7 +47,6 @@ class ControllerExtensionSoconfigContentMobile extends Controller {
 		$soconfig 	= $this->soconfig;
 		$typelayout 		= $soconfig->get_settings('mobilelayout');
 		
-	
 		foreach ($modules as $module) {
 			
 			if($typelayout== $module['sort_order'] ){

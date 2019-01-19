@@ -1,14 +1,14 @@
 <div class="checkout-content checkout-cart">
-    <h2 class="secondary-title"><i class="fa fa-shopping-cart"></i>{{ text_shopping_cart }} {% if weight %} {{ '('~weight~')' }} {% endif %}</h2>
+    <h4 class="secondary-title">{{ text_shopping_cart }} {% if weight %} {{ '('~weight~')' }} {% endif %}</h4>
     <div class="box-inner">
         <div class="table-responsive checkout-product">
-            <table class="table table-bordered table-hover">
+            <table class="table table-hover">
                 <thead>
                     <tr>
                         <th class="text-left name" colspan="2">{{ column_name }}</th>
                         <th class="text-center quantity">{{ column_quantity }}</th>
-                        <th class="text-center price">{{ column_price }}</th>
-                        <th class="text-right total">{{ column_total }}</th>
+                        <th class="text-center price">{{ column_total }}</th>
+                        <th class="text-right total"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -16,14 +16,19 @@
                     <tr>
                         <td class="text-left name" colspan="2">
                             {% if product.thumb %}
-                                <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-thumbnail" /></a>
-                            {% endif %}
-                            <a href="{{ product.href }}" class="product-name">{{ product.name }}</a>
-                            {% for option in product.option %}
-                                <br/>
-                                &nbsp;
-                                <small> - {{ option.name }}: {{ option.value }}</small>
-                            {% endfor %}
+                                <div class="cart-product-container">
+                                    <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-thumbnail" /></a>
+                                </div>    
+                                {% endif %}
+                                <div class="cart-product-name">
+                                    <a href="{{ product.href }}" class="product-name">{{ product.name }}</a>
+                                     {% for option in product.option %}
+                                        <p>
+                                        <small> - {{ option.name }}: {{ option.value }}</small>
+                                        </p>
+                                    {% endfor %}
+                                </div>
+                           
                             {% if product.recurring %}
                                 <br/>
                                 <span class="label label-info">{{ text_recurring_item }}</span>
@@ -32,19 +37,20 @@
                         </td>
                         <td class="text-left quantity">
                             <div class="input-group">
-                                <input type="text" name="quantity[{{ product.cart_id }}]" value="{{ product.quantity }}" size="1" class="form-control" />
-                                <span class="input-group-btn">
-                                    {% if setting_so_onepagecheckout_layout_setting.show_product_removecart %}
-                                        <span data-toggle="tooltip" title="{{ button_remove }}" data-product-key="{{ product.cart_id }}" class="btn-delete"><i class="fa fa-trash-o"></i></span>
-                                    {% endif %}
-                                    {% if setting_so_onepagecheckout_layout_setting.show_product_qnty_update %}
-                                        <span data-toggle="tooltip" title="{{ button_update }}" data-product-key="{{ product.cart_id }}" class="btn-update"><i class="fa fa-refresh"></i></span>
-                                    {% endif %}
-                                </span>
+                                <input id="prod_quantity_input" type="number" min="1" name="quantity[{{ product.cart_id }}]" data-product-key="{{ product.cart_id }}"  value="{{ product.quantity }}" size="1" class="form-control" onchange="cart_qunatity_change(this)" />
+                                
                             </div>
+                                <div> шт. </div>
+                                <div class="cart-multiply">x</i> </div>
+                                <div class="cart-product-price"> {{ product.price }}</div>
                         </td>
-                        <td class="text-right price">{{ product.price }}</td>
                         <td class="text-right total">{{ product.total }}</td>
+                        <td class="text-right total">
+                            <span class="input-group-btn">
+                                <span data-toggle="tooltip" title="{{ button_remove }}" data-product-key="{{ product.cart_id }}" class="btn-delete"><i class="fa fa-trash-o"></i></span>
+                                        
+                            </span>
+                        </td>
                     </tr>
                 {% endfor %}
                 {% for voucher in vouchers %}
@@ -67,10 +73,8 @@
                 </tfoot>
             </table>
         </div>
-        <div id="payment-confirm-button" class="payment-{{ SoUtils.getProperty(session_data, 'payment_method.code') }}">
-            <h2 class="secondary-title"><i class="fa fa-credit-card"></i>{{ text_payment_detail }}</h2>
-            {{ payment }}
-        </div>
     </div>
 </div>
+                
+                
 

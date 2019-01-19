@@ -262,6 +262,20 @@
             </operation>
 
     </file>
+    
+     <file path="catalog/controller/checkout/cart.php">
+        
+         <operation error="log">
+            <search ><![CDATA[
+                   $this->response->setOutput($this->load->view('checkout/cart', $data));
+        ]]>
+            </search>
+            <add position="replace"><![CDATA[
+             $this->response->setOutput($this->load->view('extension/aruna/cart', $data));
+                ]]></add>
+            </operation>
+
+    </file>
    <file path="catalog/view/theme/so-emarket/template/soconfig/quickcart.twig">
         
          <operation error="log">
@@ -275,5 +289,35 @@
             </operation>
 
     </file>
-    
+    <file path="catalog/view/theme/so-mobile/template/product/product.twig">
+        
+         <operation error="log">
+            <search ><![CDATA[
+                   Buy Now
+        ]]>
+            </search>
+            <add position="replace"><![CDATA[
+                {{ text_buynow }}
+                ]]></add>
+            </operation>
+
+    </file>
+      <file path="catalog/view/theme/so-emarket/template/account/login.twig">
+        <operation error="skip">
+            <search ><![CDATA[
+ <!--{{ header }}-->
+]]>
+            </search>
+            <add position="replace"><![CDATA[
+{{ header }}
+]]></add>
+        </operation>
+         <operation error="skip">
+            <search ><![CDATA[
+             <h2>{{ column_right }}</h2>
+        ]]>
+            </search>
+            <add position="replace"><![CDATA[ ]]></add>
+            </operation>
+    </file>
 </modification>

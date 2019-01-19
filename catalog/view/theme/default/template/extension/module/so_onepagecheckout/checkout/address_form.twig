@@ -1,9 +1,6 @@
 <div class="{{ is_logged_in ? 'checkout-content' : '' }} checkout-{{ type }}-form">
-    {% if is_logged_in %}
-        <h2 class="secondary-title"><i class="fa fa-user"></i>{{ type == 'payment' ? 'Billing Address' : 'Delivery Address' }} </h2>
-    {% endif %}
-    <div class="box-inner">
-        <form class="form-horizontal form-{{ type }}">
+    <h2 class="secondary-title"><i class="fa fa-map-marker"></i>{{ text_shipping_address }}</h2>
+        <form class="box-inner form-horizontal form-{{ type }}">
             {% if addresses %}
                 <div class="radio">
                     <label>
@@ -15,7 +12,7 @@
                     <select name="{{ type }}_address_id" class="form-control">
                         {% for address in addresses %}
                             {% if address.address_id == address_id %}
-                                <option value="{{ address.address_id }}" selected="selected">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.zone }}, {{ address.country }}</option>
+                                <option value="{{ address.address_id }}" selected="selected">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.zone }}, {{ address.country }}</option>
                             {% else %}
                                 <option value="{{ address.address_id }}">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.zone }}, {{ address.country }}</option>
                             {% endif %}
@@ -30,30 +27,8 @@
                 </div>
             {% endif %}
             <div id="{{ type }}-new" style="display: {{ addresses ? 'none' : 'block' }}">
-                {% if name %}
-                    <div class="form-group required">
-                        <input type="text" name="{{ type }}_firstname" value="{{ SoUtils.getProperty(order_data, type ~ '_firstname') }} *" placeholder="{{ entry_firstname }}" id="input-{{ type }}-firstname" class="form-control" />
-                    </div>
-                    <div class="form-group required">
-                        <input type="text" name="{{ type }}_lastname" value="{{ SoUtils.getProperty(order_data, type ~ '_lastname') }}" placeholder="{{ entry_lastname }} *" id="input-{{ type }}-lastname" class="form-control"/>
-                    </div>
-                {% endif %}
-                <div class="form-group company-input">
-                    <input type="text" name="{{ type }}_company" value="{{ SoUtils.getProperty(order_data, type ~ '_company') }}" placeholder="{{ entry_company }}" id="input-{{ type }}-company" class="form-control"/>
-                </div>
-                <div class="form-group required">
-                    <input type="text" name="{{ type }}_address_1" value="{{ SoUtils.getProperty(order_data, type ~ '_address_1') }}" placeholder="{{ entry_address_1 }} *" id="input-{{ type }}-address-1" class="form-control"/>
-                </div>
-                <div class="form-group address-2-input">
-                    <input type="text" name="{{ type }}_address_2" value="{{ SoUtils.getProperty(order_data, type ~ '_address_2') }}" placeholder="{{ entry_address_2 }}" id="input-{{ type }}-address-2" class="form-control"/>
-                </div>
-                <div class="form-group required">
-                    <input type="text" name="{{ type }}_city" value="{{ SoUtils.getProperty(order_data, type ~ '_city') }}" placeholder="{{ entry_city }} *" id="input-{{ type }}-city" class="form-control"/>
-                </div>
-                <div class="form-group required">
-                    <input type="text" name="{{ type }}_postcode" value="{{ postcode }}" placeholder="{{ entry_postcode }} *" id="input-{{ type }}-postcode" class="form-control"/>
-                </div>
-                <div class="form-group required">
+               
+                 <div class="form-group required" style="width: 49%; float: right;">
                     <select name="{{ type }}_country_id" id="input-{{ type }}-country" class="form-control">
                         <option value="">{{ text_select }}</option>
                         {% for country in countries %}
@@ -65,10 +40,25 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group required">
+                    
+                 <div class="form-group required" style="width: 49%; float: left;">
                     <select name="{{ type }}_zone_id" id="input-{{ type }}-zone" class="form-control">
                     </select>
                 </div>
+                    
+                   
+                <div class="form-group company-input" style="display:none">
+                    <input type="text" name="{{ type }}_company" value="{{ SoUtils.getProperty(order_data, type ~ '_company') }}" placeholder="{{ entry_company }}" id="input-{{ type }}-company" class="form-control"/>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" name="{{ type }}_address_1" value="{{ SoUtils.getProperty(order_data, type ~ '_address_1') }}" placeholder="{{ entry_address_1 }} *" id="input-{{ type }}-address-1" class="form-control"/>
+                </div>
+                
+                <div class="form-group address-2-input" style="display:none">
+                    <input type="text" name="{{ type }}_address_2" value="{{ SoUtils.getProperty(order_data, type ~ '_address_2') }}" placeholder="{{ entry_address_2 }}" id="input-{{ type }}-address-2" class="form-control"/>
+                </div>
+                
                 {% for custom_field in custom_fields %}
                     {% if custom_field.location == 'address' %}
                         {% if custom_field.type == 'select' %}
@@ -285,6 +275,5 @@
                 }, 500);
             });
         </script> 
-    </div>
 </div>
 <input type="hidden" name="default_zone_id" id="default_zone_id" value="{{ zone_id }}" />

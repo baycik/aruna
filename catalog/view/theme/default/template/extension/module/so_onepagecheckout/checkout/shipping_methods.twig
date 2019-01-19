@@ -16,7 +16,7 @@
                                 <label>
                                     {% if quote.code == code or not code or setting_so_onepagecheckout_layout_setting.so_onepagecheckout_default_shipping == shipping_status[0] %}
                                         {% set code = quote.code %}
-                                        <input type="radio" name="shipping_method" value="{{ quote.code }}" checked="checked"/>
+                                        <input type="radio" name="shipping_method" value="{{ quote.code }}" />
                                     {% else %}
                                         <input type="radio" name="shipping_method" value="{{ quote.code }}"/>
                                     {% endif %}
@@ -33,3 +33,5 @@
     {% endif %}
 </div>
 {% endif %}
+    
+ 

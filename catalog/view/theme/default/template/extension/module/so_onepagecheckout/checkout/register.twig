@@ -28,14 +28,19 @@
             <div class="form-group input-lastname required" style="width: 49%; float: right;">
                 <input type="text" name="lastname" value="{{ SoUtils.getProperty(order_data, 'lastname') }}" placeholder="{{ entry_lastname }} *" id="input-payment-lastname" class="form-control"/>
             </div>
+            
             <div class="form-group required">
-                <input type="text" name="email" value="{{ SoUtils.getProperty(order_data, 'email') }}" placeholder="{{ entry_email }} *" id="input-payment-email" class="form-control"/>
+                <input type="password" name="password" value="{{ SoUtils.getProperty(order_data, 'password') }}" placeholder="{{ entry_password }} *" id="input-payment-password" class="form-control"/>
+            </div>
+            <div class="form-group required">
+                <input type="password" name="confirm" value="{{ SoUtils.getProperty(order_data, 'confirm') }}" placeholder="{{ entry_confirm }} *" id="input-payment-confirm" class="form-control"/>
+            </div>
+
+            <div class="form-group">
+                <input type="text" name="email" value="{{ SoUtils.getProperty(order_data, 'email') }}" placeholder="{{ entry_email }} " id="input-payment-email" class="form-control"/>
             </div>
             <div class="form-group required">
                 <input type="text" name="telephone" value="{{ SoUtils.getProperty(order_data, 'telephone') }}" placeholder="{{ entry_telephone }} *" id="input-payment-telephone" class="form-control"/>
-            </div>
-            <div class="form-group fax-input">
-                <input type="text" name="fax" value="{{ SoUtils.getProperty(order_data, 'fax') }}" placeholder="{{ entry_fax }}" id="input-payment-fax" class="form-control"/>
             </div>
             {% for custom_field in custom_fields %}
                 {% if custom_field.location == 'account' %}
@@ -179,40 +184,7 @@
             {% endfor %}
         </div>
     </fieldset>
-    <fieldset id="password" style="display: {{ setting_so_onepagecheckout_layout_setting.so_onepagecheckout_account_open == 'register' ? 'block' : 'none' }}">
-        {% if setting_so_onepagecheckout_general.so_onepagecheckout_layout != 2 %}
-            <h2 class="secondary-title"><i class="fa fa-lock"></i>{{ text_your_password }}</h2>
-        {% endif %}
-        <div class="box-inner">
-            <div class="form-group required">
-                <input type="password" name="password" value="{{ SoUtils.getProperty(order_data, 'password') }}" placeholder="{{ entry_password }} *" id="input-payment-password" class="form-control"/>
-            </div>
-            <div class="form-group required">
-                <input type="password" name="confirm" value="{{ SoUtils.getProperty(order_data, 'confirm') }}" placeholder="{{ entry_confirm }} *" id="input-payment-confirm" class="form-control"/>
-            </div>
-        </div>
-    </fieldset>
-    <fieldset id="address">
-        <h2 class="secondary-title"><i class="fa fa-map-marker"></i>{{ text_your_address }}</h2>
-        {{ payment_address_form }}
-    </fieldset>
     
-    {% if is_shipping_required %}
-        <div class="checkbox">
-            <label>
-                {% if shipping_address == '1' %}
-                    <input type="checkbox" name="shipping_address" value="1" checked="checked" />
-                {% else %}
-                    <input type="checkbox" name="shipping_address" value="0" />
-                {% endif %}
-                {{ entry_shipping }}
-            </label>
-        </div>
-        <fieldset id="shipping-address" style="display: {{ shipping_address == '1' ? 'none' : 'block' }}">
-            <h2 class="secondary-title"><i class="fa fa-map-marker"></i>{{ text_shipping_address }}</h2>
-            {{ shipping_address_form }}
-        </fieldset>
-    {% endif %}
 
     <script type="text/javascript">
         if ($('.so-onepagecheckout .date').length) {
@@ -225,11 +197,6 @@
             $('.so-onepagecheckout .datetime').datetimepicker({pickDate: true, pickTime: true});
         }
 
-        <?php if (count($customer_groups) > 1): ?>
-            $(document).delegate('input[name="customer_group_id"]', 'change', function () {
-                $(document).trigger('so_checkout_customer_group_changed', this.value);
-            });
-        <?php endif; ?>
 
         $('#account .form-group[data-sort]').detach().each(function() {
             if ($(this).attr('data-sort') >= 0 && $(this).attr('data-sort') <= $('#account .form-group').length) {

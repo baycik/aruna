@@ -4,6 +4,14 @@
 {{ text_date_added }} {{ date_added }}
 {{ text_order_status }} {{ order_status }}
 
+Заказчик:
+
+{{ firstname }} {{ lastname }}
+Номер телефона: {{ telephone }}
+Адрес электронной почты: {{ email }}
+
+Доставка: {{ shipping_method }}
+
 {{ text_product }}
 
 {% for product in products %}
