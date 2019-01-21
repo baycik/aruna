@@ -62,16 +62,25 @@ class ModelCatalogProduct extends Model {
         
 
         public function getProducts_iSell($data = array()) {
+            $start= microtime(1);
+            
+            $sql="
+                ALTER TABLE `oc_product` ADD FULLTEXT INDEX `iss_fti1` (`model` ASC, `ean` ASC);
+                ALTER TABLE `oc_product_description` 
+                ADD FULLTEXT INDEX `iss_fti2` (`name` ASC),
+                ADD FULLTEXT INDEX `iss_fti3` (`description` ASC),
+                ADD FULLTEXT INDEX `iss_fti4` (`tag` ASC);";
             $this->language_id=(int)$this->config->get('config_language_id');
             $this->store_id=(int)$this->config->get('config_store_id');
 
-            print_r($data);
-            $sql_order=" ORDER BY 1";
+            //print_r($data);
+            $sql_order=" ORDER BY ";
             /////////////////////////////////////////////////////
             //SEARCH
             /////////////////////////////////////////////////////
             if( !empty($data['filter_name']) ){
-                $search_query_words=explode(" ",$data['filter_name']);
+                $matches_union=[];
+                $search_query=$data['filter_name'];
                 $ranks=[
                     'code'=>15,
                     'tag'=>20,
@@ -79,45 +88,28 @@ class ModelCatalogProduct extends Model {
                     'description'=>5,
                     'manufacturer'=>12
                 ];
-                $matches_union=[];
-                $code_fields=['model','sku','sku','ean','jan','isbn','mpn'];
-                $descr_fields=['name','tag','description'];
-                foreach($search_query_words as $word){
-                    if( mb_strlen($word)<4 ){
-                        continue;
-                    }
-                    $condition_or=[];
-                    foreach($code_fields as $field){
-                        $condition_or[]="$field LIKE '".$this->db->escape($word)."%'";
-                    }
-                    $where=implode(' OR ',$condition_or);
-                    $matches_union[]="SELECT product_id,{$ranks['code']} rank FROM ".DB_PREFIX."product WHERE $where";
-
-                    $condition_or=[];
-                    foreach($descr_fields as $field){
-                        $condition_or[]="$field LIKE '".$this->db->escape($word)."%'";
-                    }
-                    $where=implode(' OR ',$condition_or);
-                    $matches_union[]="SELECT 
-                            product_id,
-                            IF('tag'  LIKE '$word%',{$ranks['tag']},
-                            IF('name' LIKE '$word%',{$ranks['name']},
-                                                    {$ranks['description']})) rank 
-                        FROM 
-                            ".DB_PREFIX."product_description 
-                        WHERE 
-                            language_id='{$this->language_id}' AND $where";
-                    $matches_union[]="SELECT 
-                            product_id,
-                            {$ranks['manufacturer']} rank 
-                        FROM 
-                            ".DB_PREFIX."manufacturer m JOIN ".DB_PREFIX."product USING(manufacturer_id)
-                        WHERE 
-                            m.name LIKE '".$this->db->escape($word)."%'";
-                }
+                $matches_union[]="
+                    SELECT 
+                        product_id, {$ranks['code']}*(MATCH (model,ean)  AGAINST ('$search_query')) rank 
+                    FROM 
+                        ".DB_PREFIX."product
+                    WHERE 
+                        MATCH (model,ean)  AGAINST ('$search_query')";
+                $matches_union[]="SELECT 
+                        product_id,
+                        IF( MATCH (tag)   AGAINST ('$search_query'),MATCH (tag)   AGAINST ('$search_query')*{$ranks['tag']},
+                        IF( MATCH (name)  AGAINST ('$search_query'),MATCH (name)  AGAINST ('$search_query')*{$ranks['name']},
+                                                                    MATCH (description)  AGAINST ('$search_query')*{$ranks['description']})) rank 
+                    FROM 
+                        ".DB_PREFIX."product_description 
+                    WHERE 
+                        (  MATCH (tag)  AGAINST ('$search_query')
+                        OR MATCH (name)  AGAINST ('$search_query')
+                        OR MATCH (description)  AGAINST ('$search_query') )
+                        AND language_id='{$this->language_id}'";
                 if( count($matches_union) ){
-                    echo $sql_matches="JOIN ((".implode(") UNION (",$matches_union).")) matches USING(product_id)";
-                    $sql_order.= ",rank DESC";
+                    $sql_matches="JOIN ((".implode(") UNION (",$matches_union).")) matches USING(product_id)";
+                    $sql_order.= "rank DESC";
                 } else {
                     $sql_matches='';
                 }
@@ -180,88 +172,20 @@ class ModelCatalogProduct extends Model {
             /////////////////////////////////////////////////////
             //CONSTRUCTING QUERY
             /////////////////////////////////////////////////////
-            $sql_select="
-                p.product_id,
-                pd.name AS name,
-                description,
-                model,
-                sku,
-                upc,
-                ean,
-                jan,
-                isbn,
-                mpn,
-                location,
-                quantity,
-                (SELECT ss.name FROM " . DB_PREFIX . "stock_status ss WHERE ss.stock_status_id = p.stock_status_id AND ss.language_id = '" . (int)$this->config->get('config_language_id') . "') 
-                    AS stock_status,
-                p.image,
-                m.manufacturer_id,
-                m.name AS manufacturer,
-                price,
-                (SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) 
-                    AS discount,
-                (SELECT price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) 
-                    AS special,
-                (SELECT points FROM " . DB_PREFIX . "product_reward pr WHERE pr.product_id = p.product_id AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "') 
-                    AS reward,
-                points,
-                tax_class_id,
-                date_available,
-                (SELECT wcd.unit FROM " . DB_PREFIX . "weight_class_description wcd WHERE p.weight_class_id = wcd.weight_class_id AND wcd.language_id = '" . (int)$this->config->get('config_language_id') . "') 
-                    AS weight_class,
-                weight_class_id,
-                (SELECT lcd.unit FROM " . DB_PREFIX . "length_class_description lcd WHERE p.length_class_id = lcd.length_class_id AND lcd.language_id = '" . (int)$this->config->get('config_language_id') . "') 
-                    AS length_class,
-                length,
-                width,
-                height,
-                length_class_id,
-                subtract,
-                ROUND((SELECT AVG(rating) AS total FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) )
-                    AS rating,
-                COALESCE((SELECT COUNT(*) AS total FROM " . DB_PREFIX . "review r2 WHERE r2.product_id = p.product_id AND r2.status = '1' GROUP BY r2.product_id) ,0)
-                    AS reviews, 
-                minimum,
-                p.sort_order AS sort_order,
-                status,
-                date_added,
-                date_modified,
-                viewed";
-            $sql_table="
+            $sql="SELECT product_id,rank FROM 
                 ".DB_PREFIX."product p 
                 $sql_matches 
-                JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id AND p2s.store_id = '$this->store_id') 
-                LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id AND pd.language_id = '$this->language_id') 
-                LEFT JOIN " . DB_PREFIX . "manufacturer m ON (p.manufacturer_id = m.manufacturer_id)";
-            $sql_where="
-                p.status = '1' 
-                AND p.date_available <= NOW() 
-                ";
-            /////////////////////////////////////////////////////
-            //CONSTRUCTING QUERY
-            /////////////////////////////////////////////////////
-            echo $sql_products="
-                
-
-                SELECT 
-                    $sql_select
-                FROM 
-                    $sql_table
-                WHERE
-                    $sql_where
-                GROUP BY product_id
-                $sql_order
+                ORDER BY rank DESC
                 LIMIT {$data['limit']} OFFSET {$data['start']}";
-                
-            $product_data = [];
-            $query = $this->db->query($sql_products);
+            
+            $product_data = array();
+
+            $query = $this->db->query($sql);
+
             foreach ($query->rows as $result) {
-                $result['price']=$result['discount'] ? $result['discount'] : $result['price'];
-                
-                
-                $product_data[$result['product_id']] = $result;
+                $product_data[$result['product_id']] = $this->getProduct($result['product_id']);
             }
+            echo (microtime(1)-$start);
             return $product_data;
 	}
         
