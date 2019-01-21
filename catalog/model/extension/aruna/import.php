@@ -134,6 +134,7 @@ class ModelExtensionArunaImport extends Model {
         if (!$result->num_rows) {
             return true;
         }
+        
         $this->load->model('extension/aruna/product');
         foreach ($result->rows as $product) {
             $this->productDelete($product['product_id']);
@@ -150,6 +151,7 @@ class ModelExtensionArunaImport extends Model {
         $sql_clean_attributes_groups = "DELETE ag,agd FROM " . DB_PREFIX . "attribute_group ag JOIN " . DB_PREFIX . "attribute_group_description agd USING(attribute_group_id) WHERE attribute_group_id NOT IN (SELECT attribute_group_id FROM " . DB_PREFIX . "attribute);";
         $sql_clean_option_values = "DELETE FROM " . DB_PREFIX . "option_value WHERE option_value_id NOT IN (SELECT option_value_id FROM " . DB_PREFIX . "product_option_value)";
         $sql_clean_option_value_description = "DELETE FROM " . DB_PREFIX . "option_value_description WHERE option_value_id NOT IN (SELECT option_value_id FROM " . DB_PREFIX . "product_option_value)";
+        $sql_clean_manufacturer = "DELETE FROM " . DB_PREFIX . "manufacturer WHERE manufacturer_id NOT IN (SELECT DISTINCT manufacturer_id FROM " . DB_PREFIX . "product)";
 
         $this->db->query($sql_clean_filters);
         $this->db->query($sql_clean_filters_description);
@@ -158,6 +160,7 @@ class ModelExtensionArunaImport extends Model {
         $this->db->query($sql_clean_attributes_groups);
         $this->db->query($sql_clean_option_values);
         $this->db->query($sql_clean_option_value_description);
+        $this->db->query($sql_clean_manufacturer);
     }
 
     private $filterCategoryIds = [];
