@@ -287,21 +287,27 @@ class ModelCatalogProduct extends Model {
             $this->fillMatchedProducts($data);
             $sql_available_filters="
                 SELECT 
-                    DISTINCT (filter_id) 
+                    filter_id,
+                    filter_group_id,
+                    fd.name filter_name,
+                    COUNT(*) product_count 
                 FROM 
-                    tmp_matches";
-            
+                    tmp_matches
+                    JOIN
+                        ".DB_PREFIX."filter_description fd USING(filter_id)
+                GROUP BY filter_id";
             $filters=$this->db->query($sql_available_filters)->rows;
+            echo (microtime(1)-$start);
             print_r($filters);
-            
-            
-            
-            
-            
-            
-            
-            
             header("Content-type:text/plain");
+            
+            
+            
+            
+            
+            
+            
+            
             die($sql_matches);
             
             $sql_get=" 
@@ -314,7 +320,7 @@ class ModelCatalogProduct extends Model {
                 LIMIT
                     $sql_limit";
             $products=$this->db->query($sql_get)->rows;
-            echo (microtime(1)-$start);
+            
             //return $products;
             
             
