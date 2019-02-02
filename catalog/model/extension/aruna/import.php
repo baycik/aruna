@@ -60,7 +60,7 @@ class ModelExtensionArunaImport extends Model {
         $sql = "
             SELECT 
                 bse.*,
-		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id
+		(SELECT GROUP_CONCAT(product_id) FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id
             FROM
                 " . DB_PREFIX . "baycik_sync_entries AS bse
             WHERE
@@ -78,8 +78,11 @@ class ModelExtensionArunaImport extends Model {
         foreach ($rows as $row) {
             $product = $this->composeProductObject($row, $group_data['comission'], $group_data['destination_category_id']);
             if ($row['product_id']) {
-                $product['product_id'] = $row['product_id'];
-                $this->productUpdate($product);
+                $product_ids= explode(',', $row['product_id']);
+                foreach($product_ids as $product_id){
+                    $product['product_id'] = $product_id;
+                    $this->productUpdate($product);
+                }
             } else {
                 $this->productAdd($product);
             }
