@@ -31,7 +31,7 @@ $_['button_quickview']        		= 'Добавить к быстрому прос
 $_['text_hotline']       	  		= 'Горячая линия';
 $_['text_compare']       	  		= 'Сравнение';
 $_['text_compare2']       	  		= 'My <b>Compare</b>';
-$_['text_sidebar']       	  		= 'Боковая панель';
+$_['text_sidebar']       	  		= 'Фильтр';
 $_['text_gridview']       	  		= 'Табличный вид:';
 $_['text_alertaddtocart']       	= 'Товар добавлен в корзину! Что дальше?';
 
@@ -69,7 +69,7 @@ $_['text_sharethis']  		  = 'Поделиться';
 $_['text_addwishlist']  		  = 'Добавить в Закладки';
 $_['text_addcompare']  		  = 'Добавить в список сравнения';
 
-$_['text_sidebar']        = 'Боковая панель';
+$_['text_sidebar']        = 'Фильтр';
 $_['text_size_chart']        = 'Размер списка';
 $_['tab_video']        = 'Видео';
 $_['tab_shipping']        = 'Способ доставки';

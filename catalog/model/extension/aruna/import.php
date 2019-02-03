@@ -488,7 +488,12 @@ class ModelExtensionArunaImport extends Model {
         ////////////////////////////////
         //COMPOSING SECTION
         ////////////////////////////////
-        $sort_order = 1700000000 - time();
+        if( $row['sort_order'] ){
+            $sort_order = $row['sort_order'];
+        } else {
+            $sort_order = 1700000000 - time();//new products sort to start
+        }
+        
         $product = [
             'model' => $row['model'],
             'sku' => '',
