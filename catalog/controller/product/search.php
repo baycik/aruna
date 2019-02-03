@@ -186,6 +186,12 @@ class ControllerProductSearch extends Controller {
 				'limit'               => $limit
 			);
 
+                        
+                        $filter_data['filter_filter']=$this->request->get['filter'];
+                        
+                        
+                        
+                        
 			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
 
 			$results = $this->model_catalog_product->getProducts($filter_data);

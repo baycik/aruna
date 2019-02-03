@@ -1,6 +1,6 @@
 
 
-ROBOCOPY "../../admin\language\ru-ru" "./upload/admin\language\ru-ru"
+ROBOCOPY "../../admin\language\ru-ru" "./upload/admin\language\ru-ru" 
 ROBOCOPY "../../catalog\language\ru-ru" "./upload/catalog\language\ru-ru"
 
 

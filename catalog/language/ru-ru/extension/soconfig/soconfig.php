@@ -18,7 +18,7 @@ $_['text_item_2']             		= ' в вашей корзине';
 $_['text_item_3']            		 = ' товар(ов)';
 
 $_['text_backtotop']          		= ' Вверх ';
-$_['text_sub']                		= ' ALL NEWS OF OUR HURAMA	';
+$_['text_sub']                		= ' ALL NEWS OF OUR HURAMA';
 $_['text_stock']              		= ' Склад ';
 $_['text_stock1']             		= ' Stock1 ';
 $_['text_price_old']          		= ' Старая цена ';

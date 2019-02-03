@@ -13,10 +13,10 @@ $_['text_checkout_payment_method']			= 'Шаг %s: Способ оплаты';
 $_['text_checkout_confirm']							= 'Шаг 6: Подтверждение заказа';
 $_['text_modify']											= 'Изменить &raquo;';
 $_['text_new_customer']								= 'Новый покупатель';
-$_['text_returning_customer']						= 'Зарегистрированный пользователь';
+$_['text_returning_customer']						= 'Я совершал здесь покупки ранее и регистрировался';
 $_['text_checkout']										= 'Варианты Оформления заказа';
-$_['text_i_am_returning_customer']				= 'Я совершал здесь покупки ранее и регистрировался';
-$_['text_register']										= 'Регистрация';
+$_['text_i_am_returning_customer']				= 'У меня уже есть учетная запись';
+$_['text_register']										= 'Я впервые здесь и хочу зарегистрироваться';
 $_['text_guest']											= 'Оформить заказ без регистрации';
 $_['text_register_account']							= 'Создание учётной записи поможет делать покупки быстрее и удобнее, а так же получать скидки как постоянный покупатель.';
 $_['text_forgotten']										= 'Забыли пароль?';
@@ -34,6 +34,8 @@ $_['text_payment_recurring']						= 'Платежный профиль';
 $_['text_trial_description']							= 'Стоимость: %s; Периодичность: %d %s; Кол-во платежей: %d;  Далее,  ';
 $_['text_payment_description']					= 'Стоимость: %s; Периодичность: %d %s; Кол-во платежей: %d';
 $_['text_payment_until_canceled_description']		= 'Стоимость: %s; Периодичность: %d %s; Кол-во платежей: до отмены';
+$_['text_subhead_info']							= 'Оформить заказ на Aruna проще простого! Пожалуйста, заполните форму ниже.';
+
 
 $_['text_day']					= 'день';
 $_['text_week']				= 'неделю';
@@ -46,7 +48,7 @@ $_['column_name']			= 'Название товара';
 $_['column_model']		= 'Модель';
 $_['column_quantity']		= 'Количество';
 $_['column_price']			= 'Цена';
-$_['column_total']			= 'Итого';
+$_['column_total']			= 'Стоимость';
 
 // Entry
 $_['entry_email_address']			= 'E-Mail Адрес';

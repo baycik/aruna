@@ -157,6 +157,7 @@ class ControllerProductCategory extends Controller {
 				'limit'              => $limit
 			);
 
+                        $filter_data['filter_name']=$this->request->get['search'];
 			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
 
 			$results = $this->model_catalog_product->getProducts($filter_data);

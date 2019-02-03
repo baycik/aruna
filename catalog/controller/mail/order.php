@@ -442,6 +442,11 @@ class ControllerMailOrder extends Controller {
 				);
 			}
 
+                        $data['firstname'] = $order_info['firstname'];
+                        $data['lastname'] = $order_info['lastname'];
+                        $data['telephone'] = $order_info['telephone'];
+                        $data['email'] = $order_info['email'];
+                        
 			$data['comment'] = strip_tags($order_info['comment']);
 
 			$mail = new Mail($this->config->get('config_mail_engine'));

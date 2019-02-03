@@ -48,7 +48,7 @@ class ControllerExtensionSoconfigContentMenu2 extends Controller {
 		$soconfig 	= $this->soconfig;
 		$typelayout 		= $soconfig->get_settings('typelayout');
 		
-		
+               
 		foreach ($modules as $module) {
 			
 				$part = explode('.', $module['code']);

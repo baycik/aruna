@@ -1,7 +1,7 @@
 <modification>
     <name>iSellSoft RemoteImage</name>
     <code>iSellSoft-RemoteImage</code>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <author>iSellSoft Team</author>
     <file path="admin/model/tool/image.php">
 	<operation error="skip"> 
@@ -53,6 +53,26 @@
 	<operation error="skip"> 
 	    <search><![CDATA[<img src="{{ thumb }}"]]></search>
 	    <add offset="0" position="replace"><![CDATA[<img src="{{ thumb }}" style="max-width:100px;height:auto" ]]></add>
+	</operation>
+    </file>
+  <file path="admin/view/template/catalog/product_list.twig">
+	<operation error="skip"> 
+	    <search><![CDATA[<td class="text-center">{% if product.image %} <img src="{{ product.image }}" alt="{{ product.name }}" class="img-thumbnail" /> {% else %} <span class="img-thumbnail list"><i class="fa fa-camera fa-2x"></i></span> {% endif %}</td>
+            ]]></search>
+	    <add position="replace"><![CDATA[
+				<td class="text-center">
+<div class="container" style="max-height: 100px;
+    overflow: hidden;
+    border-radius: 12px;
+    max-width: 100px;
+    padding: 0;
+    border: 1px solid #f2eded">
+{% if product.image %} 
+						<img src="{{ product.image }}" alt="{{ product.name }}" class="img-thumbnail" style="max-width:100px;height:auto;padding: 0" /> {% else %} 
+						<span class="img-thumbnail list"><i class="fa fa-camera fa-2x"></i></span> {% endif %}
+</div>
+				</td>
+             ]]></add>
 	</operation>
     </file>
 </modification>
