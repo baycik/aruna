@@ -65,6 +65,119 @@ class ModelExtensionArunaSetup extends Model {
                 ]
             ],
             'manufacturer'=>'manufacturer'
+        ],
+        'isell'=>[
+            'name'=>'Электротовары NilsonCrimea',
+            'download_images'=>1,
+            'attributes'=>[
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель',
+                    'group_description'=>'Произведено'
+                ],
+                [
+                    'field'=>'attribute1',
+                    'name'=>'Мощность',
+                    'group_description'=>'Мощность'
+                ],
+                [
+                    'field'=>'attribute2',
+                    'name'=>'Напряжение',
+                    'group_description'=>'Напряжение'
+                ],
+                [
+                    'field'=>'attribute11',
+                    'name'=>'Тип',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'attribute3',
+                    'name'=>'Форма',
+                    'group_description'=>'Форма'
+                ],
+                [
+                    'field'=>'attribute4',
+                    'name'=>'Материал',
+                    'group_description'=>'Материал'
+                ],
+                [
+                    'field'=>'attribute5',
+                    'name'=>'Водостойкость',
+                    'group_description'=>'Водостойкость'
+                ],
+                [
+                    'field'=>'attribute6',
+                    'name'=>'Цвет',
+                    'group_description'=>'Цвет'
+                ],
+                [
+                    'field'=>'attribute7',
+                    'name'=>'Цоколь',
+                    'group_description'=>'Цоколь'
+                ],
+                [
+                    'field'=>'attribute8',
+                    'name'=>'Сечение',
+                    'group_description'=>'Сечение'
+                ],
+                [
+                    'field'=>'attribute9',
+                    'name'=>'Цветовая температура',
+                    'group_description'=>'Цветовая температура'
+                ],
+                [
+                    'field'=>'attribute10',
+                    'name'=>'Сила тока',
+                    'group_description'=>'Сила тока'
+                ],
+            ],
+            'filters'=>[
+                [
+                    'field'=>'attribute1',
+                    'name'=>'Мощность'
+                ],
+                [
+                    'field'=>'attribute2',
+                    'name'=>'Напряжение'
+                ],
+                [
+                    'field'=>'attribute3',
+                    'name'=>'Форма'
+                ],
+                [
+                    'field'=>'attribute4',
+                    'name'=>'Материал'
+                ],
+                [
+                    'field'=>'attribute5',
+                    'name'=>'Водостойкость'
+                ],
+                [
+                    'field'=>'attribute6',
+                    'name'=>'Цвет'
+                ],
+                [
+                    'field'=>'attribute7',
+                    'name'=>'Цоколь'
+                ],
+                [
+                    'field'=>'attribute8',
+                    'name'=>'Сечение'
+                ],
+                [
+                    'field'=>'attribute9',
+                    'name'=>'Цветовая температура'
+                ],
+                [
+                    'field'=>'attribute10',
+                    'name'=>'Сила тока'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель'
+                ]
+            ],
+            'manufacturer'=>'manufacturer'
         ]
     ];
 

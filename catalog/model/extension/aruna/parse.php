@@ -38,8 +38,8 @@ class ModelExtensionArunaParse extends Model {
         $fill_entries_table_sql = "
             INSERT INTO 
                 ".DB_PREFIX."baycik_sync_entries 
-                    (`is_changed`,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` ,`option_group1`,`price_group1`,`price`)
-                SELECT          1,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `image` , `image1` , `image2` , `image3` , `image4` , `image5`,
+                    (`is_changed`,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` ,  `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10` ,`image` , `image1` , `image2` , `image3` , `image4` , `image5` ,`option_group1`,`price_group1`,`price`)
+                SELECT          1,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` ,  `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10` , `image` , `image1` , `image2` , `image3` , `image4` , `image5`,
                     GROUP_CONCAT(option1 SEPARATOR '|') AS `option_group1`,
                     GROUP_CONCAT(price1 SEPARATOR '|') AS `price_group1`,
                     MIN(price1) AS `price`
@@ -54,7 +54,7 @@ class ModelExtensionArunaParse extends Model {
                 UPDATE
                     ".DB_PREFIX."baycik_sync_entries bse
                         JOIN
-                    baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
+                    baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10`,`option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
                 SET
                     bse.is_changed=0
                 WHERE sync_id='$sync_id'";
@@ -118,6 +118,69 @@ class ModelExtensionArunaParse extends Model {
 	$this->db->query($sql);
 	unlink($tmpfile);
     }
+    
+    
+    public function parse_isell($sync) {
+        $source_file="/isell_export_2019_02_04_15_53_30.csv";
+        //$source_file="/price-list1.csv";
+	$tmpfile = './isell_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
+	if(!copy($source_file, $tmpfile)){
+            die("Downloading failed");
+        };
+	$sync_id = $sync['sync_id'];
+	$sql = "
+            LOAD DATA LOCAL INFILE 
+                '$tmpfile'
+            INTO TABLE 
+                baycik_tmp_current_sync
+            FIELDS TERMINATED BY ';'
+                (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18,@col19,@col20,@col21,@col22)
+            SET
+                sync_id = '$sync_id',
+                is_changed=1,
+                category_lvl1 = @col6,    
+                category_lvl2 = '',      
+                category_lvl3 = '',      
+                product_name = @col2, 
+                model = @col1, 
+                mpn='',
+                manufacturer = @col3,  
+                origin_country = '',
+                url = '', 
+                description = '', 
+                min_order_size = '1', 
+                stock_status='7-9 дней',
+                stock_count=@col5,
+                attribute1 = @col10,
+                attribute2 = @col11,
+                attribute3 = @col12,
+                attribute4 = @col13,
+                attribute5 = @col14,
+                attribute6 = @col15,
+                attribute7 = @col16,
+                attribute8 = @col17,
+                attribute9 = @col18,
+                attribute10 = @col19,
+                attribute11 = @col20,
+                attribute12 = @col21,
+                option1 = '', 
+                option2 = '', 
+                option3 = '', 
+                image = @col7,
+                image1 = '', 
+                image2 = '', 
+                image3 = '', 
+                image4 = '', 
+                image5 = '', 
+                price1 = @col8, 
+                price2 = @col9, 
+                price3 = '', 
+                price4 = ''
+            ";
+	$this->db->query($sql);
+	unlink($tmpfile);
+    }
+    
     
     public function addSync($seller_id, $sync_source){
         $sql = "
