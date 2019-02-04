@@ -131,6 +131,14 @@ form .buttons input{
     border: none;
  }
  
+ /*=============================
+    HOME PAGE
+===============================*/
+.super-layout5.super5 .so-sp-cat .category-wrap-cat .sp-cat-title-parent a{
+    background-image: url(/image/catalog/category_pics/watches/watches_icon.png);
+    background-position: left;
+    background-size: contain;
+}
 
 /*=============================
             FILTER
@@ -439,6 +447,22 @@ body.information-information #wrapper .container:nth-last-of-type(2) .row{
 .product-product .option-content-box.active{
     background-color: RGB(0, 88, 154) !important;
 }
+.product-product .content-product-bottom{
+    margin-top: 2em;
+}
+
+.product-product .content-product-bottom .nav.nav-tabs a{
+    background-color: inherit;
+}
+
+.product-item-container:hover{
+    box-shadow: 0px 3px 15px grey;
+    transition: box-shadow 1s ease 0s;
+    margin-top: 15px;
+
+margin-bottom: 15px;
+} 
+
 
 /*=============================
         PRODUCT IMAGE
