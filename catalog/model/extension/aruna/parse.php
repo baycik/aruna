@@ -119,6 +119,82 @@ class ModelExtensionArunaParse extends Model {
 	unlink($tmpfile);
     }
     
+    public function parse_glem($sync) {
+        $source_file="https://glem.com.ua/eshop/xml.php?user=54d71a1bb5b13bb04f18565d4a4bc121";
+	$sync_id = $sync['sync_id'];
+        $xml=simplexml_load_file($source_file);
+        $categories = $xml->shop->categories;
+        $product_list = $xml->shop->offers;
+        function getPath ($path,$product_category_id, $categories){
+            for($i = 0; $i < count($categories->category); $i++ ){
+                $category = $categories->category[$i]->attributes();
+                if( $product_category_id == (int)$category->id){
+                    array_unshift($path,(string)$categories->category[$i]);
+                    if (isset($category->parentId[0])){
+                        return getPath($path, (int)$category->parentId, $categories);
+                    } else {
+                        return $path;
+                    }
+                } 
+            }
+            return [];
+        }
+        $path = [];
+        foreach ($product_list->offer as $product){
+            $product_category_id = (int)$product->categoryId;
+            $path = getPath([],$product_category_id, $categories);
+            $path[2] = implode('/', array_splice($path, 2 )); 
+            $path =  array_splice($path, 0, 3 );
+            $product_model = (string)$product->attributes()->id;
+            foreach (explode(',', (string)$product->param[0]) as $option){                
+                $sql = "
+                    INSERT INTO  
+                        baycik_tmp_current_sync
+                    SET
+                        sync_id = '$sync_id',
+                        is_changed=1,
+                        category_lvl1 = '{$path[0]}',    
+                        category_lvl2 = '{$path[1]}',      
+                        category_lvl3 = '{$path[2]}',      
+                        product_name = CONCAT(UCASE(MID('". (string)$product->model."',1,1)),MID('". (string)$product->model."',2),' ".(string)$product->param[1]."'), 
+                        model = '".(string)$product->vendor."".$product_model."', 
+                        mpn= '".$product_model."',
+                        manufacturer = '" . (string)$product->vendor."',  
+                        origin_country = '" . (string)$product->country_of_origin."',
+                        url = '" . (string)$product->url."', 
+                        description = '" . (string)$product->description."', 
+                        min_order_size = '', 
+                        stock_status='14 дней',
+                        stock_count=0,
+                        attribute1 = '',
+                        attribute2 = '',
+                        attribute3 = '',
+                        attribute4 = '',
+                        attribute5 = '',
+                        option1 = '$option', 
+                        option2 = '', 
+                        option3 = '',  
+                        price1 = '".(string)$product->price."', 
+                        price2 = '', 
+                        price3 = '', 
+                        price4 = ''
+                    ";
+                for ($i = 0; $i < count($product->picture); $i++ )  {
+                    if($i > 5){
+                        break;
+                    }
+                    if ( !empty((string)$product->picture[$i]) )  {
+                        if($i == 0){
+                            $sql .= ", image = '".(string)$product->picture[$i]."'";
+                        } else {
+                        $sql .= ", image{$i} = '".(string)$product->picture[$i]."'";
+                        }                    
+                    }
+                }       
+            $this->db->query($sql);
+            }
+        }
+    } 
     
     public function parse_isell($sync) {
         $source_file="/isell_export_2019_02_04_15_53_30.csv";

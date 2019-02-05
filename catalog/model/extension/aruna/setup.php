@@ -66,6 +66,48 @@ class ModelExtensionArunaSetup extends Model {
             ],
             'manufacturer'=>'manufacturer'
         ],
+        'glem'=>[
+             'exclusive_owner'=>[2],
+            'name'=>'Сайт женской одежды glem.com',
+            'download_images'=>0,
+            'attributes'=>[
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна',
+                    'group_description'=>'Произведено'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель',
+                    'group_description'=>'Произведено'
+                ]
+            ],
+            'options'=>[
+                [
+                    'name'=>'Размер',
+                    'option_type'=>'radio',
+                    'value_group_field'=>'option_group1',
+                    'price_group_field' => 'price_group1',
+                    'price_base_field' => 'price'
+                ]
+            ],
+            'filters'=>[
+                [
+                    'field'=>'option_group1',
+                    'name'=>'Размер',
+                    'delimeter'=>['|',' ','.','-','_','/',',']
+                ],
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель'
+                ]
+            ],
+            'manufacturer'=>'manufacturer'
+        ],
         'isell'=>[
             'name'=>'Электротовары NilsonCrimea',
             'download_images'=>1,
