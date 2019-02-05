@@ -69,7 +69,7 @@ class ModelExtensionArunaSetup extends Model {
         'glem'=>[
              'exclusive_owner'=>[2],
             'name'=>'Сайт женской одежды glem.com',
-            'download_images'=>0,
+            'download_images'=>1,
             'attributes'=>[
                 [
                     'field'=>'origin_country',
