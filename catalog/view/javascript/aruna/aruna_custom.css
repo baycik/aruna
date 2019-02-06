@@ -27,6 +27,10 @@ form .buttons input{
 .btn.btn-primary:hover{
     background-color: #00589A;
 }
+
+.slider-brands.module{
+    margin-bottom: 20px;
+}
 /*============================
             HEADER
 =============================*/
@@ -603,7 +607,10 @@ SOCIAL LOGIN
  max-height: 18em;
     overflow: hidden;
     overflow-y: auto;
+    background-color:#ffffff;
+    border-bottom:1px solid lightgrey;
 }
+
 
 .product-search #button-search{
     background-color: #5AA4ED !important;
@@ -617,7 +624,16 @@ SOCIAL LOGIN
         width:25% !important;
     }
 }
-
+@media screen and (max-width: 1200px){
+    .layout-5.common-home .block-policy4 ul li{
+         width:50% !important;
+    }
+}
+@media screen and (max-width: 650px){
+    .layout-5.common-home .block-policy4 ul li{
+         width:100% !important;
+    }
+}
 .layout-5.common-home .module.ester-banner {
     border: none !important;
     max-height: 550px;
@@ -631,8 +647,29 @@ SOCIAL LOGIN
 .block-policy4, .layout-5.common-home #content .module{
     border:none !important;
 }
-.block-policy4 ul li .item-inner, .block-policy4 ul li .item-inner .inner{
-    background-color:white;
+
+.home_fluid_row1{
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('https://aruna.market/image/catalog/aruna/common/green_back1.jpg');
+    padding-bottom: 20px;
+    padding-left: 5%;
+    padding-right:5%;
+}
+.home_fluid_row1 .col-lg-10{
+    float: none;
+    margin: auto;
+}
+
+.home_fluid_row1 .inner, .block-policy4 ul li .item-inner .content p{
+    background-color: transparent !important;
+    color:white;
+}
+
+.block-policy4 ul li .item-inner{
+    border:none;
 }
 
 .home-banner-row .row-style{
@@ -655,6 +692,13 @@ SOCIAL LOGIN
 =========================*/
 
 /*=========PRODUCT PAGE========*/
+
+.mobilelayout-1 .seller-usergroup .seller_logo.pull-left{
+    width:40%;
+}
+.mobilelayout-1 .seller-usergroup .seller_name--title{
+    display: inline-block;
+}
 
 .mobilelayout-1 .seller-usergroup .rating{
     margin-right:30px;
@@ -710,7 +754,19 @@ SOCIAL LOGIN
 .mobilelayout-1 .product-box-desc{
     width: 102% !important;
 }
-
+.mobilelayout-1 .product-detail .box-info-product .cart #button-cart{ 
+    padding-left:16px !important;
+    padding-right:16px !important;
+    display:inline-block;
+}
+.mobilelayout-1 .product-detail .box-info-product .cart #button-checkout{ 
+   padding-left:25px !important;
+    padding-right:25px !important;
+    display:inline-block;
+}
+.mobilelayout-1 .product-product .content-product-midde{
+    margin-left:6px;
+}
 
 /*=========HOME PAGE========*/
 
@@ -722,7 +778,7 @@ SOCIAL LOGIN
 
 .mobilelayout-1 .so-extraslider .product-image-container a img{
     width:135px !important;
-    margin-top: -30px;
+    margin-top: 0px;
 }
 
 .mobilelayout-1 #search0{
@@ -742,6 +798,16 @@ SOCIAL LOGIN
 .mobilelayout-1 #search0 .input-group-btn i.fa.fa-search{
     color: white;
 }
+
+.mobilelayout-1 .home_fluid_row1{
+    padding-bottom: 0px;
+}
+
+.mobilelayout-1 .home_fluid_row1 .col-lg-12{
+    padding-left: 0px;
+    padding-right: 0px
+}
+
 
 
 /*========LOGIN PAGE===========*/
