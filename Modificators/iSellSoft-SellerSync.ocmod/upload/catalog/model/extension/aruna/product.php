@@ -397,8 +397,27 @@ class ModelExtensionArunaProduct extends Model {
             $this->addProduct($data);
         }
     }
+    
+    public function deleteProductImages($product_id){
+        echo $find_unused_sql="
+            SELECT image FROM
+                ((SELECT image FROM oc_product WHERE product_id=$product_id AND image NOT LIKE 'http%')
+                 UNION
+                (SELECT image FROM oc_product_image WHERE product_id=$product_id AND image NOT LIKE 'http%') ) t
+            WHERE 
+                    image NOT IN (SELECT image FROM oc_product WHERE product_id<>$product_id AND image IS NOT NULL)
+                AND image NOT IN (SELECT image FROM oc_product_image WHERE product_id<>$product_id AND image IS NOT NULL)
+                AND image NOT IN (SELECT image FROM oc_category WHERE image IS NOT NULL)";
+        $result=$this->db->query($find_unused_sql);
+        if( $result->rows ){
+            foreach($result->rows as $row){
+                file_exists(DIR_IMAGE .$row['image']) && unlink(DIR_IMAGE .$row['image']);
+            }
+        }
+    }
 
     public function deleteProduct($product_id) {
+        $this->deleteProductImages($product_id);
         $this->db->query("DELETE FROM " . DB_PREFIX . "product WHERE product_id = '" . (int) $product_id . "'");
         $this->db->query("DELETE FROM " . DB_PREFIX . "product_attribute WHERE product_id = '" . (int) $product_id . "'");
         $this->db->query("DELETE FROM " . DB_PREFIX . "product_description WHERE product_id = '" . (int) $product_id . "'");
