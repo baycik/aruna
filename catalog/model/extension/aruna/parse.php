@@ -197,7 +197,7 @@ class ModelExtensionArunaParse extends Model {
     } 
     
     public function parse_isell($sync) {
-        $source_file="/isell_export_2019_02_04_15_53_30.csv";
+        $source_file="./isell_export.csv";
         //$source_file="/price-list1.csv";
 	$tmpfile = './isell_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
 	if(!copy($source_file, $tmpfile)){
