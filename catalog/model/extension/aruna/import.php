@@ -457,7 +457,7 @@ class ModelExtensionArunaImport extends Model {
         $basename = pathinfo($url, PATHINFO_BASENAME);
         $dest = "catalog/Seller_{$this->seller_id}/sync/";
         if( !file_exists(DIR_IMAGE .$dest) ){
-            mkdir(DIR_IMAGE .$dest, 0666, true);
+            mkdir(DIR_IMAGE .$dest, 0777, true);
         }
         if ($name) {
             $dest .= $this->filenamePrepare($name).".$ext";
