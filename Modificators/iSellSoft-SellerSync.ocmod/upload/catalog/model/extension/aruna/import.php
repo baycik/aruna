@@ -10,6 +10,12 @@ class ModelExtensionArunaImport extends Model {
         $this->language_id = (int) $this->config->get('config_language_id');
         $this->store_id = (int) $this->config->get('config_store_id');
         $this->start = microtime(1);
+        
+        
+        $this->load->model('extension/aruna/product');
+        
+        
+        
     }
 
     private function profile($msg) {
@@ -73,9 +79,9 @@ class ModelExtensionArunaImport extends Model {
             $product = $this->composeProductObject($row, $group_data['comission'], $group_data['destination_category_id']);
             if ($row['product_id']) {
                 $product['product_id'] = $row['product_id'];
-                $this->importProductUpdate($product); //is this right???
+                $this->productUpdate($product);
             } else {
-                $this->importProductAdd($product);
+                $this->productAdd($product);
             }
             $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_entries SET is_changed=0 WHERE sync_entry_id='{$row['sync_entry_id']}'");
         }
@@ -85,8 +91,7 @@ class ModelExtensionArunaImport extends Model {
         return 1;
     }
 
-    private function importProductAdd($item) {
-        $this->load->model('extension/aruna/product');
+    private function productAdd($item) {
         $product_id = $this->model_extension_aruna_product->addProduct($item);
         $sql = "
             INSERT INTO
@@ -101,9 +106,12 @@ class ModelExtensionArunaImport extends Model {
         return $this->db->query($sql);
     }
 
-    private function importProductUpdate($item) {
-        $this->load->model('extension/aruna/product');
+    private function productUpdate($item) {
         return $this->model_extension_aruna_product->liteEditProduct($item['product_id'], $item);
+    }
+    
+    private function productDelete($product_id){
+        $this->model_extension_aruna_product->deleteProduct($product_id);
     }
 
     public function deleteAbsentSellerProducts($seller_id) {
@@ -126,9 +134,10 @@ class ModelExtensionArunaImport extends Model {
         if (!$result->num_rows) {
             return true;
         }
-        $this->load_admin_model('catalog/product');
+        
+        $this->load->model('extension/aruna/product');
         foreach ($result->rows as $product) {
-            $this->model_catalog_product->deleteProduct($product['product_id']);
+            $this->productDelete($product['product_id']);
         }
         $this->deleteAbsentFiltersAndAttributes();
         return true;
@@ -142,6 +151,7 @@ class ModelExtensionArunaImport extends Model {
         $sql_clean_attributes_groups = "DELETE ag,agd FROM " . DB_PREFIX . "attribute_group ag JOIN " . DB_PREFIX . "attribute_group_description agd USING(attribute_group_id) WHERE attribute_group_id NOT IN (SELECT attribute_group_id FROM " . DB_PREFIX . "attribute);";
         $sql_clean_option_values = "DELETE FROM " . DB_PREFIX . "option_value WHERE option_value_id NOT IN (SELECT option_value_id FROM " . DB_PREFIX . "product_option_value)";
         $sql_clean_option_value_description = "DELETE FROM " . DB_PREFIX . "option_value_description WHERE option_value_id NOT IN (SELECT option_value_id FROM " . DB_PREFIX . "product_option_value)";
+        $sql_clean_manufacturer = "DELETE FROM " . DB_PREFIX . "manufacturer WHERE manufacturer_id NOT IN (SELECT DISTINCT manufacturer_id FROM " . DB_PREFIX . "product)";
 
         $this->db->query($sql_clean_filters);
         $this->db->query($sql_clean_filters_description);
@@ -150,6 +160,7 @@ class ModelExtensionArunaImport extends Model {
         $this->db->query($sql_clean_attributes_groups);
         $this->db->query($sql_clean_option_values);
         $this->db->query($sql_clean_option_value_description);
+        $this->db->query($sql_clean_manufacturer);
     }
 
     private $filterCategoryIds = [];
@@ -427,7 +438,15 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function remoteFileExists($url){
-        return (false !== file_get_contents($url,0,null,0,1));
+        stream_context_set_default(
+            [
+                'http' => [
+                    'method' => 'HEAD'
+                ]
+            ]
+        );
+        $headers = get_headers($url);
+        return strpos($headers[0],'200')!==false;
     }
     
     private function getImage($url, $name = null) {
@@ -488,7 +507,12 @@ class ModelExtensionArunaImport extends Model {
         ////////////////////////////////
         //COMPOSING SECTION
         ////////////////////////////////
-        $sort_order = 1700000000 - time();
+        if( $row['sort_order'] ){
+            $sort_order = $row['sort_order'];
+        } else {
+            $sort_order = 1700000000 - time();//new products sort to start
+        }
+        
         $product = [
             'model' => $row['model'],
             'sku' => '',
