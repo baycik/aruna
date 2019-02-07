@@ -45,10 +45,10 @@ class ModelExtensionArunaParse extends Model {
                     MIN(price1) AS `price`
                 FROM 
                     baycik_tmp_current_sync
-                WHERE price>0 AND price IS NOT NULL
-                GROUP BY CONCAT(`category_lvl1`,'/',`category_lvl2`,'/',`category_lvl3`), model";
+                GROUP BY CONCAT(`category_lvl1`,'/',`category_lvl2`,'/',`category_lvl3`), model
+                HAVING price>0 AND price IS NOT NULL";
 	$this->db->query($fill_entries_table_sql);
-        
+        $this->groupEntriesByCategories($sync_id);
         if( $mode=='detect_unchanged_entries' ){
             $change_finder_sql="
                 UPDATE
@@ -65,8 +65,8 @@ class ModelExtensionArunaParse extends Model {
     
     
     private function parse_happywear($sync) {
-        //$source_file="/price-list.csv";
         $source_file="https://happywear.ru/exchange/xml/price-list.csv";
+        //$source_file="/price-list1.csv";
 	$tmpfile = './happy_exchange'.rand(0,1000);//tempnam("/tmp", "tmp_");
 	if(!copy($source_file, $tmpfile)){
             die("Downloading failed");
@@ -116,7 +116,6 @@ class ModelExtensionArunaParse extends Model {
                 price4 = ''
             ";
 	$this->db->query($sql);
-        $this->groupEntriesByCategories($sync_id);
 	unlink($tmpfile);
     }
     
@@ -159,7 +158,7 @@ class ModelExtensionArunaParse extends Model {
         $clear_empty="
             DELETE FROM 
                 " . DB_PREFIX . "baycik_sync_groups 
-            WHERE total_products=0;
+            WHERE sync_id='$sync_id' AND total_products=0;
             ";
         $this->db->query($clear_empty);
     }

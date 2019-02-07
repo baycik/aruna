@@ -10,6 +10,12 @@ class ModelExtensionArunaImport extends Model {
         $this->language_id = (int) $this->config->get('config_language_id');
         $this->store_id = (int) $this->config->get('config_store_id');
         $this->start = microtime(1);
+        
+        
+        $this->load->model('extension/aruna/product');
+        
+        
+        
     }
 
     private function profile($msg) {
@@ -54,7 +60,7 @@ class ModelExtensionArunaImport extends Model {
         $sql = "
             SELECT 
                 bse.*,
-		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id
+		(SELECT GROUP_CONCAT(product_id) FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id
             FROM
                 " . DB_PREFIX . "baycik_sync_entries AS bse
             WHERE
@@ -72,10 +78,13 @@ class ModelExtensionArunaImport extends Model {
         foreach ($rows as $row) {
             $product = $this->composeProductObject($row, $group_data['comission'], $group_data['destination_category_id']);
             if ($row['product_id']) {
-                $product['product_id'] = $row['product_id'];
-                $this->importProductUpdate($product); //is this right???
+                $product_ids= explode(',', $row['product_id']);
+                foreach($product_ids as $product_id){
+                    $product['product_id'] = $product_id;
+                    $this->productUpdate($product);
+                }
             } else {
-                $this->importProductAdd($product);
+                $this->productAdd($product);
             }
             $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_entries SET is_changed=0 WHERE sync_entry_id='{$row['sync_entry_id']}'");
         }
@@ -85,8 +94,7 @@ class ModelExtensionArunaImport extends Model {
         return 1;
     }
 
-    private function importProductAdd($item) {
-        $this->load->model('extension/aruna/product');
+    private function productAdd($item) {
         $product_id = $this->model_extension_aruna_product->addProduct($item);
         $sql = "
             INSERT INTO
@@ -101,9 +109,12 @@ class ModelExtensionArunaImport extends Model {
         return $this->db->query($sql);
     }
 
-    private function importProductUpdate($item) {
-        $this->load->model('extension/aruna/product');
+    private function productUpdate($item) {
         return $this->model_extension_aruna_product->liteEditProduct($item['product_id'], $item);
+    }
+    
+    private function productDelete($product_id){
+        $this->model_extension_aruna_product->deleteProduct($product_id);
     }
 
     public function deleteAbsentSellerProducts($seller_id) {
@@ -126,9 +137,10 @@ class ModelExtensionArunaImport extends Model {
         if (!$result->num_rows) {
             return true;
         }
-        $this->load_admin_model('catalog/product');
+        
+        $this->load->model('extension/aruna/product');
         foreach ($result->rows as $product) {
-            $this->model_catalog_product->deleteProduct($product['product_id']);
+            $this->productDelete($product['product_id']);
         }
         $this->deleteAbsentFiltersAndAttributes();
         return true;
@@ -136,14 +148,22 @@ class ModelExtensionArunaImport extends Model {
 
     private function deleteAbsentFiltersAndAttributes() {
         $sql_clean_filters = "DELETE FROM " . DB_PREFIX . "filter WHERE filter_id NOT IN (SELECT filter_id FROM " . DB_PREFIX . "product_filter)";
+        $sql_clean_filters_description = "DELETE FROM " . DB_PREFIX . "filter_description WHERE filter_id NOT IN (SELECT filter_id FROM " . DB_PREFIX . "filter)";
         $sql_clean_category_filters = "DELETE FROM " . DB_PREFIX . "category_filter WHERE filter_id NOT IN (SELECT filter_id FROM " . DB_PREFIX . "filter)";
         $sql_clean_attributes = "DELETE a,ad FROM " . DB_PREFIX . "attribute a JOIN " . DB_PREFIX . "attribute_description ad USING(attribute_id) WHERE attribute_id NOT IN (SELECT attribute_id FROM " . DB_PREFIX . "product_attribute);";
         $sql_clean_attributes_groups = "DELETE ag,agd FROM " . DB_PREFIX . "attribute_group ag JOIN " . DB_PREFIX . "attribute_group_description agd USING(attribute_group_id) WHERE attribute_group_id NOT IN (SELECT attribute_group_id FROM " . DB_PREFIX . "attribute);";
+        $sql_clean_option_values = "DELETE FROM " . DB_PREFIX . "option_value WHERE option_value_id NOT IN (SELECT option_value_id FROM " . DB_PREFIX . "product_option_value)";
+        $sql_clean_option_value_description = "DELETE FROM " . DB_PREFIX . "option_value_description WHERE option_value_id NOT IN (SELECT option_value_id FROM " . DB_PREFIX . "product_option_value)";
+        $sql_clean_manufacturer = "DELETE FROM " . DB_PREFIX . "manufacturer WHERE manufacturer_id NOT IN (SELECT DISTINCT manufacturer_id FROM " . DB_PREFIX . "product)";
 
         $this->db->query($sql_clean_filters);
+        $this->db->query($sql_clean_filters_description);
         $this->db->query($sql_clean_category_filters);
         $this->db->query($sql_clean_attributes);
         $this->db->query($sql_clean_attributes_groups);
+        $this->db->query($sql_clean_option_values);
+        $this->db->query($sql_clean_option_value_description);
+        $this->db->query($sql_clean_manufacturer);
     }
 
     private $filterCategoryIds = [];
@@ -421,7 +441,15 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function remoteFileExists($url){
-        return (false !== file_get_contents($url,0,null,0,1));
+        stream_context_set_default(
+            [
+                'http' => [
+                    'method' => 'HEAD'
+                ]
+            ]
+        );
+        $headers = get_headers($url);
+        return strpos($headers[0],'200')!==false;
     }
     
     private function getImage($url, $name = null) {

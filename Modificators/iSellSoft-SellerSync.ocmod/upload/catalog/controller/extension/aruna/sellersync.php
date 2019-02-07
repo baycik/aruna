@@ -185,8 +185,8 @@ class ControllerExtensionArunaSellersync extends Controller {
 	    die('Access denied');
 	}
         
-        $sync_id=$this->request->post['sync_id'];
-        $group_id=$this->request->post['group_id'];
+        $sync_id=$this->request->request['sync_id'];
+        $group_id=$this->request->request['group_id'];
 	$seller_id = $this->customer->getId();
         $this->load->model('extension/aruna/import');
 	$ok=$this->model_extension_aruna_import->importSellerProduct($seller_id,$sync_id, $group_id);

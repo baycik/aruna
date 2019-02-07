@@ -39,34 +39,8 @@ class ControllerExtensionModuleFilter extends Controller {
 
 			$data['filter_groups'] = array();
 
-			$filter_groups = $this->model_catalog_product->getSearchResultFilters();
-
-			if ($filter_groups) {
-				foreach ($filter_groups as $filter_group) {
-					$childen_data = array();
-
-					foreach ($filter_group['filter'] as $filter) {
-						$filter_data = array(
-							'filter_category_id' => $category_id,
-							'filter_filter'      => $filter['filter_id']
-						);
-
-						$childen_data[] = array(
-							'filter_id' => $filter['filter_id'],
-							'name'      => $filter['name'] . ($this->config->get('config_product_count') ? ' (' . $this->model_catalog_product->getTotalProducts($filter_data) . ')' : '')
-						);
-					}
-
-					$data['filter_groups'][] = array(
-						'filter_group_id' => $filter_group['filter_group_id'],
-						'name'            => $filter_group['name'],
-						'filter'          => $childen_data
-					);
-				}
-                                
-				return $this->load->view('extension/module/filter', $data);
-			}
-                    
+			$data['filter_groups'] = $this->model_catalog_product->getProductFilters();
+                        return $this->load->view('extension/module/filter', $data);
                 }
 
 		$this->load->model('catalog/category');
