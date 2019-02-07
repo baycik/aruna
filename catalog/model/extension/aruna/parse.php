@@ -158,7 +158,7 @@ class ModelExtensionArunaParse extends Model {
         $clear_empty="
             DELETE FROM 
                 " . DB_PREFIX . "baycik_sync_groups 
-            WHERE total_products=0;
+            WHERE sync_id='$sync_id' AND total_products=0;
             ";
         $this->db->query($clear_empty);
     }
