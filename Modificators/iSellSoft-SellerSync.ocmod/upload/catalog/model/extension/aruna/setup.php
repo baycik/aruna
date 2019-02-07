@@ -12,6 +12,7 @@ class ModelExtensionArunaSetup extends Model {
         'happywear'=>[
             'exclusive_owner'=>[2],
             'name'=>'Сайт одежды happywear.ru',
+            'download_images'=>0,
             'attributes'=>[
                 [
                     'field'=>'origin_country',
@@ -57,6 +58,162 @@ class ModelExtensionArunaSetup extends Model {
                 [
                     'field'=>'origin_country',
                     'name'=>'Страна'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель'
+                ]
+            ],
+            'manufacturer'=>'manufacturer'
+        ],
+        'glem'=>[
+             'exclusive_owner'=>[2],
+            'name'=>'Сайт женской одежды glem.com',
+            'download_images'=>1,
+            'attributes'=>[
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна',
+                    'group_description'=>'Произведено'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель',
+                    'group_description'=>'Произведено'
+                ]
+            ],
+            'options'=>[
+                [
+                    'name'=>'Размер',
+                    'option_type'=>'radio',
+                    'value_group_field'=>'option_group1',
+                    'price_group_field' => 'price_group1',
+                    'price_base_field' => 'price'
+                ]
+            ],
+            'filters'=>[
+                [
+                    'field'=>'option_group1',
+                    'name'=>'Размер',
+                    'delimeter'=>['|',' ','.','-','_','/',',']
+                ],
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель'
+                ]
+            ],
+            'manufacturer'=>'manufacturer'
+        ],
+        'isell'=>[
+            'exclusive_owner'=>[20],
+            'name'=>'Электротовары NilsonCrimea',
+            'download_images'=>1,
+            'attributes'=>[
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель',
+                    'group_description'=>'Произведено'
+                ],
+                [
+                    'field'=>'attribute1',
+                    'name'=>'Мощность',
+                    'group_description'=>'Мощность'
+                ],
+                [
+                    'field'=>'attribute2',
+                    'name'=>'Напряжение',
+                    'group_description'=>'Напряжение'
+                ],
+                [
+                    'field'=>'attribute11',
+                    'name'=>'Тип',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'attribute3',
+                    'name'=>'Форма',
+                    'group_description'=>'Форма'
+                ],
+                [
+                    'field'=>'attribute4',
+                    'name'=>'Материал',
+                    'group_description'=>'Материал'
+                ],
+                [
+                    'field'=>'attribute5',
+                    'name'=>'Водостойкость',
+                    'group_description'=>'Водостойкость'
+                ],
+                [
+                    'field'=>'attribute6',
+                    'name'=>'Цвет',
+                    'group_description'=>'Цвет'
+                ],
+                [
+                    'field'=>'attribute7',
+                    'name'=>'Цоколь',
+                    'group_description'=>'Цоколь'
+                ],
+                [
+                    'field'=>'attribute8',
+                    'name'=>'Сечение',
+                    'group_description'=>'Сечение'
+                ],
+                [
+                    'field'=>'attribute9',
+                    'name'=>'Цветовая температура',
+                    'group_description'=>'Цветовая температура'
+                ],
+                [
+                    'field'=>'attribute10',
+                    'name'=>'Сила тока',
+                    'group_description'=>'Сила тока'
+                ],
+            ],
+            'filters'=>[
+                [
+                    'field'=>'attribute1',
+                    'name'=>'Мощность'
+                ],
+                [
+                    'field'=>'attribute2',
+                    'name'=>'Напряжение'
+                ],
+                [
+                    'field'=>'attribute3',
+                    'name'=>'Форма'
+                ],
+                [
+                    'field'=>'attribute4',
+                    'name'=>'Материал'
+                ],
+                [
+                    'field'=>'attribute5',
+                    'name'=>'Водостойкость'
+                ],
+                [
+                    'field'=>'attribute6',
+                    'name'=>'Цвет'
+                ],
+                [
+                    'field'=>'attribute7',
+                    'name'=>'Цоколь'
+                ],
+                [
+                    'field'=>'attribute8',
+                    'name'=>'Сечение'
+                ],
+                [
+                    'field'=>'attribute9',
+                    'name'=>'Цветовая температура'
+                ],
+                [
+                    'field'=>'attribute10',
+                    'name'=>'Сила тока'
                 ],
                 [
                     'field'=>'manufacturer',

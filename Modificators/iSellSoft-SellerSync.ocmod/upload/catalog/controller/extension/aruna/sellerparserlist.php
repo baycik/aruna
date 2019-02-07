@@ -59,7 +59,7 @@ class ControllerExtensionArunaSellerparserList extends Controller {
        
 	$this->response->setOutput($this->load->view('extension/aruna/sellerparserlist', $data));
     }
-    
+       
     public function startParsing(){
 	if (!$this->customer->isLogged()) {
 	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellerparserlist', '', true);

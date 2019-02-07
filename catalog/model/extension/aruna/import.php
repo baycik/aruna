@@ -457,7 +457,7 @@ class ModelExtensionArunaImport extends Model {
         $basename = pathinfo($url, PATHINFO_BASENAME);
         $dest = "catalog/Seller_{$this->seller_id}/sync/";
         if( !file_exists(DIR_IMAGE .$dest) ){
-            mkdir(DIR_IMAGE .$dest, 0666, true);
+            mkdir(DIR_IMAGE .$dest, 0777, true);
         }
         if ($name) {
             $dest .= $this->filenamePrepare($name).".$ext";
@@ -507,7 +507,12 @@ class ModelExtensionArunaImport extends Model {
         ////////////////////////////////
         //COMPOSING SECTION
         ////////////////////////////////
-        $sort_order = 1700000000 - time();
+        if( $row['sort_order'] ){
+            $sort_order = $row['sort_order'];
+        } else {
+            $sort_order = 1700000000 - time();//new products sort to start
+        }
+        
         $product = [
             'model' => $row['model'],
             'sku' => '',

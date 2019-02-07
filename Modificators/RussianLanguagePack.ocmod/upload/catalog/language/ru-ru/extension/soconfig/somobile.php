@@ -2,7 +2,7 @@
 // Text
 $_['text_home']          = 'Главная';
 $_['text_shopping_cart'] = 'Корзина покупок';
-$_['text_account']       = 'Моя учетная запись';
+$_['text_account']       = 'Мой профиль';
 $_['text_register']      = 'Регистрация';
 $_['text_login']         = 'Вход';
 $_['text_logout']        = 'Выход';

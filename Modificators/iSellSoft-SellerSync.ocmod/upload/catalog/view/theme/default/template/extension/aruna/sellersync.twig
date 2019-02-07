@@ -176,7 +176,7 @@
 		});
 		return;
 	    }
-	    $.post('index.php?route=extension/aruna/sellersync/importUserProducts', {sync_id: sync_id, group_id: totalCategories.groups[0]}, function (ok) {
+	    $.post('index.php?route=extension/aruna/sellersync/importUserProducts', {sync_id: sync_id, group_id: totalCategories.groups[0]}).done(function (ok) {
 		if (ok && totalCategories.total_rows > 0) {
 		    current_progress += step_size;
 		    totalCategories.total_rows -= 1;
@@ -190,7 +190,10 @@
 		    $(".btn-secondary").attr('disabled', null);
 		    alert('Ошибка импорта!');
 		}
-	    });
+	    }).fail(function(){
+                //timeout???
+                continueImport(totalCategories);
+            });
 	}
 
     </script>
