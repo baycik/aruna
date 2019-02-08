@@ -226,7 +226,7 @@ class ModelExtensionArunaParse extends Model {
                 url = '', 
                 description = '', 
                 min_order_size = '1', 
-                stock_status='7-9 дней',
+                stock_status=IF(@col5>0,'в наличии','под заказ'),
                 stock_count=@col5,
                 attribute1 = @col10,
                 attribute2 = @col11,
