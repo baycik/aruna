@@ -209,7 +209,8 @@ class ModelExtensionArunaParse extends Model {
                 '$tmpfile'
             INTO TABLE 
                 baycik_tmp_current_sync
-            FIELDS TERMINATED BY ';'
+            CHARACTER SET 'cp1251'
+            FIELDS TERMINATED BY '\;'
                 (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18,@col19,@col20,@col21,@col22)
             SET
                 sync_id = '$sync_id',
