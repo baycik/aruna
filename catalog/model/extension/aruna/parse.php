@@ -221,7 +221,7 @@ class ModelExtensionArunaParse extends Model {
                 product_name = @col5, 
                 model = @col4, 
                 mpn=@col10,
-                manufacturer = @col3,  
+                manufacturer = @col6,  
                 origin_country = @col7,
                 url = '', 
                 description = '', 
