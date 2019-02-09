@@ -60,7 +60,7 @@ class ModelExtensionArunaImport extends Model {
         $sql = "
             SELECT 
                 bse.*,
-		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id
+		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id' LIMIT 1) AS product_id
             FROM
                 " . DB_PREFIX . "baycik_sync_entries AS bse
             WHERE
@@ -395,7 +395,7 @@ class ModelExtensionArunaImport extends Model {
     private function composeProductCategory($destination_category_id) {
         $query = $this->db->query("
                 SELECT 
-		    path_id AS category
+		    DISTINCT path_id AS category
                 FROM 
 		    " . DB_PREFIX . "category_path
                 WHERE 
@@ -560,21 +560,21 @@ class ModelExtensionArunaImport extends Model {
         $this->db->query("SET @i:=0;");
         $sql = "
 	    UPDATE " . DB_PREFIX . "option_value 
-	    JOIN (SELECT * FROM " . DB_PREFIX . "option_value_description ORDER BY `name`) AS t USING(option_value_id)
+	    JOIN (SELECT * FROM " . DB_PREFIX . "option_value_description ORDER BY `name`*1,`name`) AS t USING(option_value_id)
 	    SET sort_order = @i:=@i + 1";
         $this->db->query($sql);
 
         $this->db->query("SET @i:=0;");
         $sql = "
 	    UPDATE " . DB_PREFIX . "attribute 
-	    JOIN (SELECT * FROM " . DB_PREFIX . "attribute_description ORDER BY `name`) AS t USING(attribute_id)
+	    JOIN (SELECT * FROM " . DB_PREFIX . "attribute_description ORDER BY `name`*1,`name`) AS t USING(attribute_id)
 	    SET sort_order = @i:=@i + 1";
         $this->db->query($sql);
 
         $this->db->query("SET @i:=0;");
         $sql = "
 	    UPDATE " . DB_PREFIX . "filter 
-	    JOIN (SELECT * FROM " . DB_PREFIX . "filter_description ORDER BY `name`) AS t USING(filter_id)
+	    JOIN (SELECT * FROM " . DB_PREFIX . "filter_description ORDER BY `name`*1,`name`) AS t USING(filter_id)
 	    SET sort_order = @i:=@i + 1";
         $this->db->query($sql);
     }

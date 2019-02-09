@@ -23,13 +23,14 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
         if( $this->secret != $this->request->get['secret'] ){
             die('access denied');
         }
-        echo 'Start loop through tasks...';
+        header("Content-type:text/plain;");
+        echo '\nStart loop through tasks...';
         $this->loadDoneJob();
         foreach($this->tasklist as $task){
             if( isset($this->doneJobs[$task['id']]) ){
                 $jobdata=$this->doneJobs[$task['id']];
                 if( ($jobdata['last_executed']+$this->intervalHours*60*60)>time() ){
-                    echo ' Skipping '.$task['id'];
+                    echo ' \nSkipping '.$task['id'];
                     continue;
                 }
             }
@@ -41,7 +42,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
         die;
     }
     private function executeTask($task){
-        echo 'Start executing Task'.date('d.m.Y H:i:s');
+        echo '\nStart executing Task'.date('d.m.Y H:i:s');
         print_r($task);
         $this->load->model($task['model']);
         return call_user_func_array([$this->{'model_' . str_replace('/', '_', $task['model'])}, $task['method']], $task['arguments']);
