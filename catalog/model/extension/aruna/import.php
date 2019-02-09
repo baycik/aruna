@@ -395,7 +395,7 @@ class ModelExtensionArunaImport extends Model {
     private function composeProductCategory($destination_category_id) {
         $query = $this->db->query("
                 SELECT 
-		    DISTINCT path_id AS category
+		    path_id AS category
                 FROM 
 		    " . DB_PREFIX . "category_path
                 WHERE 
@@ -406,7 +406,7 @@ class ModelExtensionArunaImport extends Model {
         foreach ($query->rows as $row) {
             array_push($categories, $row['category']);
         }
-        return $categories;
+        return array_unique($categories);
     }
 
     private $sstatusCache = [];

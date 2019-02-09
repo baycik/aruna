@@ -17,6 +17,30 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'model'=>'extension/aruna/import',
             'method'=>'importSellerProduct',
             'arguments'=>[2,3,null]
+        ],
+        [
+            'id'=>'glemParse',
+            'model'=>'extension/aruna/parse',
+            'method'=>'initParser',
+            'arguments'=>[5,'detect_unchanged_entries']
+        ],
+        [
+            'id'=>'glemImport',
+            'model'=>'extension/aruna/import',
+            'method'=>'importSellerProduct',
+            'arguments'=>[2,5,null]
+        ],
+        [
+            'id'=>'isellParse',
+            'model'=>'extension/aruna/parse',
+            'method'=>'initParser',
+            'arguments'=>[7,'detect_unchanged_entries']
+        ],
+        [
+            'id'=>'isellImport',
+            'model'=>'extension/aruna/import',
+            'method'=>'importSellerProduct',
+            'arguments'=>[20,7,null]
         ]
     ];
     public function index(){
