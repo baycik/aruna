@@ -209,47 +209,48 @@ class ModelExtensionArunaParse extends Model {
                 '$tmpfile'
             INTO TABLE 
                 baycik_tmp_current_sync
-            FIELDS TERMINATED BY ';'
-                (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18,@col19,@col20,@col21,@col22)
+            CHARACTER SET 'cp1251'
+            FIELDS TERMINATED BY '\;'
+                (@col1,@col2,@col3,@col4,@col5,@col6,@col7,@col8,@col9,@col10,@col11,@col12,@col13,@col14,@col15,@col16,@col17,@col18,@col19,@col20,@col21,@col22,@col23,@col24,@col25,@col26,@col27,@col28,@col29,@col30,@col31,@col32)
             SET
                 sync_id = '$sync_id',
                 is_changed=1,
-                category_lvl1 = @col6,    
-                category_lvl2 = '',      
-                category_lvl3 = '',      
-                product_name = @col2, 
-                model = @col1, 
-                mpn='',
-                manufacturer = @col3,  
-                origin_country = '',
+                category_lvl1 = @col1,    
+                category_lvl2 = @col2,      
+                category_lvl3 = @col3,      
+                product_name = @col5, 
+                model = @col4, 
+                mpn=@col10,
+                manufacturer = @col6,  
+                origin_country = @col7,
                 url = '', 
                 description = '', 
                 min_order_size = '1', 
-                stock_status='7-9 дней',
-                stock_count=@col5,
-                attribute1 = @col10,
-                attribute2 = @col11,
-                attribute3 = @col12,
-                attribute4 = @col13,
-                attribute5 = @col14,
-                attribute6 = @col15,
-                attribute7 = @col16,
-                attribute8 = @col17,
-                attribute9 = @col18,
-                attribute10 = @col19,
-                attribute11 = @col20,
-                attribute12 = @col21,
+                stock_status=IF(@col8>0,'в наличии','под заказ'),
+                stock_count=@col8,
+                attribute1 = @col21,
+                attribute2 = @col22,
+                attribute3 = @col23,
+                attribute4 = @col24,
+                attribute5 = @col25,
+                attribute6 = @col26,
+                attribute7 = @col27,
+                attribute8 = @col28,
+                attribute9 = @col29,
+                attribute10 = @col30,
+                attribute11 = @col31,
+                attribute12 = @col32,
                 option1 = '', 
                 option2 = '', 
                 option3 = '', 
-                image = @col7,
+                image = @col16,
                 image1 = '', 
                 image2 = '', 
                 image3 = '', 
                 image4 = '', 
                 image5 = '', 
-                price1 = @col8, 
-                price2 = @col9, 
+                price1 = @col17, 
+                price2 = @col18, 
                 price3 = '', 
                 price4 = ''
             ";
@@ -297,7 +298,7 @@ class ModelExtensionArunaParse extends Model {
         $clear_empty="
             DELETE FROM 
                 " . DB_PREFIX . "baycik_sync_groups 
-            WHERE total_products=0;
+            WHERE sync_id='$sync_id' AND total_products=0;
             ";
         $this->db->query($clear_empty);
     }
