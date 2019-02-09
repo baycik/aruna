@@ -35,6 +35,26 @@ form .buttons input{
             HEADER
 =============================*/
 
+@media screen and (max-width: 1400px) and (min-width: 1200px) {
+    #header .col-lg-5.col-md-5.col-sm-12.col-xs-12{
+        width: 35%;
+    }
+    #header .middle-right.col-lg-5.col-md-5.col-sm-6.col-lg-5.col-xs-8{
+        width: 48%;
+    }
+    .telephone.hidden-xs.hidden-sm{
+        display: inline-block;
+        margin-left: 2em;
+        font-size: 12px;
+        font-weight: lighter;
+    }
+    .hidden-sm.hidden-xs.welcome-msg{
+        display: inline-block;
+        float: right;
+        float: right;
+    }
+    
+} 
 
 #header .navbar-logo{
     height: 71px;
@@ -144,6 +164,21 @@ form .buttons input{
     background-size: contain;
 }
 
+.super-layout5.super6 .so-sp-cat .category-wrap-cat .sp-cat-title-parent a{
+    background-image: url(/image/catalog/category_pics/electric/plug1.png);
+    background-position: left;
+    background-size: contain;
+}
+.super-layout5.super6 .so-sp-cat .category-wrap-cat .sp-cat-title-parent {
+    background-color: #feaa00;
+    padding: 19px 30px 20px 30px;
+}
+.super-layout5.super6 .so-sp-cat .spcat-tabs-container ul.spcat-tabs li:hover, .super-layout5.super6 .so-sp-cat .spcat-tabs-container ul.spcat-tabs li.tab-sel {
+    background-color: #feaa00;
+    border-color: #feaa00;
+}
+
+
 /*=============================
             FILTER
 =============================*/
@@ -171,10 +206,10 @@ form .buttons input{
 /*===============================
 ACCOUNT LOGIN PAGES
 =================================*/
-
-.account-login, html, .account-login #wrapper{
-    height: 100%;
+.account-login .row h3{
+    display:none;
 }
+
  
 .account-login #header, .account-login .container aside, .account-login footer, .account-login ul.breadcrumb, .account-login #content .row .col-sm-6:nth-child(1){
     display:none;
@@ -295,6 +330,14 @@ body.information-information #wrapper .container:nth-last-of-type(2) .row{
     margin-right:0px;
 }
 #content{
+    padding-left: 1px;
+    padding-right: 1px;
+}
+.mobilelayout-1 #content{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.mobilelayout-1 .container.page-category{
     padding-left: 0px;
     padding-right: 0px;
 }
@@ -547,6 +590,15 @@ BODY BACKGROUND COLORS
     border-radius: 0px !important;;
     box-shadow: 1px 1px 2px  rgb(230, 230, 230);
 }
+
+.mobilelayout-1 .product-item-container:hover {
+    box-shadow: 0px 3px 15px grey;
+    transition: box-shadow 1s ease 0s;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    z-index: 90;
+}
+
 .product-item-container .right-block{
     background-color: white !important; 
 }
@@ -668,6 +720,23 @@ SOCIAL LOGIN
     color:white;
 }
 
+.home_fluid_row2{
+    background-image: url('https://aruna.market/image/catalog/aruna/common/back-nilson.jpg');
+    background-attachment: fixed;
+    margin-bottom: 40px;
+}
+
+.home_fluid_row2 .block-electric{
+    background-image: url('https://aruna.market/image/catalog/aruna/common/block-nilson.png');
+    height: 12vw;
+    background-size: 67%;
+    background-position-y: 49%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    padding-top: 12px;
+    
+}
+
 .block-policy4 ul li .item-inner{
     border:none;
 }
@@ -769,6 +838,11 @@ SOCIAL LOGIN
 }
 
 /*=========HOME PAGE========*/
+.mobilelayout-1.extension-mobile-home .navbar-menu,
+.mobilelayout-1.extension-mobile-home .header-link.pull-right{
+    display:none;
+} 
+
 
 .mobilelayout-1 .so-extraslider .product-image-container{
     max-height: 135px;
@@ -801,13 +875,13 @@ SOCIAL LOGIN
 
 .mobilelayout-1 .home_fluid_row1{
     padding-bottom: 0px;
+    background-size: unset !important;
 }
 
 .mobilelayout-1 .home_fluid_row1 .col-lg-12{
     padding-left: 0px;
     padding-right: 0px
 }
-
 
 
 /*========LOGIN PAGE===========*/
@@ -837,6 +911,37 @@ SOCIAL LOGIN
 }
 
 /*=====CATEGORIES PAGE=========*/
+
+.mobilelayout-1 .products-category .btn-block{
+    background-color:#5aa4ed !important;
+    color:white;
+    font-weight:600;
+}
+
+.mobilelayout-1 .products-category .btn-block.active{
+    background-color:#2f6aa5 !important;
+    color:white;
+    font-weight:600;
+}
+
+.mobilelayout-1 .refine-search a{
+    color: #555;
+    text-align: center;
+    display: block;
+    margin: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid lightgray;
+}
+
+.mobilelayout-1 .refine-search__list>li{
+    margin-bottom: 10px;
+    display: contents;
+    margin: 2px;
+}
+
+.mobilelayout-1 .refine-search__list .thumbnail{
+    display:none;
+}
 
 .mobilelayout-1 .product-image-container{
     max-height: 170px;
@@ -1004,6 +1109,13 @@ SOCIAL LOGIN
 .checkout-checkout.mobilelayout-1 .so-onepagecheckout.is_customer section.section-left{
     padding:0px;
 }
+
+
+.checkout-checkout.mobilelayout-1 #button-login{
+    background-color: #428bca !important;
+    border: 1px solid #428bca !important;
+}
+
 .product-search.mobilelayout-1 #content > p{
     display:none;
 }
@@ -1081,4 +1193,30 @@ SOCIAL LOGIN
     background-color: #5aa4ed;
     color: white;
     border-radius:5px;
+}
+
+.extension-mobile-home .mobile_deals h3.modtitle{
+   
+    color: white;    
+    background-repeat: no-repeat;
+    background-size: 12%;
+    padding: 5% 25%;
+    background-position-x: 7%;
+    background-position-y: 50%;
+    border-top-right-radius: 10px;
+}
+
+.extension-mobile-home .mobile_deals.clothes h3.modtitle{
+    background-color: #ff5984;
+    background-image: url(data:image/png;base64,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);
+}
+
+.extension-mobile-home .mobile_deals.electric h3.modtitle{
+    background-color: #feaa00;
+    background-image: url(/image/catalog/category_pics/electric/plug1.png);
+}
+
+.extension-mobile-home .mobile_deals.accessories h3.modtitle{
+    background-color: #5aa4ed;
+    background-image: url(/image/catalog/category_pics/watches/watches_icon.png);
 }
