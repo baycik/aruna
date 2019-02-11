@@ -297,7 +297,7 @@ class ModelExtensionArunaImport extends Model {
 
     private function composeProductOptionsObject($row, $category_comission) {
         $product_options = [];
-        if ($this->sync_config->options) {
+        if( isset($this->sync_config->options) ) {
             foreach ($this->sync_config->options as $optionConfig) {
                 $option_price = $row[$optionConfig->price_group_field];
                 $option_value = $row[$optionConfig->value_group_field];
