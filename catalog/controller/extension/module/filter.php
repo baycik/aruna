@@ -8,40 +8,6 @@ class ControllerExtensionModuleFilter extends Controller {
 		}
 
 		$category_id = end($parts);
-                
-                
-                if( !$category_id ){
-			$this->load->language('extension/module/filter');
-
-			$url = '';
-
-			if (isset($this->request->get['sort'])) {
-				$url .= '&sort=' . $this->request->get['sort'];
-			}
-
-			if (isset($this->request->get['order'])) {
-				$url .= '&order=' . $this->request->get['order'];
-			}
-
-			if (isset($this->request->get['limit'])) {
-				$url .= '&limit=' . $this->request->get['limit'];
-			}
-
-			$data['action'] = str_replace('&amp;', '&', $this->url->link('product/search', 'search=' . $this->request->get['search'] . $url));
-
-			if (isset($this->request->get['filter'])) {
-				$data['filter_category'] = explode(',', $this->request->get['filter']);
-			} else {
-				$data['filter_category'] = array();
-			}
-
-			$this->load->model('catalog/product');
-
-			$data['filter_groups'] = array();
-
-			$data['filter_groups'] = $this->model_catalog_product->getProductFilters();
-                        return $this->load->view('extension/module/filter', $data);
-                }
 
 		$this->load->model('catalog/category');
 
@@ -100,7 +66,7 @@ class ControllerExtensionModuleFilter extends Controller {
 						'filter'          => $childen_data
 					);
 				}
-                                
+
 				return $this->load->view('extension/module/filter', $data);
 			}
 		}
