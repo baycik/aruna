@@ -165,7 +165,7 @@ class ControllerExtensionArunaSellersync extends Controller {
 	echo 1;
     }
 
-    public function importProduct(){
+    public function ______________importProduct(){
         $seller_id=2;
         $sync_id=3;
         $group_id=782;

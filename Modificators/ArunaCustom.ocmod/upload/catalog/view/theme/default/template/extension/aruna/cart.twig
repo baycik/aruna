@@ -78,9 +78,9 @@
                                 </td>
                                 <td class="text-right total">{{ product.total }}</td>
                                 <td class="text-right total">
-                                    <span class="input-group-btn">
-                                        <span data-toggle="tooltip" title="{{ button_remove }}" data-product-key="{{ product.cart_id }}" class="btn-delete"><i class="fa fa-trash-o"></i></span>
-
+                                    <span class="input-group-btn" style="font-size:16px">
+                                        <span data-toggle="tooltip" title="{{ button_remove }}" data-product-key="{{ product.cart_id }}" class="btn-delete" onclick="cart.remove('{{ product.cart_id }}');"><i class="fa fa-trash-o"></i></span>
+                                        
                                     </span>
                                 </td>
                             </tr>

@@ -112,6 +112,7 @@ class ModelExtensionArunaSetup extends Model {
             'exclusive_owner'=>[20],
             'name'=>'Электротовары NilsonCrimea',
             'download_images'=>1,
+            'options'=>[],
             'attributes'=>[
                 [
                     'field'=>'manufacturer',
@@ -121,58 +122,58 @@ class ModelExtensionArunaSetup extends Model {
                 [
                     'field'=>'attribute1',
                     'name'=>'Мощность',
-                    'group_description'=>'Мощность'
+                    'group_description'=>'Технические характеристики'
                 ],
                 [
                     'field'=>'attribute2',
                     'name'=>'Напряжение',
-                    'group_description'=>'Напряжение'
+                    'group_description'=>'Технические характеристики'
+                ],
+                [
+                    'field'=>'attribute3',
+                    'name'=>'Форма',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'attribute4',
+                    'name'=>'Материал',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'attribute5',
+                    'name'=>'Влагостойкость',
+                    'group_description'=>'Технические характеристики'
+                ],
+                [
+                    'field'=>'attribute6',
+                    'name'=>'Цвет',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'attribute7',
+                    'name'=>'Цоколь',
+                    'group_description'=>'Технические характеристики'
+                ],
+                [
+                    'field'=>'attribute8',
+                    'name'=>'Сечение',
+                    'group_description'=>'Технические характеристики'
+                ],
+                [
+                    'field'=>'attribute9',
+                    'name'=>'Световая температура',
+                    'group_description'=>'Технические характеристики'
+                ],
+                [
+                    'field'=>'attribute10',
+                    'name'=>'Сила тока',
+                    'group_description'=>'Технические характеристики'
                 ],
                 [
                     'field'=>'attribute11',
                     'name'=>'Тип',
                     'group_description'=>'Свойства товара'
-                ],
-                [
-                    'field'=>'attribute3',
-                    'name'=>'Форма',
-                    'group_description'=>'Форма'
-                ],
-                [
-                    'field'=>'attribute4',
-                    'name'=>'Материал',
-                    'group_description'=>'Материал'
-                ],
-                [
-                    'field'=>'attribute5',
-                    'name'=>'Водостойкость',
-                    'group_description'=>'Водостойкость'
-                ],
-                [
-                    'field'=>'attribute6',
-                    'name'=>'Цвет',
-                    'group_description'=>'Цвет'
-                ],
-                [
-                    'field'=>'attribute7',
-                    'name'=>'Цоколь',
-                    'group_description'=>'Цоколь'
-                ],
-                [
-                    'field'=>'attribute8',
-                    'name'=>'Сечение',
-                    'group_description'=>'Сечение'
-                ],
-                [
-                    'field'=>'attribute9',
-                    'name'=>'Цветовая температура',
-                    'group_description'=>'Цветовая температура'
-                ],
-                [
-                    'field'=>'attribute10',
-                    'name'=>'Сила тока',
-                    'group_description'=>'Сила тока'
-                ],
+                ]
             ],
             'filters'=>[
                 [
@@ -193,7 +194,7 @@ class ModelExtensionArunaSetup extends Model {
                 ],
                 [
                     'field'=>'attribute5',
-                    'name'=>'Водостойкость'
+                    'name'=>'Влагостойкость'
                 ],
                 [
                     'field'=>'attribute6',
@@ -209,7 +210,7 @@ class ModelExtensionArunaSetup extends Model {
                 ],
                 [
                     'field'=>'attribute9',
-                    'name'=>'Цветовая температура'
+                    'name'=>'Световая температура'
                 ],
                 [
                     'field'=>'attribute10',

@@ -60,7 +60,7 @@ class ModelExtensionArunaImport extends Model {
         $sql = "
             SELECT 
                 bse.*,
-		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id') AS product_id
+		(SELECT product_id FROM " . DB_PREFIX . "product p JOIN " . DB_PREFIX . "purpletree_vendor_products USING(product_id) WHERE p.model=bse.model AND seller_id='$seller_id' LIMIT 1) AS product_id
             FROM
                 " . DB_PREFIX . "baycik_sync_entries AS bse
             WHERE
@@ -297,7 +297,7 @@ class ModelExtensionArunaImport extends Model {
 
     private function composeProductOptionsObject($row, $category_comission) {
         $product_options = [];
-        if ($this->sync_config->options) {
+        if( isset($this->sync_config->options) ) {
             foreach ($this->sync_config->options as $optionConfig) {
                 $option_price = $row[$optionConfig->price_group_field];
                 $option_value = $row[$optionConfig->value_group_field];
@@ -406,7 +406,7 @@ class ModelExtensionArunaImport extends Model {
         foreach ($query->rows as $row) {
             array_push($categories, $row['category']);
         }
-        return $categories;
+        return array_unique($categories);
     }
 
     private $sstatusCache = [];
@@ -507,7 +507,7 @@ class ModelExtensionArunaImport extends Model {
         ////////////////////////////////
         //COMPOSING SECTION
         ////////////////////////////////
-        if( $row['sort_order'] ){
+        if( isset($row['sort_order']) ){
             $sort_order = $row['sort_order'];
         } else {
             $sort_order = 1700000000 - time();//new products sort to start
@@ -560,21 +560,21 @@ class ModelExtensionArunaImport extends Model {
         $this->db->query("SET @i:=0;");
         $sql = "
 	    UPDATE " . DB_PREFIX . "option_value 
-	    JOIN (SELECT * FROM " . DB_PREFIX . "option_value_description ORDER BY `name`) AS t USING(option_value_id)
+	    JOIN (SELECT * FROM " . DB_PREFIX . "option_value_description ORDER BY `name`*1,`name`) AS t USING(option_value_id)
 	    SET sort_order = @i:=@i + 1";
         $this->db->query($sql);
 
         $this->db->query("SET @i:=0;");
         $sql = "
 	    UPDATE " . DB_PREFIX . "attribute 
-	    JOIN (SELECT * FROM " . DB_PREFIX . "attribute_description ORDER BY `name`) AS t USING(attribute_id)
+	    JOIN (SELECT * FROM " . DB_PREFIX . "attribute_description ORDER BY `name`*1,`name`) AS t USING(attribute_id)
 	    SET sort_order = @i:=@i + 1";
         $this->db->query($sql);
 
         $this->db->query("SET @i:=0;");
         $sql = "
 	    UPDATE " . DB_PREFIX . "filter 
-	    JOIN (SELECT * FROM " . DB_PREFIX . "filter_description ORDER BY `name`) AS t USING(filter_id)
+	    JOIN (SELECT * FROM " . DB_PREFIX . "filter_description ORDER BY `name`*1,`name`) AS t USING(filter_id)
 	    SET sort_order = @i:=@i + 1";
         $this->db->query($sql);
     }
