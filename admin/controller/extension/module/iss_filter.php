@@ -17,11 +17,20 @@ class ControllerExtensionModuleIssFilter extends Controller {
 			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true));
 		}
 
+                
+                
+                
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
 		} else {
 			$data['error_warning'] = '';
 		}
+                
+                if( $this->isKeysInstalled() ){
+                    $data['iskeysinstalled'] = $this->language->get('keys_installed');
+                } else {
+                    $data['error_warning'] .= $this->language->get('keys_uninstalled');
+                }
 
 		$data['breadcrumbs'] = array();
 
@@ -41,6 +50,8 @@ class ControllerExtensionModuleIssFilter extends Controller {
 		);
 
 		$data['action'] = $this->url->link('extension/module/iss_filter', 'user_token=' . $this->session->data['user_token'], true);
+		$data['installKeys'] = $this->url->link('extension/module/iss_filter/installKeys', 'user_token=' . $this->session->data['user_token'], true);
+		$data['uninstallKeys'] = $this->url->link('extension/module/iss_filter/uninstallKeys', 'user_token=' . $this->session->data['user_token'], true);
 
 		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true);
 
@@ -64,4 +75,67 @@ class ControllerExtensionModuleIssFilter extends Controller {
 
 		return !$this->error;
 	}
+        
+        private function checkKey($table,$key){
+            $result=$this->db->query("SELECT COUNT(1) installed FROM INFORMATION_SCHEMA.STATISTICS 
+                WHERE table_schema=DATABASE() AND table_name='$table' AND index_name='$key'");
+            return $result->row['installed']*1;
+        }
+        
+        private function isKeysInstalled(){
+            return  $this->checkKey('oc_filter_description', 'iss_index1') 
+                    && $this->checkKey('oc_product_filter', 'iss_index1')
+                    && $this->checkKey('oc_product', 'iss_fti1')
+                    && $this->checkKey('oc_product_description', 'iss_fti2');
+        }
+        
+        public function installKeys(){
+            $this->load->language('extension/module/iss_filter');
+            try{
+                if( !$this->checkKey('oc_filter_description', 'iss_index1') ){
+                    $this->db->query("ALTER TABLE `oc_filter_description` ADD INDEX `iss_index1` (`language_id` ASC);");
+                }
+                if( !$this->checkKey('oc_product_filter', 'iss_index1') ){
+                    $this->db->query("ALTER TABLE `oc_product_filter` ADD INDEX `iss_index1` (`product_id` ASC);");
+                }
+                if( !$this->checkKey('oc_product', 'iss_fti1') ){
+                    $this->db->query("ALTER TABLE `oc_product` ADD FULLTEXT INDEX `iss_fti1` (`model` ASC, `ean` ASC);");
+                }
+                if( !$this->checkKey('oc_product_description', 'iss_fti2') ){
+                    $this->db->query("ALTER TABLE `oc_product_description` 
+                                        ADD FULLTEXT INDEX `iss_fti2` (`name` ASC),
+                                        ADD FULLTEXT INDEX `iss_fti3` (`description` ASC),
+                                        ADD FULLTEXT INDEX `iss_fti4` (`tag` ASC);");
+                }
+            } 
+            catch(Exception $ex){
+                $this->error['warning']=$this->language->get('keys_error').'<br>'.($ex->getMessage());
+            }
+            $this->index();
+        }
+        
+        public function uninstallKeys(){
+            $this->load->language('extension/module/iss_filter');
+            try{
+                if( $this->checkKey('oc_filter_description', 'iss_index1') ){
+                    $this->db->query("ALTER TABLE `oc_filter_description` DROP INDEX `iss_index1` ;");
+                }
+                if( $this->checkKey('oc_product_filter', 'iss_index1') ){
+                    $this->db->query("ALTER TABLE `oc_product_filter` DROP INDEX `iss_index1`");
+                }
+                if( $this->checkKey('oc_product', 'iss_fti1') ){
+                    $this->db->query("ALTER TABLE `oc_product` DROP INDEX `iss_fti1`");
+                }
+                if( $this->checkKey('oc_product_description', 'iss_fti2') ){
+                    $this->db->query("ALTER TABLE `oc_product_description` 
+                                    DROP INDEX `iss_fti2`,
+                                    DROP INDEX `iss_fti3`,
+                                    DROP INDEX `iss_fti4`;");
+                }
+            } 
+            catch(Exception $ex){
+                $this->error['warning']=$this->language->get('keys_error').'<br>'.($ex->getMessage());
+            }
+            $this->index();
+        }
 }

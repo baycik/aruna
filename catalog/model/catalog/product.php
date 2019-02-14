@@ -13,7 +13,7 @@ class ModelCatalogProduct extends Model {
                     model,
                     quantity,
                     price,
-                    (SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) 
+                    @discount:=(SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) 
                         AS discount,
                     (SELECT price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) 
                         AS special,
@@ -102,7 +102,13 @@ class ModelCatalogProduct extends Model {
             } else {
                 $sql_select.= ",1 filter_match";
             }
-            
+            if ( !empty($data['filter_min']) ) {
+                $min=(float) $data['filter_min'];
+                $max=(float) $data['filter_max'];
+                $sql_select.= ", IF(@discount,@discount>=$min AND @discount<=$max,price>=$min AND price<=$max) price_match";
+            } else {
+                $sql_select.= ", 1 price_match";
+            }
             
             $sql_matches="
                 SELECT
@@ -112,8 +118,10 @@ class ModelCatalogProduct extends Model {
                 WHERE
                     $sql_where
                 GROUP BY p.product_id";
+            $sql_set="SET @discount:=0;";
             $sql_clear="DROP TEMPORARY TABLE IF EXISTS tmp_matches;";
             $sql_fill="CREATE TEMPORARY TABLE tmp_matches AS ($sql_matches);";
+            $this->db->query($sql_set);
             $this->db->query($sql_clear);
             $this->db->query($sql_fill);
             $this->registry->matches_filled=1;
@@ -122,12 +130,6 @@ class ModelCatalogProduct extends Model {
         
         public function getTotalProducts($data=array()){
             $this->fillMatchedProducts($data);
-            $price_filter_case="";
-            if ( !empty($data['filter_min']) ) {
-                $min=(float) $data['filter_min'];
-                $max=(float) $data['filter_max'];
-                $price_filter_case=" AND IF(discount,discount>=$min AND discount<=$max,price>=$min AND price<=$max)";
-            }
             $sql_count="
                 SELECT
                    COUNT(*) AS total
@@ -135,7 +137,7 @@ class ModelCatalogProduct extends Model {
                     tmp_matches
                 WHERE
                     filter_match=1
-                    $price_filter_case";
+                    AND price_match=1";
             $result=$this->db->query($sql_count);
             return $result->num_rows?$result->row['total']:0;
         }
@@ -190,12 +192,6 @@ class ModelCatalogProduct extends Model {
                 }
                 $sql_limit= (int) $data['start'] . "," . (int) $data['limit'];
             }
-            $price_filter_case="";
-            if ( !empty($data['filter_min']) ) {
-                $min=(float) $data['filter_min'];
-                $max=(float) $data['filter_max'];
-                $price_filter_case=" AND IF(discount,discount>=$min AND discount<=$max,price>=$min AND price<=$max)";
-            }
             $sql=" 
                 SELECT
                     *
@@ -203,7 +199,7 @@ class ModelCatalogProduct extends Model {
                     tmp_matches
                 WHERE
                     filter_match=1
-                    $price_filter_case
+                    AND price_match=1
                 ORDER BY
                     $sql_order
                 LIMIT

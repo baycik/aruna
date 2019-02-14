@@ -3,19 +3,6 @@
 class ModelExtensionModuleIssFilter extends Model {
 
     public function getProductFilters() {
-        "ALTER TABLE `oc_filter_description` 
-            ADD INDEX `iss_index2` (`language_id` ASC);
-            
-            ALTER TABLE `oc_product_filter` 
-            ADD INDEX `iss_index2` (`product_id` ASC);
-            
-            ALTER TABLE `oc_product` ADD FULLTEXT INDEX `iss_fti1` (`model` ASC, `ean` ASC);
-            
-            ALTER TABLE `oc_product_description` 
-            ADD FULLTEXT INDEX `iss_fti2` (`name` ASC),
-            ADD FULLTEXT INDEX `iss_fti3` (`description` ASC),
-            ADD FULLTEXT INDEX `iss_fti4` (`tag` ASC);
-            ";
         $this->language_id = (int) $this->config->get('config_language_id');
         if( empty($this->registry->matches_filled) ){
             return false;//must be called after model_catalog_product->getProducts();
@@ -26,7 +13,7 @@ class ModelExtensionModuleIssFilter extends Model {
                     fd.name filter_name,
                     fd.filter_group_id,
                     (SELECT name FROM " . DB_PREFIX . "filter_group_description fgd WHERE fgd.filter_group_id=fd.filter_group_id AND fgd.language_id = {$this->language_id}) filter_group_name,
-                    SUM(filter_match) product_count
+                    SUM(IF(price_match AND filter_match,1,0)) product_count
                 FROM 
                     " . DB_PREFIX . "filter_description fd
                         JOIN
@@ -36,7 +23,7 @@ class ModelExtensionModuleIssFilter extends Model {
                 WHERE
                     fd.language_id={$this->language_id}
                 GROUP BY filter_id
-                ORDER BY filter_group_name,SUM(filter_match)=0,fd.name*1,fd.name";
+                ORDER BY filter_group_name,SUM(IF(price_match AND filter_match,1,0))=0,fd.name*1,fd.name";
         $result = $this->db->query($sql_available_filters);
         if (!$result->num_rows) {
             return [];
