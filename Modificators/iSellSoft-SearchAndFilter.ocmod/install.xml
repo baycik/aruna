@@ -37,6 +37,40 @@
             ]]></add>
 	</operation>
     </file>
+    <file path="catalog/controller/product/search.php">
+	<operation error="skip"> 
+	    <search><![CDATA[$product_total = $this->model_catalog_product->getTotalProducts($filter_data);]]></search>
+	    <add offset="0" position="before"><![CDATA[
+                        if (isset($this->request->get['filter'])) {
+                            $filter_data['filter_filter']=$this->request->get['filter'];
+                        }
+                        if (isset($this->request->get['min'])) {
+                            $filter_data['filter_min']=$this->request->get['min'];
+                        }
+                        if (isset($this->request->get['max'])) {
+                            $filter_data['filter_max']=$this->request->get['max'];
+                        }
+            ]]></add>
+	</operation>
+	<operation error="skip"> 
+	    <search><![CDATA[
+			if (isset($this->request->get['limit'])) {
+				$url .= '&limit=' . $this->request->get['limit'];
+			}
+            ]]></search>
+	    <add offset="0" position="before"><![CDATA[
+                        if (isset($this->request->get['filter'])) {
+                            $url .= '&filter=' . $this->request->get['filter'];
+                        }
+                        if (isset($this->request->get['min'])) {
+                            $url .= '&min=' . $this->request->get['min'];
+                        }
+                        if (isset($this->request->get['max'])) {
+                            $url .= '&max=' . $this->request->get['max'];
+                        }
+            ]]></add>
+	</operation>
+    </file>
     <file path="catalog/model/catalog/product.php">
 	<operation error="skip"> 
 	    <search><![CDATA[function getTotalProducts]]></search>
@@ -92,15 +126,27 @@
                     'name'=>10,
                     'description'=>5
                 ];
+                $words= explode(" ", $search_query);
+                foreach($words as $word){
+                    $length=mb_strlen($word);
+                    if($length>7){
+                        $length_of_root=$length-3;
+                    } else if($length>4){
+                        $length_of_root=4;
+                    } else {
+                        continue;
+                    }
+                    $search_query.=" >".mb_substr($word, 0,$length_of_root)."*";
+                }
                 $relevance_treshold=5;
                 $search_rankings="
-                     {$relevance['code']} *MATCH (model,ean)  AGAINST ('$search_query')
-                    +{$relevance['tag']} *MATCH (pd.tag)  AGAINST ('$search_query') 
-                    +{$relevance['name']} *MATCH (pd.name)  AGAINST ('$search_query') 
+                     {$relevance['code']} *MATCH (model,ean)  AGAINST ('$search_query' IN BOOLEAN MODE)
+                    +{$relevance['tag']} *MATCH (pd.tag)  AGAINST ('$search_query' IN BOOLEAN MODE) 
+                    +{$relevance['name']} *MATCH (pd.name)  AGAINST ('$search_query' IN BOOLEAN MODE) 
                     ";
                 if( !empty($data['filter_description']) ){
                     $search_rankings.="
-                        +{$relevance['description']} *MATCH (pd.description)  AGAINST ('$search_query')";
+                        +{$relevance['description']} *MATCH (pd.description)  AGAINST ('$search_query' IN BOOLEAN MODE)";
                 }
                 $sql_select.=",($search_rankings) rank";
                 $sql_where.=" AND ($search_rankings)>$relevance_treshold";

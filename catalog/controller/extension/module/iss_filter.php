@@ -46,12 +46,12 @@ class ControllerExtensionModuleIssFilter extends Controller {
             return;
         }
 
-        if (isset($this->request->get['min'])) {
+        if ( isset($this->request->get['min']) && $this->request->get['min']>=$data['filter']['min_price_available'] ) {
             $data['filter_min']=$this->request->get['min'];
         } else {
             $data['filter_min']=$data['filter']['min_price_available'];
         }
-        if (isset($this->request->get['max'])) {
+        if ( isset($this->request->get['max']) && $this->request->get['max']<=$data['filter']['max_price_available'] ) {
             $data['filter_max']=$this->request->get['max'];
         } else {
             $data['filter_max']=$data['filter']['max_price_available'];
