@@ -3,6 +3,7 @@ ROBOCOPY "../../catalog/language/ru-ru/extension/module/" "./upload/catalog/lang
 ROBOCOPY "../../catalog/controller/extension/module/" "./upload/catalog/controller/extension/module/"  iss_filter.php
 ROBOCOPY "../../catalog/model/extension/module/" "./upload/catalog/model/extension/module/"  iss_filter.php
 ROBOCOPY "../../catalog/view/theme/default/template/extension/module/" "./upload/catalog/view/theme/default/template/extension/module/"  iss_filter.twig
+ROBOCOPY "../../catalog/view/javascript/" "./upload/catalog/view/javascript/"  /mir
 
 ROBOCOPY "../../admin/language/en-gb/extension/module/" "./upload/admin/language/en-gb/extension/module/"  iss_filter.php
 ROBOCOPY "../../admin/language/ru-ru/extension/module/" "./upload/admin/language/ru-ru/extension/module/"  iss_filter.php
