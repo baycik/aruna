@@ -1055,7 +1055,7 @@ SOCIAL LOGIN
 }
 
 .mobilelayout-1:not(.account-account) aside{
-    display:none;
+    -display:none;
 } 
 .mobilelayout-1.product-category aside{
     display: block !important;

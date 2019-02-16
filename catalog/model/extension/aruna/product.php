@@ -399,7 +399,7 @@ class ModelExtensionArunaProduct extends Model {
     }
     
     public function deleteProductImages($product_id){
-        echo $find_unused_sql="
+        $find_unused_sql="
             SELECT image FROM
                 ((SELECT image FROM oc_product WHERE product_id=$product_id AND image NOT LIKE 'http%')
                  UNION
