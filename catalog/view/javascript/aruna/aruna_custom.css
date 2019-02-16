@@ -518,18 +518,18 @@ margin-bottom: 15px;
     max-height: 228px;
     overflow: hidden;
 }
-
 .product-image-container{
     max-height: 270px;
-    margin: 10px; 
+    margin: 0px; 
     overflow: hidden;
 } 
 
 .product-image-container a img{
-    width:270px !important;
-    margin-top: -30px;
-
+    width: 240px !important;
+    height: auto;
+    padding: 10px;
 }
+
 
 .product-layout .inner{
     max-height: 270px;
@@ -537,6 +537,8 @@ margin-bottom: 15px;
 
 .product-layout .inner a img{
     width:270px !important;
+    margin: auto;
+    display: flex;
 }
 
 
@@ -761,6 +763,9 @@ SOCIAL LOGIN
 =========================*/
 
 /*=========PRODUCT PAGE========*/
+.mobilelayout-1 .product-detail .box-link{
+    top:50px;
+}
 
 .mobilelayout-1 .seller-usergroup .seller_logo.pull-left{
     width:40%;
@@ -838,6 +843,12 @@ SOCIAL LOGIN
 }
 
 /*=========HOME PAGE========*/
+
+.products-list .product-grid .product-item-container .right-block h4{
+    white-space: normal;
+    height: 2.2em;
+}
+
 .mobilelayout-1.extension-mobile-home .navbar-menu,
 .mobilelayout-1.extension-mobile-home .header-link.pull-right{
     display:none;
@@ -944,14 +955,15 @@ SOCIAL LOGIN
 }
 
 .mobilelayout-1 .product-image-container{
-    max-height: 170px;
-    margin: 10px; 
+   max-height: 170px;
+    margin: 0px; 
     overflow: hidden;
 } 
 
 .mobilelayout-1 .product-image-container a img{
-    width:170px !important;
-    margin-top: -30px;
+      width: 170px !important;
+    height: auto;
+    padding: 10px;
 }
 
 .mobilelayout-1 .product-layout.product-list.col-xs-12 .product-item-container{

@@ -300,6 +300,17 @@
                 {{ text_buynow }}
                 ]]></add>
             </operation>
+	        <operation error="log">
+            <search ><![CDATA[
+                  {% if model %}
+        ]]>
+            </search>
+            <add position="before"><![CDATA[
+               <div class="title-product">
+						 <h1 itemprop="name">{{heading_title}}</h1>
+					</div>
+                ]]></add>
+            </operation>
 
     </file>
       <file path="catalog/view/theme/so-emarket/template/account/login.twig">
