@@ -157,11 +157,30 @@ class ControllerProductCategory extends Controller {
 				'limit'              => $limit
 			);
 
-                        $filter_data['filter_name']=$this->request->get['search'];
+                        
+                        
+                        
+                        
+                        if (isset($this->request->get['search'])) {
+                            $filter_data['filter_name']=$this->request->get['search'];
+                        }
+                        if (isset($this->request->get['min'])) {
+                            $filter_data['filter_min']=$this->request->get['min'];
+                        }
+                        if (isset($this->request->get['max'])) {
+                            $filter_data['filter_max']=$this->request->get['max'];
+                        }
 			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
 
 			$results = $this->model_catalog_product->getProducts($filter_data);
 
+                        
+                        
+                        
+                        
+                        
+                        
+                        
 			foreach ($results as $result) {
 				if ($result['image']) {
 					$image = $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));

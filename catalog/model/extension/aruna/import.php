@@ -78,8 +78,11 @@ class ModelExtensionArunaImport extends Model {
         foreach ($rows as $row) {
             $product = $this->composeProductObject($row, $group_data['comission'], $group_data['destination_category_id']);
             if ($row['product_id']) {
-                $product['product_id'] = $row['product_id'];
-                $this->productUpdate($product);
+                $product_ids= explode(',', $row['product_id']);
+                foreach($product_ids as $product_id){
+                    $product['product_id'] = $product_id;
+                    $this->productUpdate($product);
+                }
             } else {
                 $this->productAdd($product);
             }

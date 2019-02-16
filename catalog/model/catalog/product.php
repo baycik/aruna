@@ -55,148 +55,8 @@ class ModelCatalogProduct extends Model {
 			return false;
 		}
 	}
-        
-        private function getProductsSearchResults( $search_query ){
-       
-        }
-        
 
-        public function getProducts_iSell($data = array()) {
-            $start= microtime(1);
-            
-            $sql="
-                ALTER TABLE `oc_product` ADD FULLTEXT INDEX `iss_fti1` (`model` ASC, `ean` ASC);
-                ALTER TABLE `oc_product_description` 
-                ADD FULLTEXT INDEX `iss_fti2` (`name` ASC),
-                ADD FULLTEXT INDEX `iss_fti3` (`description` ASC),
-                ADD FULLTEXT INDEX `iss_fti4` (`tag` ASC);";
-            $this->language_id=(int)$this->config->get('config_language_id');
-            $this->store_id=(int)$this->config->get('config_store_id');
-
-            //print_r($data);
-            $sql_order=" ORDER BY ";
-            /////////////////////////////////////////////////////
-            //SEARCH
-            /////////////////////////////////////////////////////
-            if( !empty($data['filter_name']) ){
-                $matches_union=[];
-                $search_query=$data['filter_name'];
-                $ranks=[
-                    'code'=>15,
-                    'tag'=>20,
-                    'name'=>10,
-                    'description'=>5,
-                    'manufacturer'=>12
-                ];
-                $matches_union[]="
-                    SELECT 
-                        product_id, {$ranks['code']}*(MATCH (model,ean)  AGAINST ('$search_query')) rank 
-                    FROM 
-                        ".DB_PREFIX."product
-                    WHERE 
-                        MATCH (model,ean)  AGAINST ('$search_query')";
-                $matches_union[]="SELECT 
-                        product_id,
-                        IF( MATCH (tag)   AGAINST ('$search_query'),MATCH (tag)   AGAINST ('$search_query')*{$ranks['tag']},
-                        IF( MATCH (name)  AGAINST ('$search_query'),MATCH (name)  AGAINST ('$search_query')*{$ranks['name']},
-                                                                    MATCH (description)  AGAINST ('$search_query')*{$ranks['description']})) rank 
-                    FROM 
-                        ".DB_PREFIX."product_description 
-                    WHERE 
-                        (  MATCH (tag)  AGAINST ('$search_query')
-                        OR MATCH (name)  AGAINST ('$search_query')
-                        OR MATCH (description)  AGAINST ('$search_query') )
-                        AND language_id='{$this->language_id}'";
-                if( count($matches_union) ){
-                    $sql_matches="JOIN ((".implode(") UNION (",$matches_union).")) matches USING(product_id)";
-                    $sql_order.= "rank DESC";
-                } else {
-                    $sql_matches='';
-                }
-            } else {
-                $sql_matches='';
-            }
-            /////////////////////////////////////////////////////
-            //SORTING
-            /////////////////////////////////////////////////////
-            $sort_data = array(
-                    'pd.name',
-                    'p.model',
-                    'p.quantity',
-                    'p.price',
-                    'rating',
-                    'p.sort_order',
-                    'p.date_added',
-                    'sales',
-                    'p.viewed'
-            );
-            if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
-                if ($data['sort'] == 'pd.name' || $data['sort'] == 'p.model') {
-                    $sql_order.= ",LCASE(" . $data['sort'] . ")";
-                } elseif ($data['sort'] == 'p.price') {
-                    $sql_order.= ",(CASE WHEN special IS NOT NULL THEN special WHEN discount IS NOT NULL THEN discount ELSE p.price END)";
-                }else {
-                    $sql_order.= "," . $data['sort'];
-                }
-            } else {
-                $sql_order.= ",p.sort_order";
-            }
-            /////////////////////////////////////////////////////
-            //CATEGORIES AND FILTERS
-            /////////////////////////////////////////////////////
-            if ( !empty($data['filter_category_id']) ) {
-                if ( !empty($data['filter_sub_category']) ) {
-                    $sql_matches.=" 
-                        JOIN ".DB_PREFIX."category_path cp
-                        JOIN " . DB_PREFIX . "product_to_category p2c 
-                        ON 
-                            p.product_id=p2c.product_id
-                            AND cp.category_id = p2c.category_id
-                            AND cp.category_id = '" . (int)$data['filter_category_id'] . "'";
-                } else {
-                    $sql_matches.= " 
-                        JOIN ".DB_PREFIX."product_to_category p2c
-                        ON
-                            p.product_id=p2c.product_id
-                            AND p2c.category_id = '" . (int)$data['filter_category_id'] . "'";
-                }
-            }
-            if ( !empty($data['filter_filter']) ) {
-                $filter_ids=preg_replace('/[^\d,]|,{2,}|^,|,$/', '', $data['filter_filter']);
-                $sql_matches .= "
-                    JOIN ".DB_PREFIX."product_filter pf 
-                    ON 
-                        p.product_id = pf.product_id
-                        AND pf.filter_id IN ($filter_ids)";
-            }
-            /////////////////////////////////////////////////////
-            //CONSTRUCTING QUERY
-            /////////////////////////////////////////////////////
-            $sql="SELECT product_id,rank FROM 
-                ".DB_PREFIX."product p 
-                $sql_matches 
-                ORDER BY rank DESC
-                LIMIT {$data['limit']} OFFSET {$data['start']}";
-            
-            $product_data = array();
-
-            $query = $this->db->query($sql);
-
-            foreach ($query->rows as $result) {
-                $product_data[$result['product_id']] = $this->getProduct($result['product_id']);
-            }
-            echo (microtime(1)-$start);
-            return $product_data;
-	}
-        
-        
-        
 	public function getProducts($data = array()) {
-            return $this->getProducts_iSell($data);
-            
-            
-            
-            
 		$sql = "SELECT p.product_id, (SELECT AVG(rating) AS total FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating, (SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) AS discount, (SELECT price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special";
 
 		if (!empty($data['filter_category_id'])) {
@@ -413,7 +273,6 @@ class ModelCatalogProduct extends Model {
 	}
 
 	public function getPopularProducts($limit) {
-           
 		$product_data = $this->cache->get('product.popular.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $this->config->get('config_customer_group_id') . '.' . (int)$limit);
 	
 		if (!$product_data) {
