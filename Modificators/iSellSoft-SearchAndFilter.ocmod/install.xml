@@ -109,9 +109,7 @@
                     JOIN 
                 ".DB_PREFIX."product_to_store p2s ON (p.product_id = p2s.product_id AND p2s.store_id = '$this->store_id')
                     JOIN
-                ".DB_PREFIX."product_description pd ON (p.product_id = pd.product_id AND pd.language_id = '$this->language_id') 
-                    JOIN 
-                ".DB_PREFIX."manufacturer m ON (p.manufacturer_id = m.manufacturer_id)";
+                ".DB_PREFIX."product_description pd ON (p.product_id = pd.product_id AND pd.language_id = '$this->language_id')";
             $sql_where="
                 p.status = '1' 
                 AND p.date_available <= NOW()";
