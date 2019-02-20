@@ -31,6 +31,18 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'arguments'=>[2,5,null]
         ],
         [
+            'id'=>'charuttiParse',
+            'model'=>'extension/aruna/parse',
+            'method'=>'initParser',
+            'arguments'=>[8,'detect_unchanged_entries']
+        ],
+        [
+            'id'=>'charuttiImport',
+            'model'=>'extension/aruna/import',
+            'method'=>'importSellerProduct',
+            'arguments'=>[2,8,null]
+        ],
+        [
             'id'=>'isellParse',
             'model'=>'extension/aruna/parse',
             'method'=>'initParser',
@@ -41,6 +53,18 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'model'=>'extension/aruna/import',
             'method'=>'importSellerProduct',
             'arguments'=>[20,7,null]
+        ],
+        [
+            'id'=>'deleteAbsentSellerProducts1',
+            'model'=>'extension/aruna/import',
+            'method'=>'deleteAbsentSellerProducts',
+            'arguments'=>[2]
+        ],
+        [
+            'id'=>'deleteAbsentSellerProducts2',
+            'model'=>'extension/aruna/import',
+            'method'=>'deleteAbsentSellerProducts',
+            'arguments'=>[20]
         ]
     ];
     public function index(){
@@ -58,16 +82,16 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
                     continue;
                 }
             }
-            echo $this->executeTask($task);
-            $this->doneJobs[$task['id']]['last_executed']=time();
+            if( $this->executeTask($task) ){
+                $this->doneJobs[$task['id']]['last_executed']=time();
+                $this->saveDoneJob();
+            }
             break;//only one job at a time
         }
-        $this->saveDoneJob();
         die;
     }
     private function executeTask($task){
-        echo "\nStart executing Task".date('d.m.Y H:i:s');
-        print_r($task);
+        echo "\nStart executing Task ".date('d.m.Y H:i:s')." ".$task['id'];
         $this->load->model($task['model']);
         return call_user_func_array([$this->{'model_' . str_replace('/', '_', $task['model'])}, $task['method']], $task['arguments']);
     }

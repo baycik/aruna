@@ -47,7 +47,7 @@ class ModelExtensionArunaImport extends Model {
         $result = $this->db->query($sql);
         $this->profile("select group ");
         if (!$result->num_rows) {
-            return false;
+            return true;
         }
         foreach ($result->rows as $group_data) {
             $this->importSellerProductGroup($seller_id, $group_data);
@@ -407,7 +407,11 @@ class ModelExtensionArunaImport extends Model {
 		    category_id = '" . (int) $destination_category_id . "'
 		ORDER BY level DESC
 		LIMIT 2");
-        return $query->num_rows?array_values($query->rows):[];
+        $categories = array();
+        foreach ($query->rows as $row) {
+            array_push($categories, $row['category']);
+        }
+        return $categories;
     }
 
     private $sstatusCache = [];
