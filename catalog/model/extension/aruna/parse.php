@@ -217,11 +217,9 @@ class ModelExtensionArunaParse extends Model {
             return [];
         }
         $path = [];
-        
         foreach ($product_list->offer as $product){
             $product_category_id = (int)$product->categoryId;
             $path = charuttiGetPath([],$product_category_id, $categories);
-        
             $product_model = (string)$product->attributes()->id;
             for($i = 0; $i < count($product->param); $i++){
                 if ($product->param[$i]->attributes()->name == 'Прочие фотографии'){
@@ -236,11 +234,6 @@ class ModelExtensionArunaParse extends Model {
                     $product_option = $product->param[$i];
                 }
             }
-            
-            /*$price_group = implode('|',array_pad([], count(explode('; ',$product_option)),(string)$product->price ));
-           echo $price_group;
-           die;*/
-            //$option = str_replace('; ', '|', $product_option);
             $additional_description = str_replace(';', '<br>', $product_subdescription);
             foreach (explode('; ',$product_option) as $option){            
                     $sql = "
