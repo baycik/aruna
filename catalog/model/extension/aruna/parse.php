@@ -13,7 +13,6 @@ class ModelExtensionArunaParse extends Model {
         if( !$sync ){
             return false;
         }
-	$sync_id = $sync['sync_id'];
 	$this->prepare_parsing($sync_id);
 	
         $parser_method='parse_'.$sync['sync_parser_name'];
@@ -38,8 +37,8 @@ class ModelExtensionArunaParse extends Model {
         $fill_entries_table_sql = "
             INSERT INTO 
                 ".DB_PREFIX."baycik_sync_entries 
-                    (`is_changed`,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` ,  `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10` ,`image` , `image1` , `image2` , `image3` , `image4` , `image5` ,`option_group1`,`price_group1`,`price`)
-                SELECT          1,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` ,  `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10` , `image` , `image1` , `image2` , `image3` , `image4` , `image5`,
+                    (`is_changed`,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` ,  `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10` , `attribute11` , `attribute12` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` ,`option_group1`,`price_group1`,`price`)
+                SELECT          1,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` ,  `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10` , `attribute11` , `attribute12` , `image` , `image1` , `image2` , `image3` , `image4` , `image5`,
                     GROUP_CONCAT(option1 SEPARATOR '|') AS `option_group1`,
                     GROUP_CONCAT(price1 SEPARATOR '|') AS `price_group1`,
                     MIN(price1) AS `price`
@@ -250,7 +249,7 @@ class ModelExtensionArunaParse extends Model {
                             url = '" . (string)$product->url."', 
                             description = '" . (string)$product->description." Длина изделия: <br>".(string)$additional_description."', 
                             min_order_size = '', 
-                            stock_status='14 дней',
+                            stock_status='8-10 дней',
                             stock_count=0,
                             attribute1 = '" . (string)$product_attribute_1."',
                             attribute2 = '" . (string)$product_attribute_2."',
@@ -461,6 +460,7 @@ class ModelExtensionArunaParse extends Model {
         $presql = "
             UPDATE " . DB_PREFIX . "baycik_sync_groups
             SET total_products = 0 
+            WHERE sync_id = '$sync_id'
             ";
         $this->db->query($presql);
         $sql = "
