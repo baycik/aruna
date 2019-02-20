@@ -293,7 +293,6 @@ class ModelExtensionArunaParse extends Model {
         function fasonGetPath ($path,$product_category_id, $categories){
             for($i = 0; $i < count($categories->category); $i++ ){
                 $category = $categories->category[$i]->attributes();
-                
                 if( $product_category_id == (int)$category->id){
                     array_unshift($path,(string)$categories->category[$i]);
                     if (isset($category->parentId[0])){
@@ -301,11 +300,14 @@ class ModelExtensionArunaParse extends Model {
                     } else {
                         return $path;
                     }
-                } 
+                }
+                if($i == count($categories->category)-1){
+                    array_unshift($path, 'Все категории');
+                    return $path;
+                }
             }
             return [];
         }
-        
         foreach ($product_list->item as $product){
             $product_category_id = (int)$product->categoryId;
             $path = fasonGetPath([],$product_category_id, $categories);
@@ -325,53 +327,53 @@ class ModelExtensionArunaParse extends Model {
                     $product_option = $product->param[$i];
                 }
             }
-           
-            $option = str_replace(',  ', '|', $product_option);
-            $sql = "
-                INSERT INTO  
-                    baycik_tmp_current_sync
-                SET
-                    sync_id = '$sync_id',
-                    is_changed=1,    
-                    category_lvl1 = '".(!empty($path[0])?$path[0]:'')."',
-                    category_lvl2 = '".(!empty($path[1])?$path[1]:'')."',
-                    category_lvl3 = '".(!empty($path[2])?$path[2]:'')."',
-                    product_name = '".(string)$product->name."".$product_color."',
-                    model = 'FAS".$product_model." ".$product_color."', 
-                    mpn= '".$product_model."',
-                    manufacturer = 'Fason',  
-                    origin_country = 'Украина',
-                    url = '', 
-                    description = '" . (string)$product->description."', 
-                    min_order_size = '', 
-                    stock_status='14 дней',
-                    stock_count=0,
-                    attribute1 = '" . (string)$product_attribute_1."',
-                    attribute2 = '" . (string)$product_attribute_2."',
-                    attribute3 = '" . (string)$product_attribute_3."',
-                    attribute4 = '" . (string)$product_attribute_4."',
-                    attribute5 = '',
-                    option1 = '$option', 
-                    option2 = '', 
-                    option3 = '',  
-                    price1 = '".(string)$product->price."', 
-                    price2 = '', 
-                    price3 = '', 
-                    price4 = ''
-                ";
-                for ($i = 0; $i < count($product->image); $i++ )  {
-                    if($i > 5){
-                        break;
-                    }
-                    if ( !empty((string)$product->image[$i]) )  {
-                        if($i == 0){
-                            $sql .= ", image = 'https://fason-m.com.ua".(string)$product->image[$i]."'";
-                        } else {
-                        $sql .= ", image{$i} = 'https://fason-m.com.ua".(string)$product->image[$i]."'";
-                        }                    
-                    }
-                } 
-        $this->db->query($sql);
+            foreach (explode(', ',$product_option) as $option){            
+                $sql = "
+                    INSERT INTO  
+                        baycik_tmp_current_sync
+                    SET
+                        sync_id = '$sync_id',
+                        is_changed=1,    
+                        category_lvl1 = '".(!empty($path[0])?$path[0]:'')."',
+                        category_lvl2 = '".(!empty($path[1])?$path[1]:'')."',
+                        category_lvl3 = '".(!empty($path[2])?$path[2]:'')."',
+                        product_name = '".(string)$product->name." ".$product_color."',
+                        model = 'FAS".$product_model." ".$product_color."', 
+                        mpn= '".$product_model."',
+                        manufacturer = 'Fason',  
+                        origin_country = 'Украина',
+                        url = '', 
+                        description = '" . (string)$product->description."', 
+                        min_order_size = '', 
+                        stock_status='14 дней',
+                        stock_count=0,
+                        attribute1 = '" . (string)$product_attribute_1."',
+                        attribute2 = '" . (string)$product_attribute_2."',
+                        attribute3 = '" . (string)$product_attribute_3."',
+                        attribute4 = '" . (string)$product_attribute_4."',
+                        attribute5 = '',
+                        option1 = '$option', 
+                        option2 = '', 
+                        option3 = '',  
+                        price1 = '".(string)$product->price."', 
+                        price2 = '', 
+                        price3 = '', 
+                        price4 = ''
+                    ";
+                    for ($i = 0; $i < count($product->image); $i++ )  {
+                        if($i > 5){
+                            break;
+                        }
+                        if ( !empty((string)$product->image[$i]) )  {
+                            if($i == 0){
+                                $sql .= ", image = 'https://fason-m.com.ua".(string)$product->image[$i]."'";
+                            } else {
+                            $sql .= ", image{$i} = 'https://fason-m.com.ua".(string)$product->image[$i]."'";
+                            }                    
+                        }
+                    } 
+            $this->db->query($sql);
+            }
         }
     } 
     
