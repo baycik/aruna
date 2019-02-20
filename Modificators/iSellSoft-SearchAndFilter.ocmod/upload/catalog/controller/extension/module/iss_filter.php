@@ -30,7 +30,8 @@ class ControllerExtensionModuleIssFilter extends Controller {
         if ($category_id) {
             $data['action'] = str_replace('&amp;', '&', $this->url->link('product/category', 'path=' . $this->request->get['path'] . $url));
         } else {
-            $data['action'] = str_replace('&amp;', '&', $this->url->link('product/search', 'search=' . $this->request->get['search'] . $url));
+            $search=empty($this->request->get['search'])?"":$this->request->get['search'];
+            $data['action'] = str_replace('&amp;', '&', $this->url->link('product/search', 'search=' .$search));
         }
 
         if (isset($this->request->get['filter'])) {
