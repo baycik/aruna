@@ -38,8 +38,8 @@ class ModelExtensionArunaParse extends Model {
         $fill_entries_table_sql = "
             INSERT INTO 
                 ".DB_PREFIX."baycik_sync_entries 
-                    (`is_changed`,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` ,  `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10` ,`image` , `image1` , `image2` , `image3` , `image4` , `image5` ,`option_group1`,`price_group1`,`price`)
-                SELECT          1,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` ,  `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10` , `image` , `image1` , `image2` , `image3` , `image4` , `image5`,
+                    (`is_changed`,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` ,  `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10` , `attribute11`,`image` , `image1` , `image2` , `image3` , `image4` , `image5` ,`option_group1`,`price_group1`,`price`)
+                SELECT          1,`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `mpn`, `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` ,  `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10`, `attribute11` , `image` , `image1` , `image2` , `image3` , `image4` , `image5`,
                     GROUP_CONCAT(option1 SEPARATOR '|') AS `option_group1`,
                     GROUP_CONCAT(price1 SEPARATOR '|') AS `price_group1`,
                     MIN(price1) AS `price`
@@ -54,7 +54,7 @@ class ModelExtensionArunaParse extends Model {
                 UPDATE
                     ".DB_PREFIX."baycik_sync_entries bse
                         JOIN
-                    baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10`,`option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
+                    baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10`, `attribute11`,`option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
                 SET
                     bse.is_changed=0
                 WHERE sync_id='$sync_id'";
@@ -191,6 +191,180 @@ class ModelExtensionArunaParse extends Model {
                         }                    
                     }
                 }       
+            $this->db->query($sql);
+            }
+        }
+    } 
+    
+    public function parse_charutti($sync) {
+        $source_file="http://charutti.ru/upload/catalogFull.xml";
+	$sync_id = $sync['sync_id'];
+        $xml=simplexml_load_file($source_file);
+        $categories = $xml->shop->categories;
+        $product_list = $xml->shop->offers;
+        function charuttiGetPath ($path,$product_category_id, $categories){
+            for($i = 0; $i < count($categories->category); $i++ ){
+                $category = $categories->category[$i]->attributes();
+                if( $product_category_id == (int)$category->id){
+                    array_unshift($path,(string)$categories->category[$i]);
+                    if (isset($category->parentId[0])){
+                        return charuttiGetPath($path, (int)$category->parentId, $categories);
+                    } else {
+                        return $path;
+                    }
+                } 
+            }
+            return [];
+        }
+        $path = [];
+        foreach ($product_list->offer as $product){
+            $product_category_id = (int)$product->categoryId;
+            $path = charuttiGetPath([],$product_category_id, $categories);
+            $product_model = (string)$product->attributes()->id;
+            for($i = 0; $i < count($product->param); $i++){
+                if ($product->param[$i]->attributes()->name == 'Прочие фотографии'){
+                    $product_pictures = $product->param[$i];
+                } else if ($product->param[$i]->attributes()->name == 'Ткань'){
+                    $product_attribute_1 = $product->param[$i];
+                } else if ($product->param[$i]->attributes()->name == 'Состав'){
+                    $product_attribute_2 = $product->param[$i];
+                } else if ($product->param[$i]->attributes()->name == 'Длина'){
+                    $product_subdescription = $product->param[$i];
+                } else if ($product->param[$i]->attributes()->name == 'Размер'){
+                    $product_option = $product->param[$i];
+                }
+            }
+            $additional_description = str_replace(';', '<br>', $product_subdescription);
+            foreach (explode('; ',$product_option) as $option){            
+                    $sql = "
+                        INSERT INTO  
+                            baycik_tmp_current_sync
+                        SET
+                            sync_id = '$sync_id',
+                            is_changed=1,     
+                            product_name = CONCAT(UCASE(MID('". (string)$product->typePrefix."',1,1)),MID('". (string)$product->typePrefix."',2),' ".(string)$product->model."'), 
+                            model = 'ÇAR".$product_model."', 
+                            mpn= '".$product_model."',
+                            manufacturer = CONCAT(UCASE(MID('".(string)$product->vendor."',1,1)),MID('".(string)$product->vendor."',2)),  
+                            origin_country = 'Россия',
+                            url = '" . (string)$product->url."', 
+                            description = '" . (string)$product->description." Длина изделия: <br>".(string)$additional_description."', 
+                            min_order_size = '', 
+                            stock_status='14 дней',
+                            stock_count=0,
+                            attribute1 = '" . (string)$product_attribute_1."',
+                            attribute2 = '" . (string)$product_attribute_2."',
+                            attribute3 = '',
+                            attribute4 = '',
+                            attribute5 = '',
+                            image = '".(string)$product->picture."',
+                            option1 = '$option', 
+                            option2 = '', 
+                            option3 = '',  
+                            price1 = '".(string)$product->price."', 
+                            price2 = '', 
+                            price3 = '', 
+                            price4 = '',
+                            category_lvl1 = '".(!empty($path[0])?$path[0]:'')."',
+                            category_lvl2 = '".(!empty($path[1])?$path[1]:'')."',
+                            category_lvl3 = '".(!empty($path[2])?$path[2]:'')."'
+                        ";
+                    $additional_pics = explode(';', $product_pictures);        
+                    for ($i = 0; $i < count($additional_pics); $i++ )  {
+                        if($i > 5){
+                            break;
+                        }
+                        if ( !empty((string)$additional_pics[$i]) )  {
+                            $sql .= ", image".($i + 1)." = '".(string)$additional_pics[$i]."'";                  
+                        }
+                    }
+                    $this->db->query($sql);
+            }
+        }
+    } 
+    
+     public function parse_fason($sync) {
+        $source_file="https://fason-m.com.ua/upload/fason_xls_and_xml_file/xml_files/fason.xml";
+	$sync_id = $sync['sync_id'];
+        $xml=simplexml_load_file($source_file);
+        $categories = $xml->catalog;
+        $product_list = $xml->items;
+        $path = [];
+        function fasonGetPath ($path,$product_category_id, $categories){
+            for($i = 0; $i < count($categories->category); $i++ ){
+                $category = $categories->category[$i]->attributes();
+                if( $product_category_id == (int)$category->id){
+                    array_unshift($path,(string)$categories->category[$i]);
+                    if (isset($category->parentId[0])){
+                        return fasonGetPath($path, (int)$category->parentId, $categories);
+                    } else {
+                        return $path;
+                    }
+                }
+                if($i == count($categories->category)-1){
+                    array_unshift($path, 'Все категории');
+                    return $path;
+                }
+            }
+            return [];
+        }
+        foreach ($product_list->item as $product){
+            $product_category_id = (int)$product->categoryId;
+            $path = fasonGetPath([],$product_category_id, $categories);
+            $product_model = (string)$product->attributes()->id;
+            $product_attribute_1 = '';
+            $product_attribute_2 = '';
+            $product_attribute_3 = '';
+            $product_attribute_4 = '';
+            for($i = 0; $i < count($product->param); $i++){
+                if ($product->param[$i]->attributes()->name == 'Материал'){
+                    $product_attribute_1 = $product->param[$i];
+                } else if ($product->param[$i]->attributes()->name == 'Цвет'){
+                    $product_color = $product->param[$i];    
+                } else if ($product->param[$i]->attributes()->name == 'Длина'){
+                    $product_attribute_2 = $product->param[$i];
+                } else if ($product->param[$i]->attributes()->name == 'Стиль'){
+                    $product_attribute_3 = $product->param[$i];    
+                } else if ($product->param[$i]->attributes()->name == 'Сезон'){
+                    $product_attribute_4 = $product->param[$i];    
+                } else if ($product->param[$i]->attributes()->name == 'Размеры'){
+                    $product_option = $product->param[$i];
+                }
+            }
+            foreach (explode(', ',$product_option) as $option){            
+                $sql = "
+                    INSERT INTO  
+                        baycik_tmp_current_sync
+                    SET
+                        sync_id = '$sync_id',
+                        is_changed=1,    
+                        category_lvl1 = '".(!empty($path[0])?$path[0]:'')."',
+                        category_lvl2 = '".(!empty($path[1])?$path[1]:'')."',
+                        category_lvl3 = '".(!empty($path[2])?$path[2]:'')."',
+                        product_name = '".(string)$product->name." ".$product_color."',
+                        model = 'FAS".$product_model." ".$product_color."', 
+                        mpn= '".$product_model."',
+                        manufacturer = 'Fason',  
+                        origin_country = 'Украина',
+                        url = '', 
+                        description = '" . (string)$product->description."', 
+                        min_order_size = '', 
+                        stock_status='14 дней',
+                        stock_count=0,
+                        attribute1 = '" . (string)$product_attribute_1."',
+                        attribute2 = '" . (string)$product_attribute_2."',
+                        attribute3 = '" . (string)$product_attribute_3."',
+                        attribute4 = '" . (string)$product_attribute_4."',
+                        attribute5 = '',
+                        option1 = '$option', 
+                        option2 = '', 
+                        option3 = '',  
+                        price1 = '".(string)$product->price."', 
+                        price2 = '', 
+                        price3 = '', 
+                        price4 = '',
+                        image = 'https://fason-m.com.ua".(string)$product->image[0]."'
+                    ";
             $this->db->query($sql);
             }
         }

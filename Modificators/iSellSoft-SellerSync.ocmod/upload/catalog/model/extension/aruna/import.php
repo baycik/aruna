@@ -78,8 +78,11 @@ class ModelExtensionArunaImport extends Model {
         foreach ($rows as $row) {
             $product = $this->composeProductObject($row, $group_data['comission'], $group_data['destination_category_id']);
             if ($row['product_id']) {
-                $product['product_id'] = $row['product_id'];
-                $this->productUpdate($product);
+                $product_ids= explode(',', $row['product_id']);
+                foreach($product_ids as $product_id){
+                    $product['product_id'] = $product_id;
+                    $this->productUpdate($product);
+                }
             } else {
                 $this->productAdd($product);
             }
@@ -297,7 +300,7 @@ class ModelExtensionArunaImport extends Model {
 
     private function composeProductOptionsObject($row, $category_comission) {
         $product_options = [];
-        if ($this->sync_config->options) {
+        if( isset($this->sync_config->options) ) {
             foreach ($this->sync_config->options as $optionConfig) {
                 $option_price = $row[$optionConfig->price_group_field];
                 $option_value = $row[$optionConfig->value_group_field];
@@ -498,7 +501,7 @@ class ModelExtensionArunaImport extends Model {
             $this->language_id => [
                 'name' => $row['product_name'],
                 'description' => $row['description'],
-                'meta_title' => strip_tags($row['category_lvl3'] . ' ' . $row['manufacturer']),
+                'meta_title' => strip_tags($row['product_name']. ' ' . $row['manufacturer']),
                 'meta_description' => mb_substr($this->meta_description_prefix . strip_tags($row['description']), 0, 500),
                 'meta_keyword' => $this->meta_keyword_prefix . str_replace(' ', ',', strip_tags($row['product_name'])),
                 'tag' => '',

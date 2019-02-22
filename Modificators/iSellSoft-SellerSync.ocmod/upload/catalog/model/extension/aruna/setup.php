@@ -108,6 +108,120 @@ class ModelExtensionArunaSetup extends Model {
             ],
             'manufacturer'=>'manufacturer'
         ],
+        'charutti'=>[
+            'exclusive_owner'=>[2],
+            'name'=>'Сайт женской одежды charutti.ru',
+            'download_images'=>1,
+            'attributes'=>[
+                [
+                    'field'=>'attribute1',
+                    'name'=>'Тип ткани',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'attribute2',
+                    'name'=>'Состав',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна',
+                    'group_description'=>'Произведено'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель',
+                    'group_description'=>'Произведено'
+                ]
+            ],
+            'options'=>[
+                [
+                    'name'=>'Размер',
+                    'option_type'=>'radio',
+                    'value_group_field'=>'option_group1',
+                    'price_group_field' => 'price_group1',
+                    'price_base_field' => 'price'
+                ]
+            ],
+            'filters'=>[
+                [
+                    'field'=>'option_group1',
+                    'name'=>'Размер',
+                    'delimeter'=>['|',' ','.','-','_','/',',']
+                ],
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель'
+                ]
+            ],
+            'manufacturer'=>'manufacturer'
+        ],
+        'fason'=>[
+            'exclusive_owner'=>[2],
+            'name'=>'Сайт женской одежды fason.ua',
+            'download_images'=>1,
+            'attributes'=>[
+                [
+                    'field'=>'attribute1',
+                    'name'=>'Тип ткани',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'attribute2',
+                    'name'=>'Длина',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'attribute3',
+                    'name'=>'Стиль',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'attribute4',
+                    'name'=>'Сезон',
+                    'group_description'=>'Свойства товара'
+                ],
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна',
+                    'group_description'=>'Произведено'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель',
+                    'group_description'=>'Произведено'
+                ]
+            ],
+            'options'=>[
+                [
+                    'name'=>'Размер',
+                    'option_type'=>'radio',
+                    'value_group_field'=>'option_group1',
+                    'price_group_field' => 'price_group1',
+                    'price_base_field' => 'price'
+                ]
+            ],
+            'filters'=>[
+                [
+                    'field'=>'option_group1',
+                    'name'=>'Размер',
+                    'delimeter'=>['|',' ','.','-','_','/',',']
+                ],
+                [
+                    'field'=>'origin_country',
+                    'name'=>'Страна'
+                ],
+                [
+                    'field'=>'manufacturer',
+                    'name'=>'Производитель'
+                ]
+            ],
+            'manufacturer'=>'manufacturer'
+        ],
         'isell'=>[
             'exclusive_owner'=>[20],
             'name'=>'Электротовары NilsonCrimea',
@@ -171,8 +285,8 @@ class ModelExtensionArunaSetup extends Model {
                 ],
                 [
                     'field'=>'attribute11',
-                    'name'=>'Тип',
-                    'group_description'=>'Свойства товара'
+                    'name'=>'Световой поток',
+                    'group_description'=>'Технические характеристики'
                 ]
             ],
             'filters'=>[

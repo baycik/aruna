@@ -31,6 +31,18 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'arguments'=>[2,5,null]
         ],
         [
+            'id'=>'charuttiParse',
+            'model'=>'extension/aruna/parse',
+            'method'=>'initParser',
+            'arguments'=>[8,'detect_unchanged_entries']
+        ],
+        [
+            'id'=>'charuttiImport',
+            'model'=>'extension/aruna/import',
+            'method'=>'importSellerProduct',
+            'arguments'=>[2,8,null]
+        ],
+        [
             'id'=>'isellParse',
             'model'=>'extension/aruna/parse',
             'method'=>'initParser',
@@ -41,6 +53,18 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'model'=>'extension/aruna/import',
             'method'=>'importSellerProduct',
             'arguments'=>[20,7,null]
+        ],
+        [
+            'id'=>'deleteAbsentSellerProducts1',
+            'model'=>'extension/aruna/import',
+            'method'=>'deleteAbsentSellerProducts',
+            'arguments'=>[2]
+        ],
+        [
+            'id'=>'deleteAbsentSellerProducts2',
+            'model'=>'extension/aruna/import',
+            'method'=>'deleteAbsentSellerProducts',
+            'arguments'=>[20]
         ]
     ];
     public function index(){
@@ -60,7 +84,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             }
             echo $this->executeTask($task);
             $this->doneJobs[$task['id']]['last_executed']=time();
-            break;//only one job at a time
+            //break;//only one job at a time
         }
         $this->saveDoneJob();
         die;
