@@ -51,13 +51,26 @@
 </div>
     </form>
 <script type="text/javascript">
+    var available_min=Math.round('{{ filter.min_price_available }}');
+    var available_max=Math.round('{{ filter.max_price_available }}');
+    var selected_min=Math.round('{{ filter_min }}');
+    var selected_max=Math.round('{{ filter_max }}');
     var global_filter_clock;
     function do_filter(){
         var filter = [];
         $('#filter_form input[name^=\'filter\']:checked').each(function (element) {
             filter.push(this.value);
         });
-        location.href = '{{ action }}&filter=' + filter.join(',')+'&min='+$('#filter_form input[name=min]').val()+'&max='+$('#filter_form input[name=max]').val();
+        var url='{{ action }}&filter=' + filter.join(',');
+        var min_input_value=Math.round($('#filter_form input[name=min]').val() );
+        var max_input_value=Math.round($('#filter_form input[name=max]').val() );
+        if( min_input_value!==available_min ){
+            url+='&min='+min_input_value;
+        }
+        if( max_input_value!==available_max ){
+            url+='&max='+max_input_value;
+        }
+        location.href = url;
     }
     $("#filter_form").submit(function(event){
         event.preventDefault();
@@ -91,10 +104,6 @@
             }
         };
         
-        var min=Math.round('{{ filter.min_price_available }}');
-        var max=Math.round('{{ filter.max_price_available }}');
-        var selected_min=Math.round('{{ filter_min }}');
-        var selected_max=Math.round('{{ filter_max }}');
         
         var min_input = document.getElementById('filter_price_min');
         var max_input = document.getElementById('filter_price_max');
@@ -103,8 +112,8 @@
             start: [selected_min, selected_max],
             connect: true,
             range: {
-                'min': min,
-                'max': max
+                'min': available_min,
+                'max': available_max
             }
         });
         slider.noUiSlider.on('update', function (values, handle) {

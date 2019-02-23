@@ -47,7 +47,7 @@ class ModelExtensionArunaImport extends Model {
         $result = $this->db->query($sql);
         $this->profile("select group ");
         if (!$result->num_rows) {
-            return false;
+            return true;
         }
         foreach ($result->rows as $group_data) {
             $this->importSellerProductGroup($seller_id, $group_data);
@@ -115,6 +115,8 @@ class ModelExtensionArunaImport extends Model {
     
     private function productDelete($product_id){
         $this->model_extension_aruna_product->deleteProduct($product_id);
+        $sql = "DELETE FROM " . DB_PREFIX . "purpletree_vendor_products WHERE product_id='$product_id'";
+        $this->db->query($sql);
     }
 
     public function deleteAbsentSellerProducts($seller_id) {
@@ -398,7 +400,7 @@ class ModelExtensionArunaImport extends Model {
     private function composeProductCategory($destination_category_id) {
         $query = $this->db->query("
                 SELECT 
-		    path_id AS category
+		    DISTINCT path_id AS category
                 FROM 
 		    " . DB_PREFIX . "category_path
                 WHERE 
@@ -409,7 +411,7 @@ class ModelExtensionArunaImport extends Model {
         foreach ($query->rows as $row) {
             array_push($categories, $row['category']);
         }
-        return array_unique($categories);
+        return $categories;
     }
 
     private $sstatusCache = [];

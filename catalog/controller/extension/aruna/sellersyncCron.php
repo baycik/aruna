@@ -82,16 +82,16 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
                     continue;
                 }
             }
-            echo $this->executeTask($task);
-            $this->doneJobs[$task['id']]['last_executed']=time();
-            //break;//only one job at a time
+            if( $this->executeTask($task) ){
+                $this->doneJobs[$task['id']]['last_executed']=time();
+                $this->saveDoneJob();
+            }
+            break;//only one job at a time
         }
-        $this->saveDoneJob();
         die;
     }
     private function executeTask($task){
-        echo "\nStart executing Task".date('d.m.Y H:i:s');
-        print_r($task);
+        echo "\nStart executing Task ".date('d.m.Y H:i:s')." ".$task['id'];
         $this->load->model($task['model']);
         return call_user_func_array([$this->{'model_' . str_replace('/', '_', $task['model'])}, $task['method']], $task['arguments']);
     }
