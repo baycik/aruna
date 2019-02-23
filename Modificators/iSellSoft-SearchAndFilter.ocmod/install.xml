@@ -202,7 +202,14 @@
             } else {
                 $sql_select.= ", 1 price_match";
             }
-            
+            /////////////////////////////////////////////////////
+            //MANUFACTURER
+            /////////////////////////////////////////////////////
+            if ( !empty($data['filter_manufacturer_id']) ) {
+                $sql_where .= " AND p.manufacturer_id = '" . (int)$data['filter_manufacturer_id'] . "'";
+            }
+                
+                
             $sql_matches="
                 SELECT
                     $sql_select
