@@ -384,6 +384,7 @@ body.information-information #wrapper .container:nth-last-of-type(2) .row{
 ===============================*/
 .product-layout.product-list.col-xs-12 .product-item-container{
     height: 22em;
+    width: 100%;
     margin-bottom: 10px !important;
 }
 
@@ -730,7 +731,7 @@ SOCIAL LOGIN
 
 .home_fluid_row2 .block-electric{
     background-image: url('https://aruna.market/image/catalog/aruna/common/block-nilson.png');
-    height: 12vw;
+    height: 14vw;
     background-size: 67%;
     background-position-y: 49%;
     background-repeat: no-repeat;

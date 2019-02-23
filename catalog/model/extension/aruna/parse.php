@@ -284,11 +284,11 @@ class ModelExtensionArunaParse extends Model {
     } 
     
      public function parse_fason($sync) {
-        $source_file="https://fason-m.com.ua/upload/fason_xls_and_xml_file/xml_files/fason.xml";
+        $source_file="https://fason-m.com.ua/upload/yandex_xml/xml_files/fason.xml";
 	$sync_id = $sync['sync_id'];
         $xml=simplexml_load_file($source_file);
-        $categories = $xml->catalog;
-        $product_list = $xml->items;
+        $categories = $xml->shop->categories;
+        $product_list = $xml->shop->offers;
         $path = [];
         function fasonGetPath ($path,$product_category_id, $categories){
             for($i = 0; $i < count($categories->category); $i++ ){
@@ -300,15 +300,11 @@ class ModelExtensionArunaParse extends Model {
                     } else {
                         return $path;
                     }
-                }
-                if($i == count($categories->category)-1){
-                    array_unshift($path, 'Все категории');
-                    return $path;
-                }
+                } 
             }
             return [];
         }
-        foreach ($product_list->item as $product){
+        foreach ($product_list->offer as $product){
             $product_category_id = (int)$product->categoryId;
             $path = fasonGetPath([],$product_category_id, $categories);
             $product_model = (string)$product->attributes()->id;
@@ -362,10 +358,21 @@ class ModelExtensionArunaParse extends Model {
                         price1 = '".(string)$product->price."', 
                         price2 = '', 
                         price3 = '', 
-                        price4 = '',
-                        image = 'https://fason-m.com.ua".(string)$product->image[0]."'
+                        price4 = ''
                     ";
-            $this->db->query($sql);
+                    for ($i = 0; $i < count($product->picture); $i++) {
+                        if ($i > 5) {
+                            break;
+                        }
+                        if (!empty((string) $product->picture[$i])) {
+                            if ($i == 0) {
+                                $sql .= ", image = '" . (string) $product->picture[$i] . "'";
+                            } else {
+                                $sql .= ", image{$i} = '" . (string) $product->picture[$i] . "'";
+                            }
+                        }
+                    }
+                $this->db->query($sql);
             }
         }
     } 
