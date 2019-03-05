@@ -11,7 +11,7 @@
                 {% if setting_so_onepagecheckout_layout_setting[payment_method.code~'_status'] is defined and setting_so_onepagecheckout_layout_setting[payment_method.code~'_status'] == 1 %}
                 <div class="radio">
                     <label>
-                        {% if payment_method.code == code or not code or setting_so_onepagecheckout_layout_setting.so_onepagecheckout_default_payment == payment_method.code %}
+                        {% if payment_method.code == code or not code %}
                             {% set code = payment_method.code %}
                             <input type="radio" name="payment_method" value="{{ payment_method.code }}" checked="checked"/>
                         {% else %}
@@ -19,9 +19,6 @@
                         {% endif %}
                         {{ payment_method.title }}
                         
-                        {% if payment_method.terms is defined and payment_method.terms %}
-                            ({{ payment_method.terms }})
-                        {% endif %}
                     </label>
                 </div>
                 {% endif %}

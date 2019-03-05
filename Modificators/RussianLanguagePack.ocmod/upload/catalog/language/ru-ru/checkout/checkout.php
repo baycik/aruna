@@ -35,6 +35,8 @@ $_['text_trial_description']							= 'Стоимость: %s; Периодичн
 $_['text_payment_description']					= 'Стоимость: %s; Периодичность: %d %s; Кол-во платежей: %d';
 $_['text_payment_until_canceled_description']		= 'Стоимость: %s; Периодичность: %d %s; Кол-во платежей: до отмены';
 $_['text_subhead_info']							= 'Оформить заказ на Aruna проще простого! Пожалуйста, заполните форму ниже.';
+$_['text_change_payment_button']							= 'Выбрать другой метод оплаты';
+
 
 
 $_['text_day']					= 'день';

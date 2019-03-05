@@ -1,0 +1,224 @@
+{{ header }}
+<div id="account-order" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+      <h1>{{ heading_title }}</h1>
+      
+      
+      <div class=" well">
+                <div class=" row">
+                       <div class=" col-sm-2">
+                        <div class=" form-group ">
+                              <label class=" control-label" for="input-order-id">Номер документа</label>
+                              <select name="filter_order_id" id="input-order-id" class=" form-control">
+                                <option value="*">{{ text_all}}</option>
+                                      {% for order_id in seller_order_ids %}
+                                      {% if order_id.order_id == filter_order_id %}
+                                <option value="{{ order_id.order_id }}" selected="selected">{{ order_id.order_id }}</option>
+                                {% else %}
+                                <option value="{{ order_id.order_id }}">{{ order_id.order_id }}</option>
+                                {% endif %}
+                                {% endfor %}
+                              </select>
+                        </div>
+                      </div>  
+                      <div class=" col-sm-2">
+                        <div class=" form-group ">
+                              <label class=" control-label" for="input-admin-order-status">{{ entry_order_status }}</label>
+                              <select name="filter_admin_order_status" id="input-admin-order-status" class=" form-control">
+                                <option value="*">{{ text_all}}</option>
+                                      {% for order_status in order_statuses %}
+                                      {% if order_status.order_status_id == filter_admin_order_status %}
+                                <option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+                                {% else %}
+                                <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                              </select>
+                        </div>
+                      </div>  
+                      <div class=" col-sm-2">
+                        <div class=" form-group ">
+                              <label class=" control-label" for="input-sync-id">Синхронизатор</label>
+                              <select name="filter_sync_id" id="input-sync-id" class=" form-control">
+                                <option value="*">{{ text_all}}</option>
+                                      {% for sync in seller_sync_list %}
+                                      {% if sync.sync_id == filter_sync_id %}
+                                <option value="{{ sync.sync_id }}" selected="selected">{{ sync.sync_name }}</option>
+                                {% else %}
+                                <option value="{{ sync.sync_id }}">{{ sync.sync_name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                              </select>
+                        </div>
+                      </div>  
+                      <div class=" col-sm-2">
+                        <div class=" form-group ">
+                              <label class=" control-label" for="input-customer-id">Клиент</label>
+                              <select name="filter_customer_id" id="input-customer-id" class=" form-control">
+                                <option value="*">{{ text_all}}</option>
+                                 {% for customer in seller_customer_list %}
+                                      {% if customer.customer_id == filter_customer_id %}
+                                <option value="{{ customer.customer_id }}" selected="selected">{{ customer.customer_name }}</option>
+                                {% else %}
+                                <option value="{{ customer.customer_id }}">{{ customer.customer_name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                              </select>
+                        </div>
+                      </div>   
+                      <div class=" col-sm-2">
+                        <div class=" form-group date">
+                              <label class=" control-label" for="input-date-added">{{ entry_date_from }}</label>
+                              <div class=" input-group date">
+                                <input type="text" name="filter_date_from" value="{{ filter_date_from }}" placeholder="{{ entry_date_from }}" data-date-format="YYYY-MM-DD" id="input-date-from" class=" form-control" />
+                                <span class=" input-group-btn">
+                                <button type="button" class=" btn  btn-default"><i class="fa fa-calendar"></i></button>
+                                </span></div>
+                        </div>
+                      </div>
+                      <div class=" col-sm-2">
+                        <div class=" form-group date">
+                              <label class=" control-label" for="input-date-modified">{{ entry_date_to }}</label>
+                              <div class=" input-group date">
+                                <input type="text" name="filter_date_to" value="{{ filter_date_to }}" placeholder="{{ entry_date_to }}" data-date-format="YYYY-MM-DD" id="input-date-to" class=" form-control" />
+                                <span class=" input-group-btn">
+                                <button type="button" class=" btn  btn-default"><i class="fa fa-calendar"></i></button>
+                                </span></div>
+                        </div>        
+                      </div>        
+                </div>
+                <div class="row">
+                      <div class=" col-sm-10">
+                      {% if filter_date_from is not empty or filter_date_to is not empty or filter_order_status is not empty %}
+                                      <div class="col-sm-6">{{ entry_total_sale }} <b>{{ total_sale }}</b></div>
+                                  {% endif %}
+                      </div>
+                </div>
+	  </div>
+               
+                      {{ seller_order_entries_list }}
+           
+        
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+    <script type="text/javascript">
+        
+        $(document).trigger('reload_seller_order_entries_table', true);
+
+        
+        var count_loading = 0;
+        function ajaxLoadingOn() {
+            $('body > .tooltip').remove();
+            count_loading++;
+            if (count_loading === 1) {
+                $('.so-onepagecheckout #so-checkout-confirm-button').button('loading');
+                $('.so-onepagecheckout #so-checkout-confirm-button, .so-onepagecheckout .checkout-register, .so-onepagecheckout .checkout-payment-form, .so-onepagecheckout .checkout-shipping-form, .checkout-cart, .so-onepagecheckout .confirm-section, .so-onepagecheckout .checkout-shipping-methods, .so-onepagecheckout .checkout-payment-methods, .so-onepagecheckout .coupon-voucher').addClass('checkout-loading');
+            }
+        }
+
+        function ajaxLoadingOff() {
+            count_loading--;
+            if (count_loading === 0) {
+                $('.so-onepagecheckout #so-checkout-confirm-button').button('reset');
+                $('.so-onepagecheckout #so-checkout-confirm-button, .so-onepagecheckout .checkout-register, .so-onepagecheckout .checkout-payment-form, .so-onepagecheckout .checkout-shipping-form, .checkout-cart, .so-onepagecheckout .confirm-section, .so-onepagecheckout .checkout-shipping-methods, .so-onepagecheckout .checkout-payment-methods, .so-onepagecheckout .coupon-voucher').removeClass('checkout-loading');
+            }
+        }
+        function getList(){
+            $('#seller_order_entries_table').addClass('disabledcontent');
+            var data = {};
+            var current_page = $('.pagination .active span').html();
+            $('select[name=\'filter_order_id\'], select[name=\'filter_sync_id\'], select[name=\'filter_customer_id\'], select[name=\'filter_admin_order_status\'], input[name=\'filter_date_from\'], input[name=\'filter_date_to\']').each(function () {
+                data[$(this).attr('name')] = $(this).val();
+            });
+            data.start = current_page;
+            $.ajax({
+                url: 'index.php?route=extension/aruna/sellerorder_entries/renderList',
+                type: 'post',
+                cache: false,
+                data: data,
+                dataType: 'html',
+                beforeSend: function () {
+                    $('#confirm-button').button('loading');
+                    $('#confirm-button').attr("disabled", true);
+                    
+                },
+                success: function (html) {
+                    $('#seller_order_entries_table').removeClass('disabledcontent');
+                    $('#seller_order_entries_table').replaceWith(html);
+                    }
+                });
+        }
+        
+        $(document).delegate('.form-group-input', 'change', function(e){
+            var product_id = e.target.id;
+            var id1 = product_id.split("_");
+            var order_id = $('#seller_order_' + id1[1]);
+            var data = {
+                product_id: id1[1],
+                order_id: order_id[0].innerHTML,
+                product_quantity: $('#quantity_' + id1[1]).val(),
+                product_price: $('#price_' + id1[1]).val()
+            };
+            $.ajax({
+                url: 'index.php?route=extension/aruna/sellerorder_entries/updateSellerOrderProduct',
+                type: 'post',
+                cache: false,
+                data: data,
+                dataType: 'json',
+                beforeSend: function () {
+                    
+                },
+                complete: function () {
+                    getList();
+                    return;
+                },
+                success: function () {
+                   
+                }
+            });
+            
+        });
+        function updateOrderProduct(e){
+           
+        }
+        $(document).delegate('select[name=\'filter_order_id\'], select[name=\'filter_sync_id\'], select[name=\'filter_customer_id\'], select[name=\'filter_admin_order_status\']', 'change', function(){
+            getList();
+        });   
+        $('.date').change(function(){
+            getList();
+        });
+        
+        
+        
+</script>
+<script src="admin/view/javascript/jquery/datetimepicker/moment/moment.min.js" type="text/javascript"></script>
+<script src="admin/view/javascript/jquery/datetimepicker/moment/moment-with-locales.min.js" type="text/javascript"></script>
+<script src="admin/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<link href="admin/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" media="screen" />
+  <script type="text/javascript"><!--
+$('.date').datetimepicker({
+	language: '{{ datepicker }}',
+	pickTime: false
+});
+//--></script>
+  <style>
+      .disabledcontent{
+        pointer-events: none;
+        opacity: 0.4;
+    }
+  </style>
+{{ footer }}

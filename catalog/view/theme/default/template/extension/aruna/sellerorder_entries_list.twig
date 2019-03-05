@@ -1,0 +1,58 @@
+<div id="seller_order_entries_table">
+      {% if seller_orders_entries_list %}
+            <div class="table-responsive" >
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                     <td class="text-left">Клиент</td>
+                    <td class="text-right">Номер заказа</td>
+                    <td class="text-left">Статус заказа</td>
+                    <td class="text-right">Название</td>
+                    <td class="text-right">Код</td>
+                    <td class="text-right">Количество</td>
+                    <td class="text-right">Цена</td>
+                    <td class="text-right">Стоимость</td>
+                    <td class="text-left">Дата добавления</td>
+                    <td></td>
+                  </tr>
+                </thead>
+                <tbody>
+                 {% for product in seller_orders_entries_list %}
+                  <tr>
+                    <td class="text-left">{{ product.customer_name }}</td>
+                    <td class="text-right" id="seller_order_{{ product.product_id }}">{{ product.order_id }}</td>
+                    <td class="text-left">{{ product.order_status_name }}</td>
+                    <td class="text-left">{{ product.product_name }}</td>
+                    <td class="text-left">{{ product.model }}</td>
+                    <td class="text-right">
+                        <div class=" form-group-input product_quantity">
+                              <div class=" input-group product_quantity">
+                                <input id="quantity_{{ product.product_id }}" value="{{ product.quantity }}" placeholder="{{ product.quantity }}">
+                              </div>
+                        </div>  
+                    </td>
+                    <td class="text-right">
+                        <div class=" form-group-input product_price">
+                              <div class=" input-group product_price">
+                                <input id="price_{{ product.product_id }}" value="{{ product.price }}" placeholder="{{ product.price }}">
+                              </div>
+                        </div>  
+                    </td>
+                    <td class="text-right" id="price_total_{{product.product_id }}">{{ product.total_price }}</td>
+                    <td class="text-left">{{ product.date_added }}</td>
+                    <td class="text-right">
+                        <a href="{{ product.delete }}" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-info"><i class="fa fa-trash"></i></a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <div class="col-sm-6 text-left">{{ pagination }}</div>
+              <div class="col-sm-6 text-right">{{ results }}</div>
+            </div>
+            {% else %}
+            <p>{{ text_empty }}</p>
+            {% endif %}
+      </div>   

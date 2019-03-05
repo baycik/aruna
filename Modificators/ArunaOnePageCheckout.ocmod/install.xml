@@ -1765,6 +1765,21 @@ $this->load->model('setting/setting');
              ]]></add> 
      </operation>
  </file>
-  
+ 
+  <file path="catalog/model/extension/payment/bank_transfer.php">
+      <operation error="log"> 
+        <search><![CDATA['',]]></search> 
+        <add position="replace"><![CDATA[$this->config->get('payment_bank_transfer_bank2'),
+             ]]></add> 
+     </operation>
+  </file>
+    <file path="catalog/controller/extension/payment/bank_transfer.php">
+      <operation error="log"> 
+        <search><![CDATA[return $this->load->view('extension/payment/bank_transfer', $data);]]></search> 
+        <add position="replace"><![CDATA[return $this->response->setOutput($this->load->view('extension/payment/bank_transfer', $data));
+             ]]></add> 
+     </operation>
+  </file>
+   
 
 </modification>
