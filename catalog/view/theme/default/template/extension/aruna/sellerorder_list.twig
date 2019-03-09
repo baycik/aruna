@@ -72,6 +72,14 @@
                     </div>            
                 </div>          
 	  </div>
+          <div class="grid-container grid-header" >
+              <div class="text-left header-item-order-id">{{ column_order_id }}</div>
+              <div class="text-left header-item-customer">{{ column_customer }}</div>
+              <div class="text-left header-item-order-status-name">{{ column_status }}</div>
+              <div class="text-left header-item-total-price">Стоимость</div>
+              <div class="text-left header-item-date-added">{{ column_date_added }}</div>
+              <div class="text-left header-item-action"></div>
+           </div>                      
       {{ seller_order_table }}
       {{ content_bottom }}</div>
     {{ column_right }}</div>
@@ -218,12 +226,12 @@ $('.date').datetimepicker({
   .item-date-added { display:none }
   .item-action { grid-area: 2 / 3 / 4 / 4  }
   
-   .header-item-customer { grid-area: 1 / 2 / 2 / 3  }
+   .header-item-customer { grid-area: 1 / 2 / 2 / 4  }
   .header-item-order-id      { grid-area: 1 / 1 / 2 / 2 }
-  .header-item-order-status-name { grid-area: 1 / 3 / 2 / 4 }
+  .header-item-order-status-name { display:none }
   .header-item-total-price { grid-area: 1 / 4 / 2 / 5 }
   .header-item-date-added { display:none }
-  .header-item-action { grid-area: 2 / 4 / 4 / 5 }
+  .header-item-action { display:none }
   
   
 }

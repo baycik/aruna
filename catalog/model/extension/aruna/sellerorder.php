@@ -1,8 +1,8 @@
 <?php
 class ModelExtensionArunaSellerOrder extends Model {
 	public function getOrder($order_id) {
-		$order_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND order_status_id > '0'");
-
+		$order_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "'");
+                
 		if ($order_query->num_rows) {
 			$country_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "country` WHERE country_id = '" . (int)$order_query->row['payment_country_id'] . "'");
 
@@ -153,7 +153,7 @@ class ModelExtensionArunaSellerOrder extends Model {
 			$sql .= " AND DATE(o.date_added) <= DATE('" . $this->db->escape($data['filter_date_to']) . "')";
 		}
 		if(!isset($data['filter_date_from']) && !isset($data['filter_date_to'])){
-			$end_date = date('Y-m-d', strtotime("-30 days"));
+			$end_date = date('Y-m-d', strtotime("-60 days"));
 			$sql .= " AND DATE(o.date_added) >= '".$end_date."'";
 			$sql .= " AND DATE(o.date_added) <= '".date('Y-m-d')."'";
 		}
@@ -190,18 +190,19 @@ class ModelExtensionArunaSellerOrder extends Model {
                             `" . DB_PREFIX . "order` o
                              ";
                 
+                $sql .= " WHERE ";
                   if (isset($data['filter_seller_id']) && $data['filter_seller_id'] != '*' ){
                         $seller_id = $data['filter_seller_id'];
-                        $sql .= " WHERE (SELECT DISTINCT pvo.seller_id FROM oc_purpletree_vendor_orders pvo WHERE o.order_id = pvo.order_id) = '".$seller_id."' AND";
+                        $sql .= " (SELECT DISTINCT pvo.seller_id FROM oc_purpletree_vendor_orders pvo WHERE o.order_id = pvo.order_id LIMIT 1) = '".$seller_id."'";
                 } else {
-                        $sql .= " WHERE ";
+                        $sql .= " ";
                 }
                 
                 if (isset($data['filter_customer_id']) && $data['filter_customer_id'] != '*' ){
                         $customer_id = $data['filter_customer_id'];
-                        $sql .= " customer_id = '".(int)$customer_id . "'";
+                        $sql .= " AND o.customer_id = '".(int)$customer_id . "'";
                 } else {
-                        $sql .= "  customer_id  > '0'";
+                        $sql .= " AND o.customer_id > '-1' ";
                 }
                 
                 
@@ -211,14 +212,14 @@ class ModelExtensionArunaSellerOrder extends Model {
 			$seller_order_statuses = explode(',', $data['filter_seller_order_status']);
 
 			foreach ($seller_order_statuses as $seller_order_status_id) {
-				$implode[] = "(SELECT distinct pvo.order_status_id FROM oc_purpletree_vendor_orders pvo WHERE o.order_id = pvo.order_id) = '" . (int)$seller_order_status_id . "'";
+				$implode[] = " (SELECT distinct pvo.order_status_id FROM oc_purpletree_vendor_orders pvo WHERE o.order_id = pvo.order_id) = '" . (int)$seller_order_status_id . "'";
 			}
 
 			if ($implode) {
 				$sql .= " AND (" . implode(" OR ", $implode) . ")";
 			}
 		} else {
-			$sql .= " AND (SELECT distinct pvo.order_status_id FROM oc_purpletree_vendor_orders pvo WHERE o.order_id = pvo.order_id) > '0'";
+			$sql .= " ";
 		}
 		
 		if (!empty($data['filter_date_from'])) {
@@ -229,7 +230,7 @@ class ModelExtensionArunaSellerOrder extends Model {
 			$sql .= " AND DATE(o.date_added) <= DATE('" . $this->db->escape($data['filter_date_to']) . "')";
 		}
 		if(empty($data['filter_date_from']) && empty($data['filter_date_to'])){
-			$end_date = date('Y-m-d', strtotime("-30 days"));
+			$end_date = date('Y-m-d', strtotime("-90 days"));
 			$sql .= " AND DATE(o.date_added) >= '".$end_date."'";
 			$sql .= " AND DATE(o.date_added) <= '".date('Y-m-d')."'";
 		}
@@ -267,7 +268,7 @@ class ModelExtensionArunaSellerOrder extends Model {
 			}
 
 			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
-		}
+		} 
 		$query = $this->db->query($sql);
                 return $array = [
                     'results' => $query->rows,
@@ -277,12 +278,12 @@ class ModelExtensionArunaSellerOrder extends Model {
        
 	
 	public function getSellerOrdersTotal($seller_id,$order_id){
-		$query = $this->db->query("SELECT value AS total  FROM " . DB_PREFIX . "order_total ot WHERE (SELECT DISTINCT pvo.seller_id FROM oc_purpletree_vendor_orders pvo WHERE ot.order_id = pvo.order_id) = '".(int)$seller_id."' AND ot.order_id = '".(int)$order_id."' AND ot.code='sub_total'");
+		$query = $this->db->query("SELECT value AS total  FROM " . DB_PREFIX . "order_total ot WHERE (SELECT DISTINCT pvo.seller_id FROM oc_purpletree_vendor_orders pvo WHERE ot.order_id = pvo.order_id LIMIT 1) = '".(int)$seller_id."' AND ot.order_id = '".(int)$order_id."' AND ot.code='sub_total'");
 
 		return $query->row;
 	}
 	public function getTotalllseller($seller_id,$order_id){
-		$query = $this->db->query("SELECT value AS total  FROM " . DB_PREFIX . "order_total ot WHERE (SELECT DISTINCT pvo.seller_id FROM oc_purpletree_vendor_orders pvo WHERE ot.order_id = pvo.order_id) = '".(int)$seller_id."' AND ot.order_id = '".(int)$order_id."' AND ot.code='sub_total'");
+		$query = $this->db->query("SELECT value AS total  FROM " . DB_PREFIX . "order_total ot WHERE (SELECT DISTINCT pvo.seller_id FROM oc_purpletree_vendor_orders pvo WHERE ot.order_id = pvo.order_id LIMIT 1) = '".(int)$seller_id."' AND ot.order_id = '".(int)$order_id."' AND ot.code='sub_total'");
 
 		return $query->row;
 	}

@@ -74,6 +74,7 @@ class ControllerExtensionArunaSellerOrder extends Controller {
                 };
 
                 $data = [];
+                
                 $filter_data['limit'] = $this->config->get('config_limit_admin');
                 $filter_data['filter_seller_id'] = $seller_id;
                 $filter_data['start'] = ((int)$page-1)*$filter_data['limit'];
@@ -109,8 +110,14 @@ class ControllerExtensionArunaSellerOrder extends Controller {
 				} else {
 				$data['error_warning'] = $this->language->get('module_purpletree_multivendor_commission_status_warning');
 			}  
-
-	
+                        
+                        $edit = '';
+                        if (intval($result['total'])>0){
+                            $edit = $this->url->link('extension/aruna/sellerorder_entries', '#' . $result['order_id']);
+                        }
+                        
+                        
+                        
 			$data['seller_orders'][] = array(
 				'order_id'      => $result['order_id'],
 				'customer'      => $result['customer'],
@@ -121,7 +128,7 @@ class ControllerExtensionArunaSellerOrder extends Controller {
 				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
 				'shipping_code' => $result['shipping_code'],
 				'view'          => $this->url->link('extension/aruna/sellerorder/info', 'order_id=' . $result['order_id'], true),
-                                'edit'          => $this->url->link('extension/aruna/sellerorder_entries', '#' . $result['order_id'])
+                                'edit'          => $edit
 			);
 		}
 
@@ -171,8 +178,7 @@ class ControllerExtensionArunaSellerOrder extends Controller {
 		}
 
 		if (!$this->customer->isLogged()) {
-			$this->session->data['redirect'] = $this->url->link('account/order/info', 'order_id=' . $order_id, true);
-
+			$this->session->data['redirect'] = $this->url->link('extension/aruna/sellerorder', 'order_id=' . $order_id, true);
 			$this->response->redirect($this->url->link('account/login', '', true));
 		}
 
