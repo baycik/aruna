@@ -1,53 +1,50 @@
 <div id="seller_order_entries_table">
       {% if seller_orders_entries_list %}
-            <div class="table-responsive" >
-              <table class="table table-bordered table-hover">
-                <thead>
-                  <tr>
-                     <td class="text-left">Клиент</td>
-                    <td class="text-right">Номер заказа</td>
-                    <td class="text-left">Статус заказа</td>
-                    <td class="text-right">Название</td>
-                    <td class="text-right">Код</td>
-                    <td class="text-right">Количество</td>
-                    <td class="text-right">Цена</td>
-                    <td class="text-right">Стоимость</td>
-                    <td class="text-left">Дата добавления</td>
-                    <td></td>
-                  </tr>
-                </thead>
-                <tbody>
+            <div>
+                <div class="grid-container grid-header" >
+                    <div class="text-left header-item-customer-name">Клиент</div>
+                    <div class="text-left header-item-order-id">Номер заказа</div>
+                    <div class="text-left header-item-order-status-name">Статус заказа</div>
+                    <div class="text-left header-item-product-name">Название</div>
+                    <div class="text-left header-item-product-quantity">Количество</div>
+                    <div class="text-left header-item-product-price">Цена</div>
+                    <div class="text-left header-item-total-price">Стоимость</div>
+                    <div class="text-left header-item-date-added">Дата добавления</div>
+                    <div class="text-left header-item-action"></div>
+                </div>    
                  {% for product in seller_orders_entries_list %}
-                  <tr>
-                    <td class="text-left">{{ product.customer_name }}</td>
-                    <td class="text-right" id="seller_order_{{ product.product_id }}">{{ product.order_id }}</td>
-                    <td class="text-left">{{ product.order_status_name }}</td>
-                    <td class="text-left">{{ product.product_name }}</td>
-                    <td class="text-left">{{ product.model }}</td>
-                    <td class="text-right">
-                        <div class=" form-group-input product_quantity">
+                 <div class="grid-container" >  
+                      <div style="display:none">
+                          <input type="hidden" id="order_product_{{ product.product_id }}_{{ product.order_product_id }}" value="{{ product.order_product_id }}">
+                      </div>  
+                    <div class="text-left item-customer-name">{{ product.customer_name }}</div>
+                    <div class="text-left item-order-id" id="order_{{ product.product_id }}_{{ product.order_product_id }}">{{ product.order_id }}</div>
+                    <div class="text-left item-order-status-name">{{ product.order_status_name }}</div>
+                    <div class="text-left item-product-name">{{ product.product_name }}</div>
+                    <div class="text-left item-product-quantity">
+                        <div class=" form-group my-input item-product-quantity">
                               <div class=" input-group product_quantity">
-                                <input id="quantity_{{ product.product_id }}" value="{{ product.quantity }}" placeholder="{{ product.quantity }}">
+                                <input style="width: 60%; padding:0px 7px" type="text" id="quantity_{{ product.product_id }}_{{ product.order_product_id }}" value="{{ product.quantity }}" placeholder="{{ product.quantity }}">
+                                <span style="margin-left: 5px;">шт.</span>
                               </div>
                         </div>  
-                    </td>
-                    <td class="text-right">
-                        <div class=" form-group-input product_price">
+                    </div>
+                    <div class="text-left item-product-price">
+                        <div class=" form-group my-input product_price">
                               <div class=" input-group product_price">
-                                <input id="price_{{ product.product_id }}" value="{{ product.price }}" placeholder="{{ product.price }}">
+                                <input style="width: 70%" type="text" id="price_{{ product.product_id }}_{{ product.order_product_id }}" value="{{ product.price }}" placeholder="{{ product.price }}">
+                                <span style="margin-left: 5px;">руб.</span>
                               </div>
                         </div>  
-                    </td>
-                    <td class="text-right" id="price_total_{{product.product_id }}">{{ product.total_price }}</td>
-                    <td class="text-left">{{ product.date_added }}</td>
-                    <td class="text-right">
-                        <a href="{{ product.delete }}" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-info"><i class="fa fa-trash"></i></a>
-                    </td>
-                  </tr>
+                    </div>
+                    <div class="text-left item-total-price" id="price_total_{{product.product_id }}">{{ product.total_price }} руб.</div>
+                    <div class="text-left item-date-added">{{ product.date_added }}</div>
+                    <div class="text-right item-action">
+                        <a id="delete_{{ product.product_id }}_{{ product.order_product_id }}" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-info button-delete" onclick="deleteProduct(this)"><i class="fa fa-trash"></i></a>
+                    </div>
+                 </div> 
                   {% endfor %}
-                </tbody>
-              </table>
-            </div>
+              </div>
             <div class="row">
               <div class="col-sm-6 text-left">{{ pagination }}</div>
               <div class="col-sm-6 text-right">{{ results }}</div>

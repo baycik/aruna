@@ -58,61 +58,49 @@
             {% endif %} </tr>
         </tbody>
       </table>
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <td class="text-left">{{ column_name }}</td>
-              <td class="text-left">{{ column_model }}</td>
-              <td class="text-right">{{ column_quantity }}</td>
-              <td class="text-right">{{ column_price }}</td>
-              <td class="text-right">{{ column_total }}</td>
+        <div>
+            <div class="grid-container grid-header" >
+                    <div class="text-left header-item-product-name">{{ column_name }}</div>
+                    <div class="text-left header-item-product-quantity">{{ column_quantity }}</div>
+                    <div class="text-left header-item-product-price">{{ column_price }}</div>
+                    <div class="text-left header-item-total-price">{{ column_total }}</div>
+                </div>    
+            {% for product in products %}
+            <div class="grid-container ">
+              <div class="text-left item-product-name">{{ product.name }}
+                {% for option in product.option %} <br/>
+                &nbsp;<small> - {{ option.name }}: {{ option.value }}</small> {% endfor %}</div>
+              <div class="text-left item-product-quantity">{{ product.quantity }}</div>
+              <div class="text-left item-product-price">{{ product.price }}</div>
+              <div class="text-left item-total-price">{{ product.total }}</div>
+            </div>
+            {% endfor %}
+            {% for voucher in vouchers %}
+            <div>
+              <div class="text-left">{{ voucher.description }}</div>
+              <div class="text-left"></div>
+              <div class="text-left">1</div>
+              <div class="text-left">{{ voucher.amount }}</div>
+              <div class="text-left">{{ voucher.amount }}</div>
               {% if products %}
-              <td style="width: 20px;"></td>
-              {% endif %} </tr>
-          </thead>
-          <tbody>
+              <div></div>
+              {% endif %} 
+            </div>
+            {% endfor %}
           
-          {% for product in products %}
-          <tr>
-            <td class="text-left">{{ product.name }}
-              {% for option in product.option %} <br />
-              &nbsp;<small> - {{ option.name }}: {{ option.value }}</small> {% endfor %}</td>
-            <td class="text-left">{{ product.model }}</td>
-            <td class="text-right">{{ product.quantity }}</td>
-            <td class="text-right">{{ product.price }}</td>
-            <td class="text-right">{{ product.total }}</td>
-            <td class="text-right" style="white-space: nowrap;">{% if product.reorder %} <a href="{{ product.reorder }}" data-toggle="tooltip" title="{{ button_reorder }}" class="btn btn-primary"><i class="fa fa-shopping-cart"></i></a> {% endif %} <a href="{{ product.return }}" data-toggle="tooltip" title="{{ button_return }}" class="btn btn-danger"><i class="fa fa-reply"></i></a></td>
-          </tr>
-          {% endfor %}
-          {% for voucher in vouchers %}
-          <tr>
-            <td class="text-left">{{ voucher.description }}</td>
-            <td class="text-left"></td>
-            <td class="text-right">1</td>
-            <td class="text-right">{{ voucher.amount }}</td>
-            <td class="text-right">{{ voucher.amount }}</td>
-            {% if products %}
-            <td></td>
-            {% endif %} </tr>
-          {% endfor %}
-            </tbody>
-          
-          <tfoot>
+          <div>
           
           {% for total in totals %}
-          <tr>
-            <td colspan="3"></td>
-            <td class="text-right"><b>{{ total.title }}</b></td>
-            <td class="text-right">{{ total.text }}</td>
-            {% if products %}
-            <td></td>
-            {% endif %} </tr>
+          <div class="grid-container grid-footer">
+            <div class="text-left footer-empty"></div>
+            <div class="text-left footer-empty"></div>
+            <div class="text-left footer-total-title"><b>{{ total.title }}</b></div>
+            <div class="text-left footer-total-text">{{ total.text }}</div>
+          </div>
           {% endfor %}
-            </tfoot>
+            </div>
           
-        </table>
-      </div>
+        </div>
       {% if comment %}
       <table class="table table-bordered table-hover">
         <thead>
@@ -157,9 +145,65 @@
       </table>
       {% endif %}
       <div class="buttons clearfix">
-        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+        <div class="pull-left"><a href="{{ back }}" class="btn btn-primary">{{ button_back }}</a></div>
       </div>
       {{ content_bottom }}</div>
     {{ column_right }}</div>
 </div>
+<style>
+      .disabledcontent{
+        pointer-events: none;
+        opacity: 0.4;
+    }
+    .grid-container {
+        background-color: rgba(255, 255, 255, 0.8);
+        display: grid;
+        grid-template-columns: 25% 25% 25% 25% ;
+        border: 1px solid lightgray;
+        margin-top: -1px;
+      }
+     
+
+.grid-container > div {
+  padding: 5px;
+  margin: auto 0px;
+}
+
+.form-group.my-input, .form-group.my-input input{
+    margin: auto 0px;
+}
+.grid-container.grid-header{
+    background-color: #f5f5f5;
+    font-weight:bold;
+}
+@media only screen and (max-width: 1200px) {
+   .grid-container{grid-template-columns: auto;}
+   
+   .grid-container.grid-header{
+        margin-bottom: 10px;
+    }
+   .grid-container{
+        margin-bottom: 10px;
+    }
+    .grid-container.grid-footer{
+        margin-bottom: 0;
+    }
+   
+  .item-product-name { grid-area: 1 / 1 / 1 / 5 }
+  .item-product-quantity { grid-area: 2 / 1 / 2 / 2 }
+  .item-product-price { grid-area: 2 / 2 / 2 / 4 }
+  .item-total-price { grid-area: 2 / 4 / 2 / 5 }
+  
+  
+  .header-item-product-name { display:none}  
+  .header-item-product-quantity { grid-area: 2 / 1 / 2 / 2 }
+  .header-item-product-price { grid-area: 2 / 2 / 2 / 4 }
+  .header-item-total-price { grid-area: 2 / 4 / 2 / 5 }
+  
+  .footer-total-text{grid-area: 1 / 3 / 1 / 4;text-align: right; }
+  .footer-total-title { grid-area: 1 / 1 / 1 / 2 }
+  .footer-empty { display:none}  
+}
+  </style>  
 {{ footer }}
+

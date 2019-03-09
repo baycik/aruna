@@ -100,21 +100,7 @@ class ModelExtensionArunaSellerOrder extends Model {
 		}
 	}
         
-        public function getSyncList ($seller_id){
-            $sql="
-                SELECT 
-                    sync_id, 
-                    sync_name 
-                FROM 
-                    `" . DB_PREFIX . "baycik_sync_list` 
-                WHERE 
-                    seller_id = $seller_id
-                ";
-            $query = $this->db->query($sql);
-
-            return $query->rows;
-        }
-        
+       
         public function getSellerCustomers($seller_id){
 		$query = $this->db->query("SELECT DISTINCT customer_id, CONCAT(firstname, ' ', lastname) as customer_name FROM`" . DB_PREFIX . "order` JOIN `" . DB_PREFIX . "purpletree_vendor_orders` USING(order_id) WHERE seller_id = '" . (int)$seller_id . "'");
 
@@ -175,94 +161,77 @@ class ModelExtensionArunaSellerOrder extends Model {
 
 		return $query->row['total'];
 	}
+        
+        public function updateOrderStatus($data){
+            $sql = "
+                UPDATE 
+                    " . DB_PREFIX . "purpletree_vendor_orders 
+                SET
+                    order_status_id = '".$data['order_status_id']."'
+                WHERE 
+                    order_id = '".$data['order_id']."'    
+                ";
+           return $this->db->query($sql);
+        }
 
 	public function getSellerOrders($data = array()) {
-		$sql = "SELECT 
-                            pvo.order_status_id AS seller_order_status_id,
-                            o.order_status_id AS admin_order_status_id,   
-                            o.order_id, pvo.product_id,  
-                            oo.name AS option_name, oo.value AS option_value,
-                            pvo.quantity, op.name AS product_name, op.model AS model, 
-                            CONCAT(o.firstname, ' ', o.lastname) AS customer, 
-                            (SELECT os.name FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = pvo.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS order_status,
-                            (SELECT os.name FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = o.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS admin_order_status,
-                             o.shipping_code, op.total, op.price, o.currency_code, o.currency_value, o.date_added, o.date_modified 
+		$sql = "SELECT DISTINCT
+                            o.order_id,
+                            (SELECT distinct pvo.order_status_id FROM oc_purpletree_vendor_orders pvo WHERE o.order_id = pvo.order_id) as seller_order_status_id,
+                            (SELECT name FROM oc_order_status os WHERE seller_order_status_id = os.order_status_id) as seller_order_status_name,
+                            CONCAT(o.firstname, ' ', o.lastname) AS customer,
+                            o.shipping_code,
+                            o.currency_code,
+                            o.currency_value,
+                            o.total,
+                            o.date_added,
+                            o.date_modified
                         FROM 
                             `" . DB_PREFIX . "order` o
-                                JOIN
-                            `" . DB_PREFIX . "purpletree_vendor_orders` pvo ON (pvo.order_id = o.order_id)
-                                        JOIN
-                            `" . DB_PREFIX . "order_product` op ON pvo.order_id = op.order_id
-                              LEFT JOIN
-                            `" . DB_PREFIX . "product` p ON p.product_id = op.product_id
-                            LEFT JOIN
-                            `" . DB_PREFIX . "baycik_sync_entries` bse ON p.model = bse.model
-                            LEFT JOIN
-                             `" . DB_PREFIX . "order_option` oo USING (order_product_id) 
                              ";
-
                 
-                if (isset($data['filter_sync_id'])){
-                        $sync_id = $data['filter_sync_id'];
-                        $sql .= " WHERE sync_id = '".(int)$sync_id . "'";
+                  if (isset($data['filter_seller_id']) && $data['filter_seller_id'] != '*' ){
+                        $seller_id = $data['filter_seller_id'];
+                        $sql .= " WHERE (SELECT DISTINCT pvo.seller_id FROM oc_purpletree_vendor_orders pvo WHERE o.order_id = pvo.order_id) = '".$seller_id."' AND";
                 } else {
-                        $sql .= " WHERE sync_id > '0'";
+                        $sql .= " WHERE ";
                 }
                 
-                 if (isset($data['filter_customer_id'])){
+                if (isset($data['filter_customer_id']) && $data['filter_customer_id'] != '*' ){
                         $customer_id = $data['filter_customer_id'];
-                        $sql .= " AND customer_id = '".(int)$customer_id . "'";
+                        $sql .= " customer_id = '".(int)$customer_id . "'";
                 } else {
-                        $sql .= " AND customer_id > '0'";
+                        $sql .= "  customer_id  > '0'";
                 }
                 
                 
-		if (isset($data['filter_order_status'])) {
+		if (isset($data['filter_seller_order_status'])  && $data['filter_seller_order_status'] != '*') {
 			$implode = array();
 
-			$order_statuses = explode(',', $data['filter_order_status']);
+			$seller_order_statuses = explode(',', $data['filter_seller_order_status']);
 
-			foreach ($order_statuses as $order_status_id) {
-				$implode[] = "pvo.order_status_id = '" . (int)$order_status_id . "'";
+			foreach ($seller_order_statuses as $seller_order_status_id) {
+				$implode[] = "(SELECT distinct pvo.order_status_id FROM oc_purpletree_vendor_orders pvo WHERE o.order_id = pvo.order_id) = '" . (int)$seller_order_status_id . "'";
 			}
 
 			if ($implode) {
 				$sql .= " AND (" . implode(" OR ", $implode) . ")";
 			}
 		} else {
-			$sql .= " AND pvo.order_status_id > '0'";
-		}
-		if (isset($data['filter_admin_order_status'])) {
-			$implode1 = array();
-
-			$order_statuses1 = explode(',', $data['filter_admin_order_status']);
-
-			foreach ($order_statuses1 as $order_status_id) {
-				$implode1[] = "o.order_status_id = '" . (int)$order_status_id . "'";
-			}
-
-			if ($implode1) {
-				$sql .= " AND (" . implode(" OR ", $implode1) . ")";
-			}
-		} else {
-			$sql .= " AND o.order_status_id > '0'";
-		}
-		
-		if(!empty($data['seller_id'])){
-			$sql .= " AND pvo.seller_id ='".(int)$data['seller_id']."'";
+			$sql .= " AND (SELECT distinct pvo.order_status_id FROM oc_purpletree_vendor_orders pvo WHERE o.order_id = pvo.order_id) > '0'";
 		}
 		
 		if (!empty($data['filter_date_from'])) {
-			$sql .= " AND DATE(pvo.created_at) >= DATE('" . $this->db->escape($data['filter_date_from']) . "')";
+			$sql .= " AND DATE(o.date_added) >= DATE('" . $this->db->escape($data['filter_date_from']) . "')";
 		}
 
 		if (!empty($data['filter_date_to'])) {
-			$sql .= " AND DATE(pvo.created_at) <= DATE('" . $this->db->escape($data['filter_date_to']) . "')";
+			$sql .= " AND DATE(o.date_added) <= DATE('" . $this->db->escape($data['filter_date_to']) . "')";
 		}
 		if(empty($data['filter_date_from']) && empty($data['filter_date_to'])){
 			$end_date = date('Y-m-d', strtotime("-30 days"));
-			$sql .= " AND DATE(pvo.created_at) >= '".$end_date."'";
-			$sql .= " AND DATE(pvo.created_at) <= '".date('Y-m-d')."'";
+			$sql .= " AND DATE(o.date_added) >= '".$end_date."'";
+			$sql .= " AND DATE(o.date_added) <= '".date('Y-m-d')."'";
 		}
 
 		$sort_data = array(
@@ -300,23 +269,20 @@ class ModelExtensionArunaSellerOrder extends Model {
 			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
 		}
 		$query = $this->db->query($sql);
-
-		return $query->rows;
+                return $array = [
+                    'results' => $query->rows,
+                    'total' => $query->num_rows
+                ];
 	}
-        
-        public function getSellerOrdersProductTotal($seller_id,$order_id){
-		$query = $this->db->query("SELECT SUM(total_price) AS total, SUM(shipping) AS total_shipping  FROM " . DB_PREFIX . "purpletree_vendor_orders WHERE seller_id = '".(int)$seller_id."' AND order_id = '".(int)$order_id."'");
-
-		return $query->rows;
-	}
+       
 	
 	public function getSellerOrdersTotal($seller_id,$order_id){
-		$query = $this->db->query("SELECT value AS total  FROM " . DB_PREFIX . "purpletree_order_total WHERE seller_id = '".(int)$seller_id."' AND order_id = '".(int)$order_id."' AND code='sub_total'");
+		$query = $this->db->query("SELECT value AS total  FROM " . DB_PREFIX . "order_total ot WHERE (SELECT DISTINCT pvo.seller_id FROM oc_purpletree_vendor_orders pvo WHERE ot.order_id = pvo.order_id) = '".(int)$seller_id."' AND ot.order_id = '".(int)$order_id."' AND ot.code='sub_total'");
 
 		return $query->row;
 	}
 	public function getTotalllseller($seller_id,$order_id){
-		$query = $this->db->query("SELECT value AS total  FROM " . DB_PREFIX . "purpletree_order_total WHERE seller_id = '".(int)$seller_id."' AND order_id = '".(int)$order_id."' AND code='sub_total'");
+		$query = $this->db->query("SELECT value AS total  FROM " . DB_PREFIX . "order_total ot WHERE (SELECT DISTINCT pvo.seller_id FROM oc_purpletree_vendor_orders pvo WHERE ot.order_id = pvo.order_id) = '".(int)$seller_id."' AND ot.order_id = '".(int)$order_id."' AND ot.code='sub_total'");
 
 		return $query->row;
 	}

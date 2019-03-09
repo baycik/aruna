@@ -1,0 +1,40 @@
+<div id="seller_order_table">
+      {% if seller_orders %}
+      <div>
+            <div class="grid-container grid-header" >
+              <div class="text-left header-item-order-id">{{ column_order_id }}</div>
+              <div class="text-left header-item-customer">{{ column_customer }}</div>
+              <div class="text-left header-item-order-status-name">{{ column_status }}</div>
+              <div class="text-left header-item-total-price">Стоимость</div>
+              <div class="text-left header-item-date-added">{{ column_date_added }}</div>
+              <div class="text-left header-item-action"></div>
+            </div>
+           {% for order in seller_orders %}
+            <div class="grid-container" >
+              <div class="text-left item-order-id">#{{ order.order_id }}</div>
+              <div class="text-left item-customer">{{ order.customer }}</div>
+              <div class="text-left item-order-status-name">
+                  <div class=" form-group ">
+                        <select name="order_status_{{order.order_id}}_{{order.seller_order_status_id}}" id="order-status_{{order.order_id}}_{{order.seller_order_status_id}}" class="form-control order-status-select" >
+                          <option value="{{ order.seller_order_status_id }}">{{ order.seller_order_status_name }}</option>
+                        </select>
+                  </div>
+                 
+              </div>
+              <div class="text-left item-total-price">{{ order.total_price }}</div>
+              <div class="text-left item-date-added">{{ order.date_added }}</div>
+              <div class="text-left item-action">
+                  <a href="{{ order.view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
+                  <a href="{{ order.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-info"><i class="fa fa-pencil"></i></a>
+              </div>
+            </div>  
+            {% endfor %}
+      </div>
+      <div class="row">
+        <div class="col-sm-6 text-left">{{ pagination }}</div>
+        <div class="col-sm-6 text-right">{{ results }}</div>
+      </div>
+      {% else %}
+      <p>{{ text_empty }}</p>
+      {% endif %}
+</div>
