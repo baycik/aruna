@@ -384,6 +384,7 @@ body.information-information #wrapper .container:nth-last-of-type(2) .row{
 ===============================*/
 .product-layout.product-list.col-xs-12 .product-item-container{
     height: 22em;
+    width: 100%;
     margin-bottom: 10px !important;
 }
 
@@ -673,6 +674,10 @@ SOCIAL LOGIN
     SUBHEADER BLOCK
 ==============================*/
 
+#sub-head-banner{
+    border:none !important;
+}
+
 @media screen and (min-width: 1200px){
     .layout-5.common-home .block-policy4 ul li{
         width:25% !important;
@@ -681,6 +686,9 @@ SOCIAL LOGIN
 @media screen and (max-width: 1200px){
     .layout-5.common-home .block-policy4 ul li{
          width:50% !important;
+    }
+    .home-banner-row{
+        display:none;
     }
 }
 @media screen and (max-width: 650px){
@@ -694,7 +702,34 @@ SOCIAL LOGIN
     max-width: 1070px;
 }
 
+.sub-head-description-col{
+    margin-top: 30px;
+}
 
+ @media screen and (min-width: 1200px){
+   
+    .subhead-new-product .products-list .product-grid .product-item-container{
+        height: 16.7vw;
+    }  
+}
+    
+      @media screen and (min-width: 1450px){
+   
+    .subhead-new-product .products-list .product-grid .product-item-container{
+        height: 17.4vw;
+    }  
+}
+
+
+
+
+
+.subhead-new-product .so-extraslider{
+    margin-top:30px;
+}
+.subhead-new-product .so-extraslider .owl2-controls{
+    display:none;
+}
 .layout-5.common-home header{
     margin-bottom: 0px !important;
 }
@@ -707,10 +742,11 @@ SOCIAL LOGIN
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: url('https://aruna.market/image/catalog/aruna/common/green_back1.jpg');
+    background-image: url('https://aruna.market/image/catalog/aruna/common/dark_back.jpeg');
     padding-bottom: 20px;
     padding-left: 5%;
     padding-right:5%;
+    margin-bottom: 30px;
 }
 .home_fluid_row1 .col-lg-10{
     float: none;
@@ -730,7 +766,7 @@ SOCIAL LOGIN
 
 .home_fluid_row2 .block-electric{
     background-image: url('https://aruna.market/image/catalog/aruna/common/block-nilson.png');
-    height: 12vw;
+    height: 14vw;
     background-size: 67%;
     background-position-y: 49%;
     background-repeat: no-repeat;
@@ -1055,7 +1091,7 @@ SOCIAL LOGIN
 }
 
 .mobilelayout-1:not(.account-account) aside{
-    display:none;
+    -display:none;
 } 
 .mobilelayout-1.product-category aside{
     display: block !important;

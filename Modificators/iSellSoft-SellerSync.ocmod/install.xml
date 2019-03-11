@@ -41,6 +41,14 @@
                            $data['sellerproduct'] = $this->url->link('extension/aruna/sellerproduct', '', true);
 			]]></add>
         </operation>
+        <operation error="skip">
+            <search><![CDATA[ $data['sellerorder'] = $this->url->link('extension/account/purpletree_multivendor/sellerorder', 'filter_order_status='.$orderstatus.'&filter_admin_order_status='.$orderstatus.'', true);
+                        ]]>
+            </search>
+            <add position="replace" offset="0"><![CDATA[ 
+                           $data['sellerorder'] = $this->url->link('extension/aruna/sellerorder','', true);
+			]]></add>
+        </operation>
     </file>
     <file path="catalog/controller/extension/module/purpletree_sellerpanel.php">
         <operation error="skip">
@@ -51,6 +59,15 @@
                            $data['sellerproduct'] = $this->url->link('extension/aruna/sellerproduct', '', true);
 			]]></add>
         </operation>
+        <operation error="skip">
+            <search><![CDATA[$data['sellerorder'] = $this->url->link('extension/account/purpletree_multivendor/sellerorder', 'filter_order_status='.$orderstatus.'&filter_admin_order_status='.$orderstatus.'', true);
+                        ]]>
+            </search>
+            <add position="replace" offset="0"><![CDATA[ 
+                          $data['sellerorder'] = $this->url->link('extension/aruna/sellerorder', '', true);
+			]]></add>
+        </operation>
+        
     </file>
     <file path="catalog/controller/product/product.php">
         <operation error="skip">

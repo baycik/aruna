@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <modification> 
- <name>ArunaOnePageCheckoutBeta</name> 
- <code>ArunaOnePageCheckoutBeta</code> 
- <version>0.9</version> 
+ <name>ArunaOnePageCheckout</name> 
+ <code>ArunaOnePageCheckout</code> 
+ <version>1.0</version> 
  <author>ArunaTeam</author> 
  
  <file path="catalog/controller/checkout/checkout.php"> 
@@ -340,9 +340,9 @@
  $this->session->data['shipping_method'] = $this->session->data['shipping_methods'][$shipping[0]]['quote'][$shipping[1]]; 
  } 
  
- if ($value = $this->getProperty($this->request->post, 'payment_address_id')) { 
+ if ($value = $this->getProperty($this->request->post, 'shipping_address_id')) { 
  $this->session->data['payment_address'] = $this->model_account_address->getAddress($value); 
- $this->model_extension_module_so_onepagecheckout->setAddress('payment', $this->session->data['payment_address']); 
+ $this->model_extension_module_so_onepagecheckout->setAddress('payment', $this->session->data['shipping_address']); 
  } 
  
  if ($value = $this->getProperty($this->request->post, 'payment_country_id')) { 
@@ -577,30 +577,88 @@
  } 
  
  if ($this->isLoggedIn()) { 
- /*    
- // payment data 
- if ($this->getProperty($this->request->post, 'payment_address') === 'existing') { 
- $address_info = $this->model_account_address->getAddress($this->getProperty($this->request->post, 'payment_address_id')); 
- $order_data = array_replace($order_data, $this->getAddressData($address_info, '', 'payment_')); 
- } else { 
- $new_payment_address = $this->getAddressData($this->request->post, 'payment_', 'payment_'); 
- $order_data = array_replace($order_data, $new_payment_address); 
- $errors = array_merge($errors, $this->validateAddressData($new_payment_address, 'payment_')); 
- } 
- */
-     
- // shipping data 
- if ($this->isShippingRequired()) { 
- if ($this->getProperty($this->request->post, 'shipping_address') === 'existing') { 
- $address_info = $this->model_account_address->getAddress($this->getProperty($this->request->post, 'shipping_address_id')); 
- $order_data = array_replace($order_data, $this->getAddressData($address_info, '', 'shipping_')); 
- } else { 
- $new_shipping_address = $this->getAddressData($this->request->post, 'shipping_', 'shipping_'); 
- $order_data = array_replace($order_data, $new_shipping_address); 
- $errors = array_merge($errors, $this->validateAddressData($new_shipping_address, 'shipping_')); 
- } 
- } 
- 
+  $payment_address_data = array(
+                'payment_address_1'=>'----------',
+                'payment_address_2'=>'----------',
+                'payment_address_id'=>'',
+                'payment_address_format'=>'----------',
+                'payment_city'=>'----------',
+                'payment_company'=>'----------',
+                'payment_company_id'=>'',
+                'payment_country'=>'----------',
+                'payment_country_id'=>'258',
+                'payment_firstname'=> $order_data['firstname'],
+                'payment_lastname'=> $order_data['lastname'],
+                'payment_method'=>$this->request->post['payment_method'],
+                'payment_postcode'=>'----------',
+                'payment_tax_id'=>'',
+                'payment_zone'=>'----------',
+                'payment_zone_id'=>'4239'
+            );
+            $shipping_address_data = array(
+                'shipping_address_1'=>'----------',
+                'shipping_address_2'=>'----------',
+                'shipping_address_id'=>'',
+                'shipping_address_format'=>'----------',
+                'shipping_city'=>'----------',
+                'shipping_company'=>'----------',
+                'shipping_company_id'=>'',
+                'shipping_country'=>'----------',
+                'shipping_country_id'=>'258',
+                'shipping_firstname'=> $order_data['firstname'],
+                'shipping_lastname'=> $order_data['lastname'],
+                'shipping_method'=>$this->request->post['payment_method'],
+                'shipping_postcode'=>'----------',
+                'shipping_tax_id'=>'',
+                'shipping_zone'=>'----------',
+                'shipping_zone_id'=>'4239'
+            );
+            if($this->getProperty($this->request->post, 'shipping_method') === 'pickup.pickup'){
+                $order_data = array_replace($order_data, $payment_address_data);
+                $order_data = array_replace($order_data, $shipping_address_data);
+               
+            } else {
+                
+			   // payment data 
+			   if ($this->getProperty($this->request->post, 'shipping_address') === 'existing') { 
+			   $address_info = $this->model_account_address->getAddress($this->getProperty($this->request->post, 'shipping_address_id')); 
+			   $order_data = array_replace($order_data, $this->getAddressData($address_info, '', 'payment_')); 
+			   } else { 
+			   $new_payment_address = $this->getAddressData($this->request->post, 'shipping_', 'shipping_'); 
+			   $payment_address_data['payment_address_1'] =  $this->getProperty($this->request->post, 'shipping_address_1');
+               $payment_address_data['payment_country_id'] =  $new_payment_address['shipping_country_id'];
+               $payment_address_data['payment_zone_id'] =  $new_payment_address['shipping_zone_id'];
+               $order_data = array_replace($order_data, $payment_address_data);
+               $errors = array_merge($errors, $this->validateAddressData($payment_address_data, 'payment_'));
+			   } 
+
+			   // shipping data 
+			  if ($this->isShippingRequired()) {
+			   $customer_info = $this->model_account_customer->getCustomer($this->customer->getId());
+			   if ($this->getProperty($this->request->post, 'shipping_address') === 'existing') {
+				$address_info = $this->model_account_address->getAddress($this->getProperty($this->request->post, 'shipping_address_id'));
+
+				$order_data = array_replace($order_data, $this->getAddressData($address_info, '', 'shipping_'));
+			   } else {
+				$address_info = $this->model_account_address->getAddress($this->getProperty($this->request->post, 'shipping_address_id'));
+				 		if (!empty($address_info)){
+                            $new_shipping_address = $this->getAddressData($address_info, '', 'shipping_');
+                            $new_shipping_address['shipping_firstname'] = $customer_info['firstname'];
+                            $new_shipping_address['shipping_lastname'] = $customer_info['lastname'];
+                            $new_shipping_address['shipping_address_1'] = $this->request->post['shipping_address_1'];
+                            $order_data = array_replace($order_data, $new_shipping_address);
+                            
+                         } else {
+                            $new_shipping_address = $this->getAddressData($this->request->post, 'shipping_', 'shipping_');
+                            $shipping_address_data['shipping_address_1'] =  $new_shipping_address['shipping_address_1'];
+                            $shipping_address_data['shipping_country_id'] =  $new_shipping_address['shipping_country_id'];
+                            $shipping_address_data['shipping_zone_id'] =  $new_shipping_address['shipping_zone_id'];
+                            $order_data = array_replace($order_data, $shipping_address_data);
+                            $errors = array_merge($errors, $this->validateAddressData($new_shipping_address, 'shipping_'));
+                         }  
+			   }
+			}
+}
  // customer data 
  if (!$errors) { 
  $customer_info = $this->model_account_customer->getCustomer($this->customer->getId()); 
@@ -643,20 +701,70 @@
  $order_data['email'] = $this->request->post['email']; 
  $order_data['telephone'] = $this->request->post['telephone']; 
  $order_data['custom_field'] = $this->getProperty($this->request->post, 'custom_field', array()); 
- $order_data['payment_firstname'] = $order_data['firstname']; 
- $order_data['payment_lastname'] = $order_data['lastname']; 
  
- // check delivery address 
- if ($this->isShippingRequired()) { 
- if (!$this->getProperty($this->request->post, 'shipping_address')) { 
- $new_shipping_address = $this->getAddressData($this->request->post, 'shipping_', 'shipping_'); 
- $order_data = array_replace($order_data, $new_shipping_address); 
- $errors = array_merge($errors, $this->validateAddressData($new_shipping_address, 'shipping_')); 
- } else { 
- $order_data = array_replace($order_data, $this->getAddressData($order_data, 'payment_', 'shipping_')); 
- } 
- } 
- } 
+  // check payment address 
+   $payment_address_data = array(
+ 'payment_address_1'=>'----------',
+ 'payment_address_2'=>'----------',
+ 'payment_address_id'=>'',
+ 'payment_address_format'=>'----------',
+ 'payment_city'=>'----------',
+ 'payment_company'=>'----------',
+ 'payment_company_id'=>'',
+ 'payment_country'=>'----------',
+ 'payment_country_id'=>'258',
+ 'payment_firstname'=> $order_data['firstname'],
+ 'payment_lastname'=> $order_data['lastname'],
+ 'payment_method'=>$this->request->post['payment_method'],
+ 'payment_postcode'=>'----------',
+ 'payment_tax_id'=>'',
+ 'payment_zone'=>'----------',
+ 'payment_zone_id'=>'4239'
+   );
+   if (!$this->getProperty($this->request->post, 'shipping_address_1')) {
+ $new_payment_address = $this->getAddressData($payment_address_data, 'payment_', 'payment_');
+ $order_data = array_replace($order_data, $new_payment_address);
+   } else {
+ $payment_address_data['payment_address_1'] = $this->request->post['shipping_address_1'];
+ $payment_address_data['payment_country_id'] = $this->request->post['shipping_country_id'];
+ $payment_address_data['payment_zone_id'] = $this->request->post['shipping_zone_id'];
+ $new_payment_address = $this->getAddressData($payment_address_data, 'payment_', 'payment_');
+ $order_data = array_replace($order_data, $new_payment_address);
+   }
+
+
+  // check delivery address 
+   if ($this->isShippingRequired()) {
+  $shipping_address_data = array(
+  'shipping_address_1'=>'----------',
+  'shipping_address_2'=>'----------',
+  'shipping_address_id'=>'',
+  'shipping_address_format'=>'----------',
+  'shipping_city'=>'----------',
+  'shipping_company'=>'----------',
+  'shipping_company_id'=>'',
+  'shipping_country'=>'----------',
+  'shipping_country_id'=>'258',
+  'shipping_firstname'=> $order_data['firstname'],
+  'shipping_lastname'=> $order_data['lastname'],
+  'shipping_method'=>$this->request->post['payment_method'],
+  'shipping_postcode'=>'----------',
+  'shipping_tax_id'=>'',
+  'shipping_zone'=>'----------',
+  'shipping_zone_id'=>'4239'
+ );
+ if (!$this->getProperty($this->request->post, 'shipping_address_1')) {
+  $new_shipping_address = $this->getAddressData($shipping_address_data, 'shipping_', 'shipping_');
+  $order_data = array_replace($order_data, $new_shipping_address);
+ } else {
+  $shipping_address_data['shipping_address_1'] = $this->request->post['shipping_address_1'];
+  $shipping_address_data['shipping_country_id'] = $this->request->post['shipping_country_id'];
+  $shipping_address_data['shipping_zone_id'] = $this->request->post['shipping_zone_id'];
+  $new_shipping_address = $this->getAddressData($shipping_address_data, 'shipping_', 'shipping_');
+  $order_data = array_replace($order_data, $new_shipping_address);
+ }
+   }
+  }
  
  // payment method 
  if ($payment_method = $this->getProperty($this->session->data, 'payment_methods.' . $this->getProperty($this->request->post, 'payment_method') . '.title')) { 
@@ -814,7 +922,7 @@
  } 
  
  $redirect = ''; 
- 
+
  // update order 
  $this->model_extension_module_so_onepagecheckout->setOrderData($order_data); 
  
@@ -829,13 +937,12 @@
  if (!$errors) { 
  if ($this->isLoggedIn()) { 
  
- /*        
+       
  // save new payment address 
  if ($new_payment_address) { 
- $this->model_account_address->addAddress($this->customer->getId(), $this->getAddressData($new_payment_address, 'payment_')); 
+ $this->model_account_address->addAddress($this->customer->getId(), $this->getAddressData($new_payment_address, 'shipping_')); 
  } 
- */
-     
+
  // save new shipping address 
  if ($new_shipping_address && $new_shipping_address !== $new_payment_address) { 
  $this->model_account_address->addAddress($this->customer->getId(), $this->getAddressData($new_shipping_address, 'shipping_')); 
@@ -880,15 +987,13 @@
  $errors[$key . 'lastname'] = $this->language->get('error_lastname'); 
  } 
  } 
- */
- if ((utf8_strlen(trim($data[$key . 'address_1'])) < 3) || (utf8_strlen(trim($data[$key . 'address_1'])) > 128)) { 
- $errors[$key . 'address_1'] = $this->language->get('error_address_1'); 
- } 
- /*
  if ((utf8_strlen($data[$key . 'city']) < 2) || (utf8_strlen($data[$key . 'city']) > 32)) { 
  $errors[$key . 'city'] = $this->language->get('error_city'); 
  } 
  */
+if ((utf8_strlen(trim($data[$key . 'address_1'])) < 3) || (utf8_strlen(trim($data[$key . 'address_1'])) > 128)) { 
+ $errors[$key . 'address_1'] = $this->language->get('error_address_1'); 
+ } 
  $country_info = $this->model_localisation_country->getCountry($data[$key . 'country_id']); 
  
  if ($country_info && $country_info['postcode_required'] && (utf8_strlen(trim($data[$key . 'postcode'])) < 2 || utf8_strlen(trim($data[$key . 'postcode'])) > 10)) { 
@@ -1016,8 +1121,31 @@
  private function registerAccount() { 
  $redirect = ''; 
  
- $data = $this->getAddressData($this->request->post, 'payment_'); 
- 
+   $payment_address_data = array(
+   'payment_address_1'=>'----------',
+   'payment_address_2'=>'----------',
+   'payment_address_id'=>'',
+   'payment_address_format'=>'----------',
+   'payment_city'=>'----------',
+   'payment_company'=>'----------',
+   'payment_company_id'=>'',
+   'payment_country'=>'----------',
+   'payment_country_id'=>'258',
+   'payment_firstname'=>$this->request->post['firstname'],
+   'payment_lastname'=>$this->request->post['lastname'],
+   'payment_method'=>$this->request->post['payment_method'],
+   'payment_postcode'=>'----------',
+   'payment_tax_id'=>'',
+   'payment_zone'=>'----------',
+   'payment_zone_id'=>'4239'
+  );
+
+  if(!empty($this->request->post['shipping_address_1'])){
+  $payment_address_data['payment_address_1'] = $this->request->post['shipping_address_1'];
+  }
+
+  $data = $this->getAddressData($payment_address_data, 'payment_');
+
  $data = array_merge($data, array( 
  'firstname' => $this->getProperty($this->request->post, 'firstname'), 
  'lastname' => $this->getProperty($this->request->post, 'lastname'), 
@@ -1043,10 +1171,9 @@
  
  if ($customer_group_info && !$customer_group_info['approval']) { 
  $this->customer->login($data['email'], $data['password']); 
- 
- if ($this->getProperty($this->request->post, 'shipping_address') != '1') { 
- $this->model_account_address->addAddress($customer_id, $this->getAddressData($this->request->post, 'shipping_')); 
- } 
+
+  $this->model_account_address->addAddress($customer_id, $this->getAddressData($payment_address_data, 'payment_'));
+            
  
  // Add to activity log 
  $activity_data = array( 
@@ -1500,6 +1627,159 @@
              ]]></add> 
      </operation>
  </file>
-  
+  <file path="catalog/controller/mail/order.php">
+     <operation error="skip"> 
+        <search ><![CDATA[$data['comment'] = strip_tags($order_info['comment']);]]></search> 
+        <add position="after"><![CDATA[
+						
+                        $language = new Language($order_info['language_code']);
+		$language->load($order_info['language_code']);
+		$language->load('mail/order_add');
+                
+                $data['title'] = sprintf($language->get('text_subject'), $order_info['store_name'], $order_info['order_id']);
+
+                $data['text_greeting'] = sprintf($language->get('text_greeting'), $order_info['store_name']);
+		$data['text_link'] = $language->get('text_link');
+		$data['text_download'] = $language->get('text_download');
+		$data['text_order_detail'] = $language->get('text_order_detail');
+		$data['text_instruction'] = $language->get('text_instruction');
+		$data['text_date_added'] = $language->get('text_date_added');
+		$data['text_payment_method'] = $language->get('text_payment_method');
+		$data['text_shipping_method'] = $language->get('text_shipping_method');
+		$data['text_email'] = $language->get('text_email');
+		$data['text_telephone'] = $language->get('text_telephone');
+		$data['text_ip'] = $language->get('text_ip');
+		$data['text_order_status'] = $language->get('text_order_status');
+		$data['text_payment_address'] = $language->get('text_payment_address');
+		$data['text_shipping_address'] = $language->get('text_shipping_address');
+		$data['text_product'] = $language->get('text_product');
+		$data['text_model'] = $language->get('text_model');
+		$data['text_quantity'] = $language->get('text_quantity');
+		$data['text_price'] = $language->get('text_price');
+		$data['text_footer'] = $language->get('text_footer');
+
+		$data['logo'] = $order_info['store_url'] . 'image/' . $this->config->get('config_logo');
+		$data['store_name'] = $order_info['store_name'];
+		$data['store_url'] = $order_info['store_url'];
+		$data['customer_id'] = $order_info['customer_id'];
+		$data['link'] = $order_info['store_url'] . 'index.php?route=account/order/info&order_id=' . $order_info['order_id'];
+
+                        $data['firstname'] = $order_info['firstname'];
+                        $data['lastname'] = $order_info['lastname'];
+                        $data['telephone'] = $order_info['telephone'];
+                        $data['email'] = $order_info['email'];
+                      
+                        $data['payment_method'] = $order_info['payment_method'];
+                        $data['shipping_method'] = $order_info['shipping_method'];
+			
+		if ($order_info['payment_address_format']) {
+			$format = $order_info['payment_address_format'];
+		} else {
+			$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+		}
+
+		$find = array(
+			'{firstname}',
+			'{lastname}',
+			'{company}',
+			'{address_1}',
+			'{address_2}',
+			'{city}',
+			'{postcode}',
+			'{zone}',
+			'{zone_code}',
+			'{country}'
+		);
+
+		$replace = array(
+			'firstname' => $order_info['payment_firstname'],
+			'lastname'  => $order_info['payment_lastname'],
+			'company'   => $order_info['payment_company'],
+			'address_1' => $order_info['payment_address_1'],
+			'address_2' => $order_info['payment_address_2'],
+			'city'      => $order_info['payment_city'],
+			'postcode'  => $order_info['payment_postcode'],
+			'zone'      => $order_info['payment_zone'],
+			'zone_code' => $order_info['payment_zone_code'],
+			'country'   => $order_info['payment_country']
+		);
+
+		$data['payment_address'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+
+		if ($order_info['shipping_address_format']) {
+			$format = $order_info['shipping_address_format'];
+		} else {
+			$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+		}
+
+		$find = array(
+			'{firstname}',
+			'{lastname}',
+			'{company}',
+			'{address_1}',
+			'{address_2}',
+			'{city}',
+			'{postcode}',
+			'{zone}',
+			'{zone_code}',
+			'{country}'
+		);
+
+		$replace = array(
+			'firstname' => $order_info['shipping_firstname'],
+			'lastname'  => $order_info['shipping_lastname'],
+			'company'   => $order_info['shipping_company'],
+			'address_1' => $order_info['shipping_address_1'],
+			'address_2' => $order_info['shipping_address_2'],
+			'city'      => $order_info['shipping_city'],
+			'postcode'  => $order_info['shipping_postcode'],
+			'zone'      => $order_info['shipping_zone'],
+			'zone_code' => $order_info['shipping_zone_code'],
+			'country'   => $order_info['shipping_country']
+		);
+
+		$data['shipping_address'] = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+$this->load->model('setting/setting');
+		
+		$from = $this->model_setting_setting->getSettingValue('config_email', $order_info['store_id']);
+		
+		if (!$from) {
+			$from = $this->config->get('config_email');
+		}
+                
+             ]]></add> 
+     </operation>
+	   <operation error="skip"> 
+        <search ><![CDATA['total'    => html_entity_decode($this->currency->format($order_product['total'] + ($this->config->get('config_tax') ? ($order_product['tax'] * $order_product['quantity']) : 0), $order_info['currency_code'], $order_info['currency_value']), ENT_NOQUOTES, 'UTF-8')]]></search> 
+        <add position="before"><![CDATA[ 'price' => $order_product['price'],
+             ]]></add> 
+     </operation>
+	<operation error="log"> 
+        <search ><![CDATA[$mail->setText($this->load->view('mail/order_alert', $data));]]></search> 
+        <add position="replace"><![CDATA[$mail->setHtml($this->load->view('mail/order_alert', $data));
+             ]]></add> 
+     </operation>
+	<operation error="log"> 
+        <search><![CDATA[$mail->setText($this->load->view('mail/order_alert', $data));]]></search> 
+        <add position="replace"><![CDATA[$mail->setHtml($this->load->view('mail/order_alert', $data));
+             ]]></add> 
+     </operation>
+ </file>
+ 
+  <file path="catalog/model/extension/payment/bank_transfer.php">
+      <operation error="log"> 
+        <search><![CDATA['',]]></search> 
+        <add position="replace"><![CDATA[$this->config->get('payment_bank_transfer_bank2'),
+             ]]></add> 
+     </operation>
+  </file>
+    <file path="catalog/controller/extension/payment/bank_transfer.php">
+      <operation error="log"> 
+        <search><![CDATA[return $this->load->view('extension/payment/bank_transfer', $data);]]></search> 
+        <add position="replace"><![CDATA[return $this->response->setOutput($this->load->view('extension/payment/bank_transfer', $data));
+             ]]></add> 
+     </operation>
+  </file>
+   
 
 </modification>

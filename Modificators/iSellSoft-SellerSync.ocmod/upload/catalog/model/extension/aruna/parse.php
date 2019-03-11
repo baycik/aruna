@@ -53,7 +53,7 @@ class ModelExtensionArunaParse extends Model {
                 UPDATE
                     ".DB_PREFIX."baycik_sync_entries bse
                         JOIN
-                    baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10`,`option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
+                    baycik_tmp_previous_sync bps USING (`sync_id` , `category_lvl1` , `category_lvl2` , `category_lvl3` , `product_name` , `model` , `url` , `description` , `min_order_size` , `stock_count` , `stock_status` , `manufacturer` , `origin_country` , `attribute1` , `attribute2` , `attribute3` , `attribute4` , `attribute5` , `attribute6` , `attribute7` , `attribute8` , `attribute9` , `attribute10`, `attribute11`,`option1` , `option2` , `option3` , `image` , `image1` , `image2` , `image3` , `image4` , `image5` , `price1` , `price2` , `price3` , `price4`)
                 SET
                     bse.is_changed=0
                 WHERE sync_id='$sync_id'";
@@ -283,11 +283,11 @@ class ModelExtensionArunaParse extends Model {
     } 
     
      public function parse_fason($sync) {
-        $source_file="https://fason-m.com.ua/upload/fason_xls_and_xml_file/xml_files/fason.xml";
+        $source_file="https://fason-m.com.ua/upload/yandex_xml/xml_files/fason.xml";
 	$sync_id = $sync['sync_id'];
         $xml=simplexml_load_file($source_file);
-        $categories = $xml->catalog;
-        $product_list = $xml->items;
+        $categories = $xml->shop->categories;
+        $product_list = $xml->shop->offers;
         $path = [];
         function fasonGetPath ($path,$product_category_id, $categories){
             for($i = 0; $i < count($categories->category); $i++ ){
@@ -299,18 +299,18 @@ class ModelExtensionArunaParse extends Model {
                     } else {
                         return $path;
                     }
-                }
-                if($i == count($categories->category)-1){
-                    array_unshift($path, 'Все категории');
-                    return $path;
-                }
+                } 
             }
             return [];
         }
-        foreach ($product_list->item as $product){
+        foreach ($product_list->offer as $product){
             $product_category_id = (int)$product->categoryId;
             $path = fasonGetPath([],$product_category_id, $categories);
             $product_model = (string)$product->attributes()->id;
+            $product_attribute_1 = '';
+            $product_attribute_2 = '';
+            $product_attribute_3 = '';
+            $product_attribute_4 = '';
             for($i = 0; $i < count($product->param); $i++){
                 if ($product->param[$i]->attributes()->name == 'Материал'){
                     $product_attribute_1 = $product->param[$i];
@@ -359,19 +359,19 @@ class ModelExtensionArunaParse extends Model {
                         price3 = '', 
                         price4 = ''
                     ";
-                    for ($i = 0; $i < count($product->image); $i++ )  {
-                        if($i > 5){
+                    for ($i = 0; $i < count($product->picture); $i++) {
+                        if ($i > 5) {
                             break;
                         }
-                        if ( !empty((string)$product->image[$i]) )  {
-                            if($i == 0){
-                                $sql .= ", image = 'https://fason-m.com.ua".(string)$product->image[$i]."'";
+                        if (!empty((string) $product->picture[$i])) {
+                            if ($i == 0) {
+                                $sql .= ", image = '" . (string) $product->picture[$i] . "'";
                             } else {
-                            $sql .= ", image{$i} = 'https://fason-m.com.ua".(string)$product->image[$i]."'";
-                            }                    
+                                $sql .= ", image{$i} = '" . (string) $product->picture[$i] . "'";
+                            }
                         }
-                    } 
-            $this->db->query($sql);
+                    }
+                $this->db->query($sql);
             }
         }
     } 

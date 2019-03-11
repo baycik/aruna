@@ -285,8 +285,8 @@ class ModelExtensionArunaSetup extends Model {
                 ],
                 [
                     'field'=>'attribute11',
-                    'name'=>'Тип',
-                    'group_description'=>'Свойства товара'
+                    'name'=>'Световой поток',
+                    'group_description'=>'Технические характеристики'
                 ]
             ],
             'filters'=>[

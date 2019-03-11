@@ -163,8 +163,13 @@
 
                                 <div class="confirm-order">
                                     <button id="confirm-button" data-loading-text="{{ text_loading }}" class="btn btn-primary button confirm-button">{{ text_confirm_order }}</button>
-                                </div>                            
+                                </div>   
+                                 <div class="change-payment-order">
+                                    <button id="change-payment-button" style="display:none" data-loading-text="{{ text_loading }}" class="btn btn-primary button">{{ text_change_payment_button }}</button>
+                                </div>       
                             </div>
+                                 
+                                <div id="bank"></div>
                         </section>
                     </div>
                 </div>
@@ -350,6 +355,10 @@
                 .checkbox.check-terms input{
                         margin-top: 6px !important;
                 }
+                .disabledcontent{
+                    pointer-events: none;
+                    opacity: 0.4;
+                }
             </style>        
     <script type="text/javascript">
 
@@ -463,8 +472,14 @@
                     }
                 }
             });
-        }
-        ;
+        };
+        $(document).delegate('.so-onepagecheckout #change-payment-button', 'click', function () {
+            $('#change-payment-button').hide();
+            $('#bank').hide();
+            $('.confirm-button').show();
+            $('.checkout-payment-methods').show();
+            
+        });
         $(document).delegate('.so-onepagecheckout .confirm-button', 'click', function () {
             var data = {};
             $('input[type="text"], input[type="number"], .so-onepagecheckout input[type="password"], .so-onepagecheckout select, .so-onepagecheckout input:checked, .so-onepagecheckout textarea[name="comment"]').each(function () {
@@ -478,10 +493,13 @@
                 data: data,
                 dataType: 'json',
                 beforeSend: function () {
+                    $('#confirm-button').button('loading');
+                    $('#confirm-button').attr("disabled", true);
+                    $('.so-onepagecheckout').addClass('disabledcontent');
+                    
                     ajaxLoadingOn();
                 },
                 success: function (json) {
-                   
                     $('.so-onepagecheckout .text-danger').remove();
                     $('.so-onepagecheckout .has-error').removeClass('has-error');
                     if (json['redirect_cart']) {
@@ -490,11 +508,13 @@
                     }
 
                     if (json['errors']) {
+                        $('.so-onepagecheckout').removeClass('disabledcontent');
+                        $('#confirm-button').button('reset');
                         $.each(json['errors'], function (k, v) {
                             if (k === 'shipping_method' || k === 'payment_method') {
                                 return;
                             }
-                            if ($.inArray(k, ['payment_country', 'payment_zone', 'shipping_country', 'shipping_zone']) !== -1) {
+                            if ($.inArray(k, ['payment_country', 'payment_zone', 'shipping_country', 'shipping_zone', 'payment_address_1']) !== -1) {
                                 k += '_id';
                             } else if (k.indexOf('custom_field') === 0) {
                                 k = k.replace('custom_field', '');
@@ -520,8 +540,9 @@
                         try {
                             $('html, body').animate({scrollTop: $('.has-error').offset().top}, 'slow');
                         } catch (e) {
-                            if (json['errors']['account'][0])
-                                alert(json['errors']['account'][0]);
+                            if (json['errors']['account']){
+                                alert(json['errors']['account']);
+                            }
                         }
 
                         return false;
@@ -529,25 +550,48 @@
                         location = json['redirect'];
                     } else {
                         if (data.payment_method == 'cod') {
-                        $.ajax({
-                            url: 'index.php?route=extension/payment/cod/confirm',
-                            dataType: 'json',
-                            beforeSend: function () {
-                                $('#button-confirm').button('loading');
-                            },
-                            complete: function () {
-                                $('#button-confirm').button('reset');
-                            },
-                            success: function (json) {
-                                if (json['redirect']) {
-                                    location = json['redirect'];
+                            $.ajax({
+                                url: 'index.php?route=extension/payment/cod/confirm',
+                                dataType: 'json',
+                                beforeSend: function () {
+                                    $('#confirm-button').button('loading');
+                                },
+                                complete: function () {
+                                   
+                                },
+                                success: function (json) {
+                                    if (json['redirect']) {
+                                        location = json['redirect'];
+                                    }
+                                },
+                                error: function (xhr, ajaxOptions, thrownError) {
+                                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
                                 }
-                            },
-                            error: function (xhr, ajaxOptions, thrownError) {
-                                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-                            }
-                        });
-                    };
+                            });         
+                        } else if (data.payment_method == 'bank_transfer'){
+                             $('.so-onepagecheckout').removeClass('disabledcontent');
+                             $('#confirm-button').hide();
+                             $('.checkout-payment-methods').hide();
+                             $('#change-payment-button').show();
+                             $('#bank').show();
+                             $.ajax({
+                                url: 'index.php?route=extension/payment/bank_transfer',
+                                dataType: '',
+                                beforeSend: function () {
+                                    $('#confirm-button').button('loading');
+                                },
+                                complete: function () {
+                                    $('#confirm-button').button('reset');
+                                },
+                                success: function (json) {
+                                   
+                                    $('#bank').html(json);
+                                },
+                                error: function (xhr, ajaxOptions, thrownError) {
+                                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                                }
+                            }); 
+                        }
                     }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {

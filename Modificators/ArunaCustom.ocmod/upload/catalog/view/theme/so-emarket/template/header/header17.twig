@@ -19,12 +19,18 @@
 						{{ search_block }}
 					</div>					
 				</div>
-				<div class="middle-right col-lg-5 col-md-5 col-sm-6 col-xs-8">									
+                                    
+				<div class="middle-right col-lg-5 col-md-5 col-sm-6 col-xs-8">	
+                                    {% if soconfig.get_settings('phone_status') and soconfig.get_settings('contact_number') %}
+					
+						{{ soconfig.decode_entities( soconfig.get_settings('contact_number') ) }}
+					
+					{% endif %}    
 					
 	 {% if logged %}
-                                    <div class="hidden-sm hidden-xs welcome-msg">
+                                    <div class="hidden-sm hidden-xs welcome-msg" style="display:inline-block;float: right">
                                             <div>
-                                                 <div style="text-align: right;" class="col-md-10">
+                                                 <div style="text-align: right;" class="col-md-10" >
                                                      <div style='margin-bottom:-5px'>
                                                          <h3 style='font-size:16px;margin-bottom:0px !important'>{{customer_info.firstname}}</h3>
                                                          <div>{{customer_info.email}}</div>
@@ -49,9 +55,9 @@
                                          </div> 
                                      </div>
                                 {% else %}
-                                    <div class="hidden-sm hidden-xs welcome-msg">
+                                    <div class="hidden-sm hidden-xs welcome-msg" style="display:inline-block;float: right">
                                             <div>
-                                                 <div style="text-align: right;" class="col-md-10">
+                                                 <div style="text-align: right;" class="col-md-12" >
                                                      <div style='margin-bottom:-5px'>
                                                          <h3 style='font-size:16px;margin-bottom:0px !important'>{{text_guest}}</h3>
                                                         
@@ -60,9 +66,6 @@
                                                                 <a style="margin: 10px;border-right: 1px solid #666666;padding-right: 10px;" href="{{ register }}">{{ text_register }}</a>
                                                                 <a href="{{ login }}">{{ text_login }}</a>
                                                             </div>
-                                                 </div>
-                                                <div class="col-md-2">
-                                                     <a style="margin-bottom: 0px;width: 6em;border-radius: 9%;background-image: url('{{ img_guest }}');background-size: cover;background-position: center;height: 6em;" class="myprofile--thumb thumbnail"></a>
                                                  </div>
                                          </div> 
                                                  

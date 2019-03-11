@@ -1,0 +1,38 @@
+
+<div id="seller_order_table">
+      {% if seller_orders %}
+            
+           {% for order in seller_orders %}
+            <div class="grid-container" >
+              <div class="text-left item-order-id">#{{ order.order_id }}</div>
+              <div class="text-left item-customer">{{ order.customer }}</div>
+              <div class="text-left item-order-status-name">
+                  {% if order.edit and order.seller_order_status_id > 0 %}
+                  <div class=" form-group ">
+                        <select name="order_status_{{order.order_id}}_{{order.seller_order_status_id}}" id="order-status_{{order.order_id}}_{{order.seller_order_status_id}}" class="form-control order-status-select" >
+                          <option value="{{ order.seller_order_status_id }}">{{ order.seller_order_status_name }}</option>
+                        </select>
+                  </div>
+                  {% else %}  
+                      <div>Заказ удален администратором</div>
+                  {% endif %}      
+                 
+              </div>
+              <div class="text-left item-total-price">{{ order.total_price }}</div>
+              <div class="text-left item-date-added">{{ order.date_added }}</div>
+              <div class="text-right item-action">
+                  <a href="{{ order.view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-info"><i class="fa fa-eye"></i></a>
+                  {% if order.edit  and order.seller_order_status_id > 0 %}
+                  <a href="{{ order.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-info"><i class="fa fa-pencil"></i></a>
+                    {% endif %}
+              </div>
+            </div>  
+            {% endfor %}
+      <div class="row">
+        <div class="col-sm-6 text-left">{{ pagination }}</div>
+        <div class="col-sm-6 text-right">{{ results }}</div>
+      </div>
+      {% else %}
+      <p>{{ text_empty }}</p>
+      {% endif %}
+</div>
