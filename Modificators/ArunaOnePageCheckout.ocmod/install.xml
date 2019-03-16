@@ -1780,6 +1780,19 @@ $this->load->model('setting/setting');
              ]]></add> 
      </operation>
   </file>
+   <file path="catalog/model/extension/module/so_onepagecheckout.php">
+      <operation error="log"> 
+        <search><![CDATA[$recurring = '';]]></search> 
+        <add position="after"><![CDATA[$this->load->model('catalog/product');
+                            $product_stock = $this->model_catalog_product->getProduct($product['product_id']);
+             ]]></add> 
+     </operation>
+     <operation error="log"> 
+        <search><![CDATA['price'      => $this->registry->get('currency')->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']),]]></search> 
+        <add position="after"><![CDATA['stock_status' => $product_stock['stock_status'],
+             ]]></add> 
+     </operation>
+  </file>
    
 
 </modification>

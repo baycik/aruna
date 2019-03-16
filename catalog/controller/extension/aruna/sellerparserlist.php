@@ -70,7 +70,12 @@ class ControllerExtensionArunaSellerparserList extends Controller {
 	if (!isset($store_detail['store_status'])) {
 	    $this->response->redirect($this->url->link('account/account', '', true));
 	}
-
+        
+        if(isset($this->request->post['code'])){
+            $_FILES[0] = $this->request->post['code'];
+        
+        }
+        
         $sync_id = $this->request->post['sync_id'];
         if( !$sync_id ){
             echo "Source hasn't been selected";

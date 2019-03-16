@@ -17,7 +17,7 @@
                         <td class="text-left name" colspan="2">
                             {% if product.thumb %}
                                 <div class="cart-product-container">
-                                    <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-thumbnail" /></a>
+                                    <a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }} " class="img-thumbnail" /></a>
                                 </div>    
                                 {% endif %}
                                 <div class="cart-product-name">
@@ -35,6 +35,7 @@
                                 <small>{{ product.recurring }}</small>
                             {% endif %}
                         </td>
+                        <td style="vertical-align: middle"><b>{{ product.stock_status }}</b></td>
                         <td class="text-left quantity">
                             <div class="input-group">
                                 <input id="prod_quantity_input" type="number" min="1" name="quantity[{{ product.cart_id }}]" data-product-key="{{ product.cart_id }}"  value="{{ product.quantity }}" size="1" class="form-control" onchange="cart_qunatity_change(this)" />

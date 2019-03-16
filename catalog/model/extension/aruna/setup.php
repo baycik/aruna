@@ -67,7 +67,6 @@ class ModelExtensionArunaSetup extends Model {
             'manufacturer'=>'manufacturer'
         ],
         'glem'=>[
-             'exclusive_owner'=>[2],
             'name'=>'Сайт женской одежды glem.com',
             'download_images'=>1,
             'attributes'=>[
@@ -336,7 +335,13 @@ class ModelExtensionArunaSetup extends Model {
                 ]
             ],
             'manufacturer'=>'manufacturer'
-        ]
+        ],
+        'csv'=>[
+            'name'=>'Импорт CSV',
+            'attributes'=>'',
+            'options'=>'',
+            'manufacturer'=>'manufacturer'
+        ],
     ];
 
     public function addParser($seller_id,$parser_id){

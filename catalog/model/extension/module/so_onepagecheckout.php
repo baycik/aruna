@@ -590,7 +590,6 @@ class ModelExtensionModuleSoOnepageCheckout extends Model {
                     $recurring .= sprintf($this->language->get('text_payment_cancel'), $this->registry->get('currency')->format($this->tax->calculate($product['recurring']['price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax'))), $product['recurring']['cycle'], $frequencies[$product['recurring']['frequency']], $product['recurring']['duration']);
                 }
             }
-
             $result[] = array(
                 'key'        => isset($product['key']) ? $product['key'] : '',
                 'cart_id'    => isset($product['cart_id']) ? $product['cart_id'] : '',
