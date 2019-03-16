@@ -209,13 +209,13 @@ class ModelExtensionArunaImport extends Model {
                         continue;
                     }
                     if (!isset($this->filterCache[$filter_group_id . '_' . $filter_name])) {
-                        $filter_row = $this->db->query("SELECT filter_id FROM " . DB_PREFIX . "filter_description WHERE filter_group_id='{$filter_group_id}' AND name='{$filter_name}'")->row;
+                        $filter_row = $this->db->query("SELECT filter_id FROM " . DB_PREFIX . "filter_description WHERE filter_group_id='{$filter_group_id}' AND name='".addslashes($filter_name)."'")->row;
                         if ($filter_row && $filter_row['filter_id']) {
                             $filter_id = $filter_row['filter_id'];
                         } else {
                             $this->db->query("INSERT INTO " . DB_PREFIX . "filter SET filter_group_id='{$filter_group_id}'");
                             $filter_id = $this->db->getLastId();
-                            $this->db->query("INSERT INTO " . DB_PREFIX . "filter_description SET filter_group_id='{$filter_group_id}', language_id='{$this->language_id}',filter_id='{$filter_id}',name='$filter_name'");
+                            $this->db->query("INSERT INTO " . DB_PREFIX . "filter_description SET filter_group_id='{$filter_group_id}', language_id='{$this->language_id}',filter_id='{$filter_id}',name='".addslashes($filter_name)."'");
                         }
                         $this->filterCache[$filter_group_id . '_' . $filter_name] = $filter_id;
                     }

@@ -46,13 +46,13 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'id'=>'isellParse',
             'model'=>'extension/aruna/parse',
             'method'=>'initParser',
-            'arguments'=>[7,'detect_unchanged_entries']
+            'arguments'=>[10,'detect_unchanged_entries']
         ],
         [
             'id'=>'isellImport',
             'model'=>'extension/aruna/import',
             'method'=>'importSellerProduct',
-            'arguments'=>[20,7,null]
+            'arguments'=>[20,10,null]
         ],
         [
             'id'=>'deleteAbsentSellerProducts1',
@@ -85,13 +85,14 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             if( $this->executeTask($task) ){
                 $this->doneJobs[$task['id']]['last_executed']=time();
                 $this->saveDoneJob();
+                break;//only one job at a time
             }
-            break;//only one job at a time
         }
         die;
     }
     private function executeTask($task){
         echo "\nStart executing Task ".date('d.m.Y H:i:s')." ".$task['id'];
+        error_reporting(E_ALL);
         $this->load->model($task['model']);
         return call_user_func_array([$this->{'model_' . str_replace('/', '_', $task['model'])}, $task['method']], $task['arguments']);
     }
