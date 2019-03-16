@@ -46,7 +46,7 @@ $_['sw_clear_wrn']          = 'Changing of cache version may long up to 24 hours
 
 
 
-$_['og_settings']           = 'Settiongs of OpenGraph (Shows icon in social networks)';
+$_['og_settings']           = 'Settings of OpenGraph (Shows icon in social networks)';
 
 // Error
 $_['error_permission'] = 'Warning. You have no permission to make changes in this module';
