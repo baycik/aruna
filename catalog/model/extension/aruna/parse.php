@@ -1,6 +1,6 @@
 <?php
 class ModelExtensionArunaParse extends Model {
-
+    private $sync_config = '';
     public function __construct($registry) {
 	parent::__construct($registry);
 	$this->language_id = (int) $this->config->get('config_language_id');
@@ -13,6 +13,8 @@ class ModelExtensionArunaParse extends Model {
         if( !$sync ){
             return false;
         }
+        
+        $this->sync_config = json_decode($sync['sync_config']);
 	$this->prepare_parsing($sync_id);
 	
         $parser_method='parse_'.$sync['sync_parser_name'];
@@ -32,6 +34,28 @@ class ModelExtensionArunaParse extends Model {
 	$this->db->query("CREATE TEMPORARY TABLE baycik_tmp_current_sync LIKE ".DB_PREFIX."baycik_sync_entries");
     }
     private function finish_parsing($sync_id,$mode){
+        if(isset($this->sync_config->csv_columns)){
+            $changed_columns = $this->sync_config->csv_columns;
+            $changed_columns[] = 'sync_entry_id';
+            $sync_entries_structure = $this->db->query("SELECT * FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = '".DB_PREFIX."baycik_sync_entries'")->rows;
+            $sync_entries_columns = [];
+            foreach($sync_entries_structure as $column){
+                array_push($sync_entries_columns, $column['COLUMN_NAME']);
+            }
+            $unchanged_columns = array_diff($sync_entries_columns, $changed_columns);
+            foreach($unchanged_columns as &$column){
+                $column = 'cse.'.$column.' = bse.'.$column;
+            }
+            $set = implode(', ', $unchanged_columns);
+            $sql = "
+                UPDATE      
+                    baycik_tmp_current_sync cse
+                                JOIN
+                    ".DB_PREFIX."baycik_sync_entries bse USING (`model`)
+                SET $set
+                WHERE bse.sync_id='$sync_id'"; 
+            $this->db->query($sql);
+        } 
 	$clear_previous_sync_sql = "DELETE FROM ".DB_PREFIX."baycik_sync_entries WHERE sync_id = '$sync_id'";
 	$this->db->query($clear_previous_sync_sql);
         $fill_entries_table_sql = "
@@ -120,7 +144,7 @@ class ModelExtensionArunaParse extends Model {
     
     
     
-  public function parse_csv($sync) {
+    public function parse_csv($sync) {
         $this->load->model('tool/upload');
         $source_file = $this->model_tool_upload->getUploadByCode($_FILES[0]);
         $filename = DIR_UPLOAD . $source_file['filename'];
@@ -149,9 +173,6 @@ class ModelExtensionArunaParse extends Model {
             ";
 	$this->db->query($sql);
 	unlink($tmpfile);
-        
-        $this->load->model('extension/aruna/autoworm');
-        $this->model_extension_aruna_autoworm->init($sync_id);
     }  
     
     
@@ -490,7 +511,7 @@ class ModelExtensionArunaParse extends Model {
     }
 
 
-    private function groupEntriesByCategories ($sync_id){
+    public function groupEntriesByCategories ($sync_id){
         if( !isset($sync_id) ){
             return;
         }
@@ -520,6 +541,4 @@ class ModelExtensionArunaParse extends Model {
             ";
         $this->db->query($clear_empty);
     }
-
-    
 }

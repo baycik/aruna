@@ -1,248 +1,262 @@
 <?php
 class ModelExtensionArunaAutoWorm extends Model {
+    private $sync_id=0;
+    private $auto_worm_config = [
+        'csv_columns' => ['product_name','model','mpn','leftovers','manufacturer','price1'],
+        'required_field' => 'url',
+        'name'=>'Digger Worm',
+        'manufacturer'=>'manufacturer',
+        'options'=>[],
+        'attributes'=>[],
+        'filters'=>[
+            [
+                'field'=>'manufacturer',
+                'name'=>'Производитель',
+                'index'=>0,
+                'delimeter'=>null
+            ],
+            [
+                'field'=>'stock_status',
+                'name'=>'Срок доставки',
+                'index'=>0,
+                'delimeter'=>null
+            ]
+        ]
+    ];
+    private $attribute_blacklist=[
+        'Торговая марка',
+        'Код для заказа',
+        'Срок, при поставке под заказ',
+        'Доп. скидка по дисконтным картам',
+        'Запрет добавления в корзину',
+        'Срока поиска'
+    ];
+    private $filter_whitelist=[
+        'Область применения'=>'Область применения',
+        'Авто совместимость'=>'Область применения'
+    ];
     
     public function init($sync_id){
-        $product_code_list = $this->getProductCodes($sync_id);
-        $count = 0;
-        for($i=0; $i<count($product_code_list);$i++){
-            $count = $count + 1; 
-            $mpn = $product_code_list[$i]['mpn'];
-            if(strpos($product_code_list[$i]['model'], 'Код') > -1){
-                continue;
-            }
-            $product_object = $this->getProductInfo($product_code_list[$i]['model']);
-            if($product_object){
-                $this->updateEntry($product_object,$sync_id, $mpn);
-            }
+        $this->sync_id=$sync_id;
+        $this->loadConfig();
+        $this->copyWhitelistedFilters();
+        $this->startDigging();
+        
+        
+                print_r($this->auto_worm_config);
+    }
+    private function loadConfig(){
+        $result=$this->db->query("SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$this->sync_id'");
+        if( !$result ){
+            die("Sync config not found");
         }
-        return $count; 
+        
+        $this->auto_worm_config['attributes']=[];
+        $db_sync_config=json_decode($result->row['sync_config']);
+        if( isset($db_sync_config->attributes) ){
+            $this->auto_worm_config['attributes']=$db_sync_config->attributes;
+        }
+    }
+    private function saveConfig(){
+        $parser_config= json_encode($this->auto_worm_config, JSON_UNESCAPED_UNICODE);
+        $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config='$parser_config' WHERE sync_id='$this->sync_id'");
     }
     
-    private function getProductCodes($sync_id){
+    private function copyWhitelistedFilters(){
+        foreach( $this->auto_worm_config['attributes'] as $attribute ){
+            echo "\n<br> $attribute->name :";
+            if( isset($this->filter_whitelist[$attribute->name]) ){
+                $attribute->delimiter=',';
+                $attribute->name=$this->filter_whitelist[$attribute->name];
+                $this->auto_worm_config['filters'][]=$attribute;
+                echo "is filter & attribute!";
+            } else {
+                echo "attribute";
+            }
+        }
+    }
+    
+    private function startDigging(){
+        while( $next_product_model = $this->getNextProductModel() ){
+            $product_info = $this->digProductInfo($next_product_model);
+            $this->fillEntry($product_info, $next_product_model);
+            $this->saveConfig();
+        }
+        $this->load->model('extension/aruna/parse');
+        $this->model_extension_aruna_parse->groupEntriesByCategories ($this->sync_id);
+    }
+    private function getNextProductModel(){
         $sql = "
             SELECT
-                LPAD(model, 6, '0') as model,
-                mpn
+                LPAD(model, 6, '0') as model
             FROM 
-                baycik_tmp_current_sync
+                ".DB_PREFIX."baycik_sync_entries
             WHERE
-                sync_id = '$sync_id'
-            ";
-       $query = $this->db->query($sql);
-       return $query->rows;
+                sync_id = '$this->sync_id'
+                AND attribute_group IS NULL
+            LIMIT 1";
+       $result = $this->db->query($sql);
+       if(isset($result->row['model'])){
+           return $result->row['model'];
+       }
+       return null;
     }
     
-    private function updateEntry($data, $sync_id, $mpn) {
-        if(isset($data['category_path'])){
-            if(isset($data['category_path']['category_lvl2'])){
-                $category_lvl2 = $data['category_path']['category_lvl2'];
-            } else {
-                $category_lvl2 = '';
-            }
-            if(isset($data['category_path']['category_lvl3'])){
-                $category_lvl3 = $data['category_path']['category_lvl3'];
-            } else {
-                $category_lvl3 = '';
-            }
-        }
-        if(isset($data['attribute_group'])){
-            if(isset($data['attribute_group'])){
-                $attribute_group = $data['attribute_group'];
-            } else {
-                $attribute_group = '';
-            }
-        }
-        if(isset($data['prices_wholesale'])){
-            if(isset($data['prices_wholesale'][0])){
-                $price2 = $data['prices_wholesale'][0];
-            } else {
-                $price2 = '';
-            }
-            if(isset($data['prices_wholesale'][2])){
-                $price3 = $data['prices_wholesale'][2];
-            } else {
-                $price3 = '';
-            }
-            if(isset($data['prices_wholesale'][4])){
-                $price4 = $data['prices_wholesale'][4];
-            } else {
-                $price4 = '';
-            }
-        }
-        if(isset($data['image'])){
-            $image = $data['image'];
-        } else {
-            $image = '';
-        }  
-        if(isset($data['description'])){
-            $description = $data['description'].$data['compatability'];
-        } else {
-            $description = '';
-        }  
-        $sql = "
-            UPDATE
-                baycik_tmp_current_sync
-            SET
-                category_lvl2 = '".$category_lvl2."',
-                category_lvl3 = '".$category_lvl3."',
-                url = '{$data['url']}',
-                description = '".$description."',
-                attribute_group = '".$attribute_group."',
-                price2 = '".$price2."',
-                price3 = '".$price3."',
-                price4 = '".$price4."',
-                image = '".$image."'
-            WHERE  sync_id = '".$sync_id."' AND mpn = '".$mpn."'      
-            ";
-       $this->db->query($sql);      
-    }
-    
-    private function getProductInfo($product_code) {
-        header('Content-Type: text/plain');
+    private function digProductInfo($product_model) {
+        ///////////////////////////////
+        //PARSING SEARCH PAGE
+        ///////////////////////////////
         $url = 'http://www.autoopt.ru';
-        $index_page = file_get_contents($url.'/search/catalog/?maker_id=&q='.$product_code);
-        $product_obj = [
-            'order_code' => $product_code
+        $index_page = file_get_contents($url.'/search/catalog/?maker_id=&q='.$product_model);
+        preg_match('/(\/catalog\/'.$product_model.'.*\/")/', $index_page, $match_url);
+        if( !$match_url ){//not found
+            return [
+                'url'=>''
+            ];
+        }
+        $product_obj=[
+            'url'=>$url.rtrim($match_url[0], '"')
         ];
+        
         preg_match('/\/.+iblock.*\.jpg/', $index_page, $match_img);
         if($match_img){
            $image_url =  $url.$match_img[0];
-           $image = file_get_contents($image_url);
            $product_obj['image'] = $image_url;
-           //header('Content-type: image/jpeg');
-           //echo $image;
-        }else {
-            //echo 'not found =(';
         }
         preg_match_all('/(?=(price_info_WHOLESALE[0-9]{1}">)([0-9.]*))/', $index_page, $match_prices);
         if($match_prices[2]){
             $product_obj['prices_wholesale'] = array_filter($match_prices[2]);
         }
+        ///////////////////////////////
+        //PARSING PRODUCT PAGE
+        ///////////////////////////////
+        $product_page_html_raw = file_get_contents($product_obj['url']);
+        $product_page_html = iconv('WINDOWS-1251', 'UTF-8', $product_page_html_raw);
         
-        preg_match('/(\/catalog\/'.$product_code.'.*\/")/', $index_page, $match_url);
-        if($match_url){
-            $product_obj['url'] = rtrim($match_url[0], '"');
-        } else {
-            return false;
-        }
-        $product_page = file_get_contents($url.$product_obj['url']);
+        $product_obj['name'] = $this->getName($product_page_html);
+        $details = $this->parseDetailsSection($product_page_html, $product_obj['name']);
+        $product_obj['attribute_group'] = implode('|',$details['attribute_group']);
+        $product_obj['category_path'] = $details['category_path'];
+        $product_obj['articles'] = $details['articles'];
+        $product_obj['target_auto'] = $this->getTargetAuto($product_obj['name']);
+        $product_obj['description'] = $this->getDescription($product_page_html);
+        $product_obj['compatability'] = $this->getCompatability($product_page_html);
         
-        $product_page = iconv('WINDOWS-1251', 'UTF-8', $product_page);
-        
-        $attributes = $this->getProductAttributes($product_page);
-        $product_obj['attribute_group'] = implode('|',$attributes['attribute_group']);
-        $product_obj['category_path'] = $attributes['category_path'];
-        $product_obj['articuls'] = $attributes['articuls'];
-        $product_obj['name'] = $this->getName($product_page);
-        if($attributes['brand']){
-            $product_obj['brand'] = $attributes['brand'];
+        if($details['brand']){
+            $product_obj['brand'] = $details['brand'];
         } else {
             $product_obj['brand'] = $this->getManufacturer($product_obj['name']);
         }
-        
-        $product_obj['target_auto'] = $this->getTargetAuto($product_obj['name']);
-        
-        $product_obj['description'] = str_replace('"','\"',$this->getDescription($product_page));
-        $product_obj['compatability'] = str_replace('"','\"',$this->getCompatability($product_page));
+        preg_match_all('/\/product_pictures\/big\/[a-zA-Z0-9\/_]*\.jpg/', $product_page_html, $secondary_images);
+        if($secondary_images[0]){
+            for($i=1; $i<count(array_unique($secondary_images[0])); $i++){
+                if($i == 6){
+                    break;
+                }
+                $product_obj['image'.$i] = $url.$secondary_images[0][$i];
+            }
+        }
         return $product_obj;
-    }
+    }    
     
-    
-    
-    public function getProductAttributes($product_page) {
+    public function parseDetailsSection($product_page_html, $product_name) {
         $result_object = [
-            'attributes' => [],
+            'attribute_group' => '',
             'category_path' => [
+                'category_lvl1' => '',
                 'category_lvl2' => '',
                 'category_lvl3' => ''
             ],
-            'articuls' => '',
+            'articles' => '',
             'brand' => ''
         ];
         $temp_object = [];
-        $attributes_start = strpos($product_page, '<table class="detail_top">');
-        $attributes_end = strpos($product_page, '<h2>Сертификаты</h2>');
-        $attributes_length = $attributes_end-$attributes_start;
-        $division = explode('<div class="dp_left"><span>', substr($product_page, $attributes_start, $attributes_length));
+        $details_start = strpos($product_page_html, '<table class="detail_top">');
+        $details_end = strpos($product_page_html, '<h2>Сертификаты</h2>');
+        $details_length = $details_end-$details_start;
+        $division = explode('<div class="dp_left"><span>', substr($product_page_html, $details_start, $details_length));
         unset($division[0]);
+
+        $attribute_group = array_fill(0, count($this->auto_worm_config['attributes']),'');
         
-        $this->load_admin_model('setting/setting');
-        
-        $attribute_list = $this->model_setting_setting->getSetting('auto_attribute_list');
-        if(count($attribute_list)<1){
-            $this->model_setting_setting->editSetting('auto_attribute_list', ['auto_attribute_list'=>[]]);
-            $attribute_list = $this->model_setting_setting->getSetting('auto_attribute_list');
-        }
-        
-        $attribute_group = array_fill(0, count($attribute_list['auto_attribute_list']),'');
         for($i = 1; $i<count($division); $i++){
             $division[$i] = explode('<div class="dp_right"><span>',$division[$i]);
             $temp_object[$i]['attribute_name'] = rtrim(strip_tags($division[$i][0]));
             $temp_object[$i]['value'] = rtrim(strip_tags($division[$i][1]));
-            if($temp_object[$i]['attribute_name'] == 'Торговая марка' || $temp_object[$i]['attribute_name'] == 'Код для заказа' || $temp_object[$i]['attribute_name'] == 'Ширина, м' || $temp_object[$i]['attribute_name'] == 'Высота, м' || $temp_object[$i]['attribute_name'] == 'Длина, м' || $temp_object[$i]['attribute_name'] == 'Вес, кг' || $temp_object[$i]['attribute_name'] == 'Срок, при поставке под заказ' || $temp_object[$i]['attribute_name'] == 'Доп. скидка по дисконтным картам' || $temp_object[$i]['attribute_name'] == 'Запрет добавления в корзину'){
+            if( in_array($temp_object[$i]['attribute_name'], $this->attribute_blacklist) ){
                 continue;
-            } else if ($temp_object[$i]['attribute_name'] == 'Артикул'){
-                $result_object['articuls'] = $temp_object[$i]['value'];
-            } else if ($temp_object[$i]['attribute_name'] == 'Артикул доп.'){
-                $result_object['articuls'] .= ', '.$temp_object[$i]['value'];
-            } else if ($temp_object[$i]['attribute_name'] == 'Бренд (ТМ)'){
-                $result_object['brand'] .= $temp_object[$i]['value'];
-            } else if ($temp_object[$i]['attribute_name'] == 'Каталожная группа'){
-                $paths = explode('..', $temp_object[$i]['value']);
-                if(isset($paths[0])){
-                    $category_lvl2 = $paths[0];
-                } else {
-                    $category_lvl2 = 'Другое';
-                }
-                if(isset($paths[1])){
-                    $category_lvl3 = $paths[1];
-                } else {
-                    $category_lvl3 = 'Другое';
-                }
-                $result_object['category_path']['category_lvl2'] = $category_lvl2;
-                $result_object['category_path']['category_lvl3'] = $category_lvl3;
-            } else {
-                $attribute_index = $this->getAttributeIndex($attribute_list['auto_attribute_list'], $temp_object[$i]['attribute_name']);
-                
-                if($attribute_index === 'not_found'){
-                   $new_attribute = $this->addAttribute($attribute_list['auto_attribute_list'],$temp_object[$i]['attribute_name']); 
-                   $attribute_group[$new_attribute] = $temp_object[$i]['value'];
-                } else {
-                    $attribute_group[$attribute_index] = $temp_object[$i]['value'];
-                }
+            }
+            switch($temp_object[$i]['attribute_name']){
+                case 'Артикул':
+                    $result_object['articles'] = $temp_object[$i]['value'];
+                    break;
+                case 'Артикул доп.':
+                    $result_object['articles'] .= ', '.$temp_object[$i]['value'];
+                    break;
+                case 'Бренд (ТМ)':
+                    $result_object['brand'] .= $temp_object[$i]['value'];
+                    break;
+                case 'Каталожная группа':
+                    $paths = explode('..', $temp_object[$i]['value']);
+                    if(isset($paths[0])){
+                        $category_lvl1 = $paths[0];
+                    } else {
+                        $category_lvl1 = 'Другое';
+                    }
+                    if(isset($paths[1])){
+                        $category_lvl2 = $paths[1];
+                    } else {
+                        $category_lvl2 = 'Другое';
+                    }
+                    $result_object['category_path']['category_lvl1'] = $category_lvl1;
+                    $result_object['category_path']['category_lvl2'] = $category_lvl2;
+                    break;
+                default:
+                    $attribute_name=trim(str_replace('  ',' ',$temp_object[$i]['attribute_name']));
+                    $attribute_index = $this->getAttributeIndex($attribute_name);
+                    if( $attribute_index === 'not_found' ){
+                        $attribute_index = $this->addAttribute($attribute_name); 
+                    }
+                    $attribute_group[$attribute_index] = ucwords($temp_object[$i]['value']);
+                    break;
             }
         }
+        $target_auto_index = $this->getAttributeIndex('Авто совместимость');
+        if( $target_auto_index === 'not_found' ){
+            $target_auto_index = $this->addAttribute('Авто совместимость'); 
+        }
+        $attribute_group[$target_auto_index] = $this->getTargetAuto($product_name);
         $result_object['attribute_group'] = $attribute_group;
-        
         return $result_object;
     }
     
-    private function addAttribute($array, $entry){
-        $this->load_admin_model('setting/setting');
-        array_push($array, $entry);
-        $this->model_setting_setting->editSetting('auto_attribute_list', ['auto_attribute_list'=>$array]);
-        $new_list = $this->model_setting_setting->getSetting('auto_attribute_list');
-        return count($new_list['auto_attribute_list'])-1;
+    private function addAttribute( $attribute_name ){
+        $attribute_object=new stdClass();
+        $attribute_object->field='attribute_group';
+        $attribute_object->name=$attribute_name;
+        $attribute_object->index=count($this->auto_worm_config['attributes']);
+        $attribute_object->group_description='Свойства товара';
+
+        $this->auto_worm_config['attributes'][]=$attribute_object;
+        return $attribute_object->index;
     }
     
-    private function getAttributeIndex($haystack, $needle) {
+    private function getAttributeIndex($needle) {
+        $haystack=$this->auto_worm_config['attributes'];
         for($i = 0; $i<count($haystack); $i++){
-            if($haystack[$i] == $needle){
-                return $i;
-            } else {
-                continue;
+            if( $haystack[$i]->name == $needle ){
+                return $haystack[$i]->index;
             }
         }
-         return 'not_found';
+        return 'not_found';
     }
     
     
-        
-    public function getName($product_page) {
-        $name_start = strpos($product_page, '<h1 id="pagetitle">');
-        $name_end = strpos($product_page, '</h1>');
+    public function getName($product_page_html) {
+        $name_start = strpos($product_page_html, '<h1 id="pagetitle">');
+        $name_end = strpos($product_page_html, '</h1>');
         $name_length = $name_end-$name_start;
-        $name = strip_tags(substr($product_page, $name_start, $name_length));
+        $name = strip_tags(substr($product_page_html, $name_start, $name_length));
         return $name;
     }
     
@@ -257,7 +271,7 @@ class ModelExtensionArunaAutoWorm extends Model {
             }
         }
         if(count($target)<1){
-            return $target = ['Other'];
+            return 'Прочее';
         } else {
             return implode(',', $target);
         }    
@@ -266,59 +280,128 @@ class ModelExtensionArunaAutoWorm extends Model {
     public function getManufacturer($product_name) {
         preg_match('/[^0-9,\W]*([A-ZА-Я ]*)$/', $product_name, $matches);
         if($matches){
-            return  rtrim($matches[1]);
+            return  trim($matches[1]);
         } else {
             return 'Other';
         }
     }
-   
     
-    public function getDescription($product_page) {
-        if(strpos($product_page, '<p itemprop="description">') > -1){
-            $description_start = strpos($product_page, '<p itemprop="description">');
-            $description_end = strpos($product_page, '<p>Использована информация:');
+    public function getDescription($product_page_html) {
+        if(strpos($product_page_html, '<p itemprop="description">') > -1){
+            $description_start = strpos($product_page_html, '<p itemprop="description">');
+            $description_end = strpos($product_page_html, '<p>Использована информация:');
             $description_length = $description_end-$description_start;
-            $html = substr($product_page, $description_start, $description_length);
+            $html = substr($product_page_html, $description_start, $description_length);
             $post_start = strpos($html, '<ul>');
-            $post_end = strpos($html, '<br>');
-            $post_length = $post_end-$post_start;
-            return  substr($html, $post_start, $post_length);
+            if(strpos($html, '<h2>Статьи о товаре</h2>') > -1){
+                $post_end = strpos($html, '<h2>Статьи о товаре</h2>');
+                $post_length = $post_end-$post_start;
+                $html = (substr($html, $post_start, $post_length));
+            } 
+            if(strpos($html, '<img src=') > -1){
+                $post_end = strpos($html, '<img src=');
+                $post_length = $post_end-$post_start;
+                $html = (substr($html, $post_start, $post_length));
+            } 
+            $html = preg_replace('/\<\/[brlip]*\>/', '-|-', $html);
+            $html = strip_tags($html);
+            $html = str_replace('-|-', '</br>', $html);
+            return $this->db->escape($html);
         } else {
             return;
         }
     }
 
-    public function getCompatability($product_page) {
-        if(strpos($product_page, '<h2>Применяемость</h2><noindex>') > -1){
-            $compatability_start = strpos($product_page, '<h2>Применяемость</h2><noindex>');
-            $compatability_end = strpos($product_page, 'Где еще применяется запчасть</a>');
+    public function getCompatability($product_page_html) {
+        if(strpos($product_page_html, '<h2>Применяемость</h2><noindex>') > -1){
+            $compatability_start = strpos($product_page_html, '<h2>Применяемость</h2><noindex>');
+            $compatability_end = strpos($product_page_html, 'Где еще применяется запчасть</a>');
             $compatability_end_length = strlen('Где еще применяется запчасть</a>');
             $compatability_length = $compatability_end-$compatability_start+$compatability_end_length;
-            $html = substr($product_page, $compatability_start, $compatability_length);
+            $html = substr($product_page_html, $compatability_start, $compatability_length);
             $post_start = strpos($html, '<table class="main test">');
             $post_end = strpos($html, '</table>');
             $post_end_length = strlen('</table>');
             $post_length = $post_end-$post_start+$post_end_length;
             $result = substr($html, $post_start, $post_length);
             $result = str_replace('<td class="th" nowrap>Наименование по автокаталогу</td>', '', $result);
-            return preg_replace('/<td><a.*<\/a><\/td>/', '', $result) ;
-        } else {
-            return;
+            $html=preg_replace('/<td><a.*<\/a><\/td>/', '', $result);
+            return $this->db->escape($html);
         }
+        return null;
     }
-    
-    private function load_admin_model($route) {
-	$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $route);
-	$file = realpath(DIR_APPLICATION . '../admin/model/' . $route . '.php');
-	if (is_file($file)) {
-	    include_once($file);
-            $correct_route = str_replace('_', '', $route);
-	    $modelName = str_replace('/', '', ucwords("Model/" . $correct_route, "/"));
-	    $proxy = new $modelName($this->registry);
-	    $this->registry->set('model_' . str_replace('/', '_', (string) $route), $proxy);
-	} else {
-	    throw new \Exception('Error: Could not load model ' . $route . '!');
-	}
-    }    
+      
+    private function fillEntry($data, $product_model) {
+        $category_lvl1 = '';
+        $category_lvl2 = '';
+        $attribute_group = '';
+        $price2 = '';
+        $price3 = '';
+        $price4 = '';
+        $description = '';
+        
+        $image=isset($data['image'])?$data['image']:'';
+        $image1=isset($data['image1'])?$data['image1']:'';
+        $image2=isset($data['image2'])?$data['image2']:'';
+        $image3=isset($data['image3'])?$data['image3']:'';
+        $image4=isset($data['image4'])?$data['image4']:'';
+        $image5=isset($data['image5'])?$data['image5']:'';
+        
+        $stock_count=0;
+        $stock_status='7-9 дней';
+        $url=$data['url'];
+        
+        if( isset($data['category_path']) ){
+            if(isset($data['category_path']['category_lvl1'])){
+                $category_lvl1 = $data['category_path']['category_lvl1'];
+            }
+            if(isset($data['category_path']['category_lvl2'])){
+                $category_lvl2 = $data['category_path']['category_lvl2'];
+            }
+        }
+        if(isset($data['attribute_group'])){
+            if(isset($data['attribute_group'])){
+                $attribute_group = addslashes($data['attribute_group']);
+            }
+        }
+        if(isset($data['prices_wholesale'])){
+            if(isset($data['prices_wholesale'][0])){
+                $price2 = $data['prices_wholesale'][0];
+            }
+            if(isset($data['prices_wholesale'][2])){
+                $price3 = $data['prices_wholesale'][2];
+            }
+            if(isset($data['prices_wholesale'][4])){
+                $price4 = $data['prices_wholesale'][4];
+            }
+        }
+        if(isset($data['description'])){
+            $description = addslashes($data['description'].$data['compatability']);
+        }
+        $sql = "
+            UPDATE
+                ".DB_PREFIX."baycik_sync_entries
+            SET
+                category_lvl1 = '$category_lvl1',
+                category_lvl2 = '$category_lvl2',
+                category_lvl3 = '',    
+                url = '$url',
+                description = '$description',
+                attribute_group = '$attribute_group',
+                stock_count = '$stock_count',
+                stock_status = '$stock_status',
+                price2 = '$price2',
+                price3 = '$price3',
+                price4 = '$price4',
+                image = '$image',
+                image1 = '$image1',
+                image2 = '$image2',
+                image3 = '$image3',
+                image4 = '$image4',
+                image5 = '$image5'
+            WHERE sync_id = '$this->sync_id' AND model = TRIM(LEADING '0' FROM '$product_model')      
+            ";     
+        $this->db->query($sql);
+    }
 }
 

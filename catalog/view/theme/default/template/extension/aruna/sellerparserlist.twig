@@ -9,11 +9,15 @@
         padding-left: 24%;
     }
 
-    #form-parse .btn.btn-primary, #form-parse .btn-csv-positive {
+    #form-parse .btn.btn-primary {
         margin-left: auto;
         margin-right: auto; 
         width: 70%;
     }
+    
+    .btn-csv-positive{
+        width: 50%;
+    } 
 
     .progress-container .progress{
         height: 15px;
@@ -72,7 +76,7 @@
                             </div>
                         </div>
                         <div class="but col" > 
-                            <button type="button" class="btn btn-csv-positive" data-loading-text="{{ text_loading }}"><i class="fa fa-upload"></i> {{ button_upload }}</button>
+                            <button type="button" class="btn btn-csv-positive" style="width:50%"><i class="fa fa-upload"></i> {{ button_upload }}</button>
                             <button type="submit" class="btn btn-positive" style="width:50%"><i class="fa fa-download"></i>{{button_parse}}</button>
 			    <button type="button" class="btn btn-secondary"><i class="fa fa-eye"></i>Открыть</button>
                             <button type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>

@@ -10,12 +10,7 @@ class ModelExtensionArunaImport extends Model {
         $this->language_id = (int) $this->config->get('config_language_id');
         $this->store_id = (int) $this->config->get('config_store_id');
         $this->start = microtime(1);
-        
-        
         $this->load->model('extension/aruna/product');
-        
-        
-        
     }
 
     private function profile($msg) {
@@ -25,6 +20,11 @@ class ModelExtensionArunaImport extends Model {
     public function importSellerProduct($seller_id, $sync_id, $group_id = null) {
         $this->seller_id = $seller_id;
         $this->sync_id = $sync_id;
+        
+        $required_filter = '';
+        if( isset($this->sync_config->required_field) ){
+            $required_filter = " AND {$this->sync_config->required_field} IS NOT NULL  AND {$this->sync_config->required_field}<>'' ";
+        }
         $group_filter = '';
         if ($group_id) {
             $group_filter = "AND group_id = '$group_id'"; //if group_id is defined there will be only one row!
@@ -42,6 +42,7 @@ class ModelExtensionArunaImport extends Model {
                 destination_category_id IS NOT NULL
                 AND destination_category_id != 0
                 AND sync_id = '$sync_id'
+                $required_filter
                 $group_filter  
             ";
         $result = $this->db->query($sql);
@@ -192,8 +193,19 @@ class ModelExtensionArunaImport extends Model {
         if ($this->sync_config->filters) {
             foreach ($this->sync_config->filters as $filterConfig) {
                 $filter_group_id = $filterConfig->filter_group_id;
+                $filter_value = $row[$filterConfig->field];
+                if (isset($filterConfig->index)){
+                    $filter_value_array = explode('|',$filter_value);
+                    if(isset($filter_value_array[$filterConfig->index])){
+                        $filter_value = $filter_value_array[$filterConfig->index];
+                        if ($filter_value === '') {
+                            continue;
+                        }
+                    } else {
+                        continue;
+                    }
+                }
                 if (isset($filterConfig->delimeter)) {
-                    $filter_value = $row[$filterConfig->field];
                     if (is_array($filterConfig->delimeter)) {
                         $filter_value = str_replace($filterConfig->delimeter, '|', $filter_value);
                         $delimeter = '|';
@@ -201,13 +213,14 @@ class ModelExtensionArunaImport extends Model {
                         $delimeter = $filterConfig->delimeter;
                     }
                     $filter_names = explode($delimeter, $filter_value);
-                } else {
-                    $filter_names = [$row[$filterConfig->field]];
-                }
+                }   else  {
+                    $filter_names = [$filter_value];
+                } 
+                
                 foreach ($filter_names as $filter_name) {
                     if (!$filter_name) {
                         continue;
-                    }
+                    }  
                     if (!isset($this->filterCache[$filter_group_id . '_' . $filter_name])) {
                         $filter_row = $this->db->query("SELECT filter_id FROM " . DB_PREFIX . "filter_description WHERE filter_group_id='{$filter_group_id}' AND name='".addslashes($filter_name)."'")->row;
                         if ($filter_row && $filter_row['filter_id']) {
@@ -322,15 +335,13 @@ class ModelExtensionArunaImport extends Model {
         if (isset($this->manufacturerCache[$manufacturer_name])) {
             return $this->manufacturerCache[$manufacturer_name];
         }
-        $this->load_admin_model('catalog/manufacturer');
-
-        $search_data = ['filter_name' => $manufacturer_name, 'limit' => 1, 'start' => 0];
-        $manufacturer = $this->model_catalog_manufacturer->getManufacturers($search_data);
-        if ($manufacturer && isset($manufacturer[0])) {
-            $this->manufacturerCache[$manufacturer_name] = $manufacturer[0]['manufacturer_id'];
+        $result = $this->db->query("SELECT manufacturer_id FROM " . DB_PREFIX . "manufacturer m WHERE name='$manufacturer_name'");
+        if( $result && $result->row['manufacturer_id'] ){
+            $this->manufacturerCache[$manufacturer_name] = $result->row['manufacturer_id'];
             return $this->manufacturerCache[$manufacturer_name];
         }
-
+        
+        $this->load_admin_model('catalog/manufacturer');
         $data = [
             'name' => $manufacturer_name,
             'sort_order' => 1,
@@ -354,12 +365,10 @@ class ModelExtensionArunaImport extends Model {
         if (isset($this->attributeCache[$attribute_name])) {
             return $this->attributeCache[$attribute_name];
         }
-        $this->load_admin_model('catalog/attribute');
-
-        $search_data = ['filter_name' => $attribute_name, 'limit' => 1, 'start' => 0];
-        $attribute = $this->model_catalog_attribute->getAttributes($search_data);
-        if ($attribute && isset($attribute[0])) {
-            $this->attributeCache[$attribute_name] = $attribute[0]['attribute_id'];
+        
+        $result = $this->db->query("SELECT attribute_id FROM " . DB_PREFIX . "attribute_description WHERE name='$attribute_name' AND language_id = '$this->language_id'");
+        if( $result && $result->row['attribute_id'] ){
+            $this->attributeCache[$attribute_name] = $result->row['attribute_id'];
             return $this->attributeCache[$attribute_name];
         }
 
@@ -376,23 +385,35 @@ class ModelExtensionArunaImport extends Model {
         return $this->attributeCache[$attribute_name];
     }
 
-    private function composeProductAttributeObject($row) {
-        $product_attribute = [];
+    private function composeProductAttributeObject($row) {      
         if ($this->sync_config->attributes) {
-            foreach ($this->sync_config->attributes as $attributeConfig) {
-                $attribute_name = $row[$attributeConfig->field];
-                if (!$attribute_name) {
+            return [];
+        }
+        $product_attribute = [];
+        foreach ($this->sync_config->attributes as $attributeConfig) {
+            $attribute_value = $row[$attributeConfig->field];
+            if (!$attribute_value) {
+                continue;
+            }
+            if(isset($attributeConfig->index)){
+                $attribute_value_array = explode('|',$attribute_value);
+                if(isset($attribute_value_array[$attributeConfig->index])){
+                    $attribute_value = $attribute_value_array[$attributeConfig->index];
+                     if ($attribute_value === '') {
+                        continue;
+                    }
+                } else {
                     continue;
                 }
-                $product_attribute[] = [
-                    'attribute_id' => $this->getProductAttributeId($attributeConfig->name, $attributeConfig->attribute_group_id),
-                    'product_attribute_description' => [
-                        $this->language_id => [
-                            'text' => $attribute_name
-                        ]
+            }    
+            $product_attribute[] = [
+                'attribute_id' => $this->getProductAttributeId($attributeConfig->name, $attributeConfig->attribute_group_id),
+                'product_attribute_description' => [
+                    $this->language_id => [
+                        'text' => $attribute_value
                     ]
-                ];
-            }
+                ]
+            ];
         }
         return $product_attribute;
     }
@@ -455,7 +476,10 @@ class ModelExtensionArunaImport extends Model {
     }
     
     private function getImage($url, $name = null) {
-        if( empty($this->sync_config->download_images) ){
+        if(empty($url)){
+            return null;
+        }
+        if( empty($this->sync_config->download_images)){
             return $this->remoteFileExists($url)?$url:null;
         }
         $ext = pathinfo($url, PATHINFO_EXTENSION);
@@ -557,7 +581,6 @@ class ModelExtensionArunaImport extends Model {
             $product['image'] =         $this->composeProductImage($row);
             $product['product_image'] = $this->composeProductImageObject($row);
         }
-        //print_r($product);die("$category_comission-");
         return $product;
     }
 

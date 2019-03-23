@@ -71,7 +71,7 @@ class ControllerExtensionArunaSellerparserList extends Controller {
 	    $this->response->redirect($this->url->link('account/account', '', true));
 	}
         
-        if(isset($this->request->post['code'])){
+        if( isset($this->request->post['code']) ){
             $_FILES[0] = $this->request->post['code'];
         
         }
@@ -81,13 +81,25 @@ class ControllerExtensionArunaSellerparserList extends Controller {
             echo "Source hasn't been selected";
             return;
         }
-        $this->load->model('extension/aruna/setup');
-        echo $this->model_extension_aruna_setup->updateParserConfig($sync_id);
-	
+        
+        if( !isset($this->request->post['code']) ){
+            $this->load->model('extension/aruna/setup');
+            echo $this->model_extension_aruna_setup->updateParserConfig($sync_id);
+        }
+        
         $this->load->model('extension/aruna/parse');
         echo $this->model_extension_aruna_parse->initParser($sync_id,'update_all_entries');
-        
     }
+    
+    public function unbesieght(){
+        $sync_id = 14;
+        $this->load->model('extension/aruna/autoworm');
+        echo $this->model_extension_aruna_autoworm->init($sync_id);
+    }
+    
+    
+    
+    
     
     public function addParser(){
 	if (!$this->customer->isLogged()) {
