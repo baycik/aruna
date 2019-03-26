@@ -147,8 +147,8 @@ class ControllerExtensionModuleIssWebapp extends controller {
         
         $xml=<<<'EOT'
 <modification>
-    <name>iSellSoft WebApp OpenGraph</name>
-    <code>iSellSoft-WebApp-OpenGraph</code>
+    <name>iSellSoft WebApp OpenGraph 1.2</name>
+    <code>iSellSoft-WebApp-OpenGraph 1.2</code>
     <version>1.0</version>
     <author>iSellSoft Team</author>
     <file path="catalog/view/theme/*/template/common/header.twig">
@@ -234,8 +234,8 @@ EOT;
         
         $xml=<<<EOT
 <modification>
-    <name>iSellSoft WebApp SW+Manifest</name>
-    <code>iSellSoft-WebApp-SW+Manifest</code>
+    <name>iSellSoft WebApp SW+Manifest 1.2</name>
+    <code>iSellSoft-WebApp-SW+Manifest 1.2</code>
     <version>1.0</version>
     <author>iSellSoft Team</author>
     <file path="catalog/view/theme/*/template/common/header.twig">
