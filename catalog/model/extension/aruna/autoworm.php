@@ -376,7 +376,7 @@ class ModelExtensionArunaAutoWorm extends Model {
             }
         }
         if(isset($data['description'])){
-            $description = addslashes($data['description'].$data['compatability']);
+            $description = stripslashes(addslashes($data['description'].$data['compatability']));
         }
         $sql = "
             UPDATE
