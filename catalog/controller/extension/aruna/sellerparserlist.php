@@ -91,16 +91,7 @@ class ControllerExtensionArunaSellerparserList extends Controller {
         echo $this->model_extension_aruna_parse->initParser($sync_id,'update_all_entries');
     }
     
-    public function unbesieght(){
-        $sync_id = 14;
-        $this->load->model('extension/aruna/autoworm');
-        echo $this->model_extension_aruna_autoworm->init($sync_id);
-    }
-    
-    
-    
-    
-    
+       
     public function addParser(){
 	if (!$this->customer->isLogged()) {
 	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellerparserlist', '', true);
