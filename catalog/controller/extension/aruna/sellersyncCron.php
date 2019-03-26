@@ -65,19 +65,27 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'model'=>'extension/aruna/import',
             'method'=>'deleteAbsentSellerProducts',
             'arguments'=>[20]
+        ],
+        [
+            'id'=>'autoWorm',
+            'model'=>'extension/aruna/autoworm',
+            'method'=>'init',
+            'arguments'=>[11],
+            'interval'=>2*60
         ]
     ];
     public function index(){
         if( $this->secret != $this->request->get['secret'] ){
             die('access denied');
         }
-        header("Content-type:text/plain;");
+        header('Content-Type: text/plain; charset=utf-8');
         echo "\nStart loop through tasks...";
         $this->loadDoneJob();
         foreach($this->tasklist as $task){
             if( isset($this->doneJobs[$task['id']]) ){
                 $jobdata=$this->doneJobs[$task['id']];
-                if( ($jobdata['last_executed']+$this->intervalHours*60*60)>time() ){
+                $interval=empty($task['interval'])?$this->intervalHours*60*60:$task['interval'];
+                if( ($jobdata['last_executed']+$interval)>time() ){
                     echo " \nSkipping ".$task['id'];
                     continue;
                 }
