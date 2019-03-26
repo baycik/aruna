@@ -6,24 +6,24 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
     
     public function manifest(){
         $this->load->model('setting/setting');
-	$config=$this->model_setting_setting->getSetting('iss_webapp');
+	$config=$this->model_setting_setting->getSetting('module_iss_webapp');
 	header("Content-type: application/manifest+json");
-        if( !isset($config['iss_webapp_status']) || !$config['iss_webapp_status'] ){
+        if( !isset($config['module_iss_webapp_status']) || !$config['module_iss_webapp_status'] ){
             exit;
         }
         $data=[
-            'name'=>$config['iss_webapp_name'],
-            'short_name'=>$config['iss_webapp_shortname'],
-            'start_url'=>$config['iss_webapp_starturl'],
-            "display"=> $config['iss_webapp_display'],
-            "background_color"=> $config['iss_webapp_bgcolor'],
-            "theme_color"=>$config['iss_webapp_themecolor'],
-            "description"=> $config['iss_webapp_description'],
+            'name'=>$config['module_iss_webapp_name'],
+            'short_name'=>$config['module_iss_webapp_shortname'],
+            'start_url'=>$config['module_iss_webapp_starturl'],
+            "display"=> $config['module_iss_webapp_display'],
+            "background_color"=> $config['module_iss_webapp_bgcolor'],
+            "theme_color"=>$config['module_iss_webapp_themecolor'],
+            "description"=> $config['module_iss_webapp_description'],
             "icons"=> [
                 [
-                    "src"=> "image/".$config['iss_webapp_icon'],
-                    "type"=> $config['iss_webapp_icon_mime'],
-                    "sizes"=> $config['iss_webapp_icon_size']
+                    "src"=> "image/".$config['module_iss_webapp_icon'],
+                    "type"=> $config['module_iss_webapp_icon_mime'],
+                    "sizes"=> $config['module_iss_webapp_icon_size']
                 ]
             ]
         ];
@@ -33,17 +33,16 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
         header("Content-type:text/javascript");
         header("Cache-Control: no-cache, no-store, must-revalidate");
         $this->load->model('setting/setting');
-	$config=$this->model_setting_setting->getSetting('iss_webapp');
-        $dayPeriod=floor(date('z')/$config['iss_webapp_swclear']);
-        $cacheVersionNumber="_v".$config['iss_webapp_swversion'].".".$dayPeriod;
-        $staticPattern=(isset($config['iss_webapp_swpattern']) && $config['iss_webapp_swpattern'])?"new RegExp( '{$config['iss_webapp_swpattern']}' )":'null';
+	$config=$this->model_setting_setting->getSetting('module_iss_webapp');
+        $dayPeriod=floor(date('z')/$config['module_iss_webapp_swclear']);
+        $cacheVersionNumber="_v".$config['module_iss_webapp_swversion'].".".$dayPeriod;
+        $staticPattern=(isset($config['module_iss_webapp_swpattern']) && $config['module_iss_webapp_swpattern'])?"new RegExp( '{$config['module_iss_webapp_swpattern']}' )":'null';
         
-        if( !$config['iss_webapp_swpattern'] && $config['iss_webapp_swdynamic']=="disabled" ){
+        if( !$config['module_iss_webapp_swpattern'] ){
             exit;
         }
 	?>
 	var cacheVersion="iSellSoftCache<?php echo $cacheVersionNumber?>";
-	var cacheDynamicFiles="<?php echo $config['iss_webapp_swdynamic']?>";
 	var staticPattern=<?php echo $staticPattern?>;
 	this.addEventListener('install', function (event) {
 	    console.log('iSellSoft Service Worker installed!!!');
@@ -66,7 +65,7 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
                         if ( event.request.method !== 'GET' || event.request.url.indexOf('/admin')>-1 ){
                             return response;
                         }
-                        if( cacheDynamicFiles=="autoupdate" || staticPattern && staticPattern.test(event.request.url) ){
+                        if( staticPattern && staticPattern.test(event.request.url) ){
                             var resp2 = response.clone();
                             caches.open(cacheVersion).then(function (cache) {
                                 console.log('iSellSoftSW Cached!',cacheVersion,event.request.url);

@@ -1,6 +1,6 @@
 <?php
 
-class ControllerExtensionModuleISSWebapp extends controller {
+class ControllerExtensionModuleIssWebapp extends controller {
 
     private $error = array();
 
@@ -11,22 +11,31 @@ class ControllerExtensionModuleISSWebapp extends controller {
 
         $this->load->model('setting/setting');
 
-        $old_data = $this->model_setting_setting->getSetting('iss_webapp');
+        $old_data = $this->model_setting_setting->getSetting('module_iss_webapp');
         
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-            if (isset($this->request->post['iss_webapp_icon']) && is_file(DIR_IMAGE . $this->request->post['iss_webapp_icon'])) {
-                $icon_info = getimagesize(DIR_IMAGE . $this->request->post['iss_webapp_icon']);
-                $this->request->post['iss_webapp_icon_mime'] = $icon_info['mime'];
-                $this->request->post['iss_webapp_icon_size'] = $icon_info[0] . 'x' . $icon_info[1];
+            if (isset($this->request->post['module_iss_webapp_icon']) && is_file(DIR_IMAGE . $this->request->post['module_iss_webapp_icon'])) {
+                $icon_info = getimagesize(DIR_IMAGE . $this->request->post['module_iss_webapp_icon']);
+                $this->request->post['module_iss_webapp_icon_mime'] = $icon_info['mime'];
+                $this->request->post['module_iss_webapp_icon_size'] = $icon_info[0] . 'x' . $icon_info[1];
             }
             
-            $this->model_setting_setting->editSetting('iss_webapp', $this->request->post);
+            $this->model_setting_setting->editSetting('module_iss_webapp', $this->request->post);
             $data=$this->request->post;
-            if( $old_data['iss_webapp_status']!=$data['iss_webapp_status'] || $old_data['iss_webapp_themecolor']!=$data['iss_webapp_themecolor'] ){
+            if( !isset($old_data['module_iss_webapp_status']) ){
+                $old_data['module_iss_webapp_status']=0;
+            }
+            if( !isset($old_data['module_iss_webapp_ogstatus']) ){
+                $old_data['module_iss_webapp_ogstatus']=0;
+            }
+            if( !isset($old_data['module_iss_webapp_themecolor']) ){
+                $old_data['module_iss_webapp_themecolor']='#fff';
+            }
+            if( $old_data['module_iss_webapp_status']!=$data['module_iss_webapp_status'] || $old_data['module_iss_webapp_themecolor']!=$data['module_iss_webapp_themecolor'] ){
                 $this->installWebappHeadTags( $data );
                 $data['mod_refresh_url']=$this->url->link('marketplace/modification/refresh', 'user_token=' . $this->session->data['user_token'], true);
             }
-            if( $old_data['iss_webapp_status']!=$data['iss_webapp_status'] || $old_data['iss_webapp_ogstatus']!=$data['iss_webapp_ogstatus'] ){
+            if( $old_data['module_iss_webapp_status']!=$data['module_iss_webapp_status'] || $old_data['module_iss_webapp_ogstatus']!=$data['module_iss_webapp_ogstatus'] ){
                 $this->installWebappOpengraph( $data );
                 $data['mod_refresh_url']=$this->url->link('marketplace/modification/refresh', 'user_token=' . $this->session->data['user_token'], true);
             }
@@ -40,35 +49,35 @@ class ControllerExtensionModuleISSWebapp extends controller {
 
         $config = $this->model_setting_setting->getSetting('config');
 
-        if (!isset($data['iss_webapp_name'])) {
-            $data['iss_webapp_name'] = $config['config_meta_title'];
+        if (!isset($data['module_iss_webapp_name'])) {
+            $data['module_iss_webapp_name'] = $config['config_meta_title'];
         }
-        if (!isset($data['iss_webapp_shortname'])) {
-            $data['iss_webapp_shortname'] = $config['config_name'];
+        if (!isset($data['module_iss_webapp_shortname'])) {
+            $data['module_iss_webapp_shortname'] = $config['config_name'];
         }
-        if (!isset($data['iss_webapp_description'])) {
-            $data['iss_webapp_description'] = $config['config_meta_description'];
+        if (!isset($data['module_iss_webapp_description'])) {
+            $data['module_iss_webapp_description'] = $config['config_meta_description'];
         }
-        if (!isset($data['iss_webapp_starturl'])) {
-            $data['iss_webapp_starturl'] = HTTPS_CATALOG;
+        if (!isset($data['module_iss_webapp_starturl'])) {
+            $data['module_iss_webapp_starturl'] = HTTPS_CATALOG;
         }
         $this->load->model('tool/image');
         
-        if (isset($this->request->post['iss_webapp_icon'])) {
-            $data['iss_webapp_icon'] = $this->request->post['iss_webapp_icon'];
+        if (isset($this->request->post['module_iss_webapp_icon'])) {
+            $data['module_iss_webapp_icon'] = $this->request->post['module_iss_webapp_icon'];
         }
         
-        if (isset($data['iss_webapp_icon']) && is_file(DIR_IMAGE . $data['iss_webapp_icon'])) {
-            $data['iss_webapp_icon_thumb'] = $this->model_tool_image->resize($data['iss_webapp_icon'], 100, 100);
+        if (isset($data['module_iss_webapp_icon']) && is_file(DIR_IMAGE . $data['module_iss_webapp_icon'])) {
+            $data['module_iss_webapp_icon_thumb'] = $this->model_tool_image->resize($data['module_iss_webapp_icon'], 100, 100);
         } else {
-            $data['iss_webapp_icon_thumb'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+            $data['module_iss_webapp_icon_thumb'] = $this->model_tool_image->resize('no_image.png', 100, 100);
         }
         $data['placeholder'] = $this->model_tool_image->resize('no_image.png', 100, 100);
 
-        if (isset($this->request->post['iss_webapp_status'])) {
-            $data['iss_webapp_status'] = $this->request->post['iss_webapp_status'];
+        if (isset($this->request->post['module_iss_webapp_status'])) {
+            $data['module_iss_webapp_status'] = $this->request->post['module_iss_webapp_status'];
         } else {
-            $data['iss_webapp_status'] = $this->config->get('iss_webapp_status');
+            $data['module_iss_webapp_status'] = $this->config->get('module_iss_webapp_status');
         }
 
 
@@ -116,7 +125,7 @@ class ControllerExtensionModuleISSWebapp extends controller {
 
     
     private function installWebappOpengraph( $webapp_data ){
-        if( !$webapp_data['iss_webapp_status'] || !$webapp_data['iss_webapp_ogstatus'] ){
+        if( !$webapp_data['module_iss_webapp_status'] || !$webapp_data['module_iss_webapp_ogstatus'] ){
             $this->load->model('setting/modification');
             $code = 'iSellSoft-WebApp-Opengraph';
 
@@ -173,7 +182,9 @@ class ControllerExtensionModuleISSWebapp extends controller {
             ]]></search>
 	    <add offset="0" position="before"><![CDATA[
                         $og_title=$data['price'];
-                        $og_title.=' ('.implode(', ',array_column($product_option_value_data, 'name')).')';
+                        if( !empty($product_option_value_data) ){
+                            $og_title.=' ('.implode(', ',array_column($product_option_value_data, 'name')).')';
+                        }
                         $og_title.=' '.$product_info['name'];
                         $this->registry->set('OpenGraphData', [
                             'image'=>$data['thumb'],
@@ -201,7 +212,7 @@ EOT;
     }
     
     private function installWebappHeadTags( $webapp_data ){
-        if( !$webapp_data['iss_webapp_status'] ){
+        if( empty($webapp_data['module_iss_webapp_status']) ){
             $this->load->model('setting/modification');
             $code = 'iSellSoft-WebApp-SW+Manifest';
 
@@ -233,7 +244,7 @@ EOT;
             </head>
             ]]></search>
 	    <add offset="0" position="before"><![CDATA[
-                <meta name="theme-color" content="{$webapp_data['iss_webapp_themecolor']}">
+                <meta name="theme-color" content="{$webapp_data['module_iss_webapp_themecolor']}">
                 <link rel="manifest" href="?route=extension/module/isellsoft_webapplication/manifest">
 		<script src="?route=extension/module/isellsoft_webapplication/service_worker" type="text/javascript"></script>
 		<script type="text/javascript">
