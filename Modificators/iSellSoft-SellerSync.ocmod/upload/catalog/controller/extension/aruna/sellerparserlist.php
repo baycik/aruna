@@ -70,20 +70,28 @@ class ControllerExtensionArunaSellerparserList extends Controller {
 	if (!isset($store_detail['store_status'])) {
 	    $this->response->redirect($this->url->link('account/account', '', true));
 	}
-
+        
+        if( isset($this->request->post['code']) ){
+            $_FILES[0] = $this->request->post['code'];
+        
+        }
+        
         $sync_id = $this->request->post['sync_id'];
         if( !$sync_id ){
             echo "Source hasn't been selected";
             return;
         }
-        $this->load->model('extension/aruna/setup');
-        echo $this->model_extension_aruna_setup->updateParserConfig($sync_id);
-	
+        
+        if( !isset($this->request->post['code']) ){
+            $this->load->model('extension/aruna/setup');
+            echo $this->model_extension_aruna_setup->updateParserConfig($sync_id);
+        }
+        
         $this->load->model('extension/aruna/parse');
         echo $this->model_extension_aruna_parse->initParser($sync_id,'update_all_entries');
-        
     }
     
+       
     public function addParser(){
 	if (!$this->customer->isLogged()) {
 	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellerparserlist', '', true);

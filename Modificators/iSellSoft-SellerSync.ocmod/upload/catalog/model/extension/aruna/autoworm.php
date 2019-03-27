@@ -1,7 +1,6 @@
 <?php
 class ModelExtensionArunaAutoWorm extends Model {
     private $sync_id=0;
-    private $timelimit=100;
     private $auto_worm_config = [
         'csv_columns' => ['product_name','model','mpn','leftovers','manufacturer','price1'],
         'required_field' => 'url',
@@ -9,7 +8,7 @@ class ModelExtensionArunaAutoWorm extends Model {
         'manufacturer'=>'manufacturer',
         'options'=>[],
         'attributes'=>[],
-        'manual_filters'=>[
+        'filters'=>[
             [
                 'field'=>'manufacturer',
                 'name'=>'Производитель',
@@ -30,21 +29,21 @@ class ModelExtensionArunaAutoWorm extends Model {
         'Срок, при поставке под заказ',
         'Доп. скидка по дисконтным картам',
         'Запрет добавления в корзину',
-        'Срока поиска',
-        'Нормализованный Артикул для связи с АК'
+        'Срока поиска'
     ];
     private $filter_whitelist=[
         'Область применения'=>'Область применения',
-        'Авто совместимость'=>'Авто совместимость'
+        'Авто совместимость'=>'Область применения'
     ];
     
     public function init($sync_id){
-        header('Content-Type: text/html; charset=utf-8');
-        $this->start=time();
         $this->sync_id=$sync_id;
         $this->loadConfig();
+        $this->copyWhitelistedFilters();
         $this->startDigging();
         
+        
+                print_r($this->auto_worm_config);
     }
     private function loadConfig(){
         $result=$this->db->query("SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$this->sync_id'");
@@ -57,16 +56,13 @@ class ModelExtensionArunaAutoWorm extends Model {
         if( isset($db_sync_config->attributes) ){
             $this->auto_worm_config['attributes']=$db_sync_config->attributes;
         }
-        print_r($this->auto_worm_config);
     }
     private function saveConfig(){
-        $this->copyWhitelistedFilters();
         $parser_config= json_encode($this->auto_worm_config, JSON_UNESCAPED_UNICODE);
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config='$parser_config' WHERE sync_id='$this->sync_id'");
     }
     
     private function copyWhitelistedFilters(){
-        $this->auto_worm_config['filters'] = $this->auto_worm_config['manual_filters'];
         foreach( $this->auto_worm_config['attributes'] as $attribute ){
             echo "\n<br> $attribute->name :";
             if( isset($this->filter_whitelist[$attribute->name]) ){
@@ -85,10 +81,6 @@ class ModelExtensionArunaAutoWorm extends Model {
             $product_info = $this->digProductInfo($next_product_model);
             $this->fillEntry($product_info, $next_product_model);
             $this->saveConfig();
-            if( time()-$this->start > $this->timelimit ){
-                break;
-            }
-            //print_r($product_info);
         }
         $this->load->model('extension/aruna/parse');
         $this->model_extension_aruna_parse->groupEntriesByCategories ($this->sync_id);
@@ -412,3 +404,4 @@ class ModelExtensionArunaAutoWorm extends Model {
         $this->db->query($sql);
     }
 }
+

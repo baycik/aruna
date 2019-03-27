@@ -10,6 +10,7 @@ class ModelExtensionArunaSetup extends Model {
 
     private $parser_registry=[
         'happywear'=>[
+            'exclusive_owner'=>[2],
             'name'=>'Сайт одежды happywear.ru',
             'download_images'=>0,
             'attributes'=>[
@@ -66,6 +67,7 @@ class ModelExtensionArunaSetup extends Model {
             'manufacturer'=>'manufacturer'
         ],
         'glem'=>[
+            'exclusive_owner'=>[2],
             'name'=>'Сайт женской одежды glem.com',
             'download_images'=>1,
             'attributes'=>[
@@ -107,6 +109,7 @@ class ModelExtensionArunaSetup extends Model {
             'manufacturer'=>'manufacturer'
         ],
         'charutti'=>[
+            'exclusive_owner'=>[2],
             'name'=>'Сайт женской одежды charutti.ru',
             'download_images'=>1,
             'attributes'=>[
@@ -158,6 +161,7 @@ class ModelExtensionArunaSetup extends Model {
             'manufacturer'=>'manufacturer'
         ],
         'fason'=>[
+            'exclusive_owner'=>[2],
             'name'=>'Сайт женской одежды fason.ua',
             'download_images'=>1,
             'attributes'=>[
@@ -334,6 +338,7 @@ class ModelExtensionArunaSetup extends Model {
             'manufacturer'=>'manufacturer'
         ],
         'csv'=>[
+            'exclusive_owner'=>[51],
             'csv_columns' => ['product_name','model','mpn','leftovers','manufacturer','price1'],
             'required_field' => 'url',
             'name'=>'Импорт CSV Автоальянс',

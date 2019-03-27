@@ -7,5 +7,5 @@ ROBOCOPY "../../admin/language/ru-ru/extension/module/" "./upload/admin/language
 ROBOCOPY "../../admin/view/template/extension/module/" "./upload/admin/view/template/extension/module/" iss_webapp.twig
 
 
-"%ProgramFiles%\WinRAR\WinRAR.exe" a -afzip -ep1 -ibck -r -y -x*.bat -x*.zip "../../../iSellSoftWebApplication.ocmod.zip" "./*"
+"%ProgramFiles%\WinRAR\WinRAR.exe" a -afzip -ep1 -ibck -r -y -x*.bat -x*.zip "../../../iSellSoftWebApplication-1.2.ocmod.zip" "./*"
 PAUSE

@@ -9,11 +9,15 @@
         padding-left: 24%;
     }
 
-    #form-parse .btn.btn-primary{
+    #form-parse .btn.btn-primary {
         margin-left: auto;
         margin-right: auto; 
         width: 70%;
     }
+    
+    .btn-csv-positive{
+        width: 50%;
+    } 
 
     .progress-container .progress{
         height: 15px;
@@ -49,8 +53,7 @@
             <div class="pts-pull-right">
             </div>
             <h1>{{ heading_title }}</h1>
-
-
+ 
             Добавить источник из имеющихся
             <form action="index.php?route=extension/aruna/sellerparserlist/addparser" method="post">
                 <input type="hidden" name="parser_id">
@@ -73,6 +76,7 @@
                             </div>
                         </div>
                         <div class="but col" > 
+                            <button type="button" class="btn btn-csv-positive" style="width:50%"><i class="fa fa-upload"></i> {{ button_upload }}</button>
                             <button type="submit" class="btn btn-positive" style="width:50%"><i class="fa fa-download"></i>{{button_parse}}</button>
 			    <button type="button" class="btn btn-secondary"><i class="fa fa-eye"></i>Открыть</button>
                             <button type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
@@ -80,12 +84,35 @@
                     </div>    
                 </form>
             </div>
+              
+                       
             {{ content_bottom }}</div>
         {{ column_right }}</div>
 </div>
 <script type="text/javascript">
 
-
+    $(document).on('ready', function(){
+        var sync_id = $('#form-parse select').find('option[value='+$('#form-parse select').val()+']').html();
+        if(sync_id.indexOf('Импорт CSV')>-1){  
+            $(".btn.btn-csv-positive").show();
+            $(".btn.btn-positive").hide();
+        } else {
+            $(".btn.btn-positive").show();
+            $(".btn.btn-csv-positive").hide();
+        }
+    });
+    
+    $('#form-parse select').on('change', function(){
+        var sync_id = $('#form-parse select').find('option[value='+$('#form-parse select').val()+']').html();
+        if(sync_id.indexOf('Импорт CSV')>-1){  
+            $(".btn.btn-csv-positive").show();
+            $(".btn.btn-positive").hide();
+        } else {
+            $(".btn.btn-positive").show();
+            $(".btn.btn-csv-positive").hide();
+        }
+    });
+    
     $("#form-parse .btn-danger").click(function(){
         if( confirm("Удалить источник из списка доступных") ){
             var sync_id = $('#form-parse select').val();
@@ -120,6 +147,59 @@
             }
         });
     });
-
+    
+$('button.btn-csv-positive').on('click', function() {
+	var element = this;
+	$('#form-upload').remove();
+	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+	$('#form-upload input[name=\'file\']').trigger('click');
+	if (typeof timer != 'undefined') {
+            clearInterval(timer);
+	}
+	timer = setInterval(function() {
+		if ($('#form-upload input[name=\'file\']').val() != '') {
+			clearInterval(timer);
+			$.ajax({
+				url: 'index.php?route=tool/upload',
+				type: 'post',
+				dataType: 'json',
+				data: new FormData($('#form-upload')[0]),
+				cache: false,
+				contentType: false,
+				processData: false,
+				beforeSend: function() {
+					$(element).button('loading');
+				},
+				complete: function() {
+					$(element).button('reset');
+				},
+				success: function(json) {
+					$(element).parent().find('.text-danger').remove();
+					if (json['error']) {
+						$(element).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
+					}
+					if (json['success']) {
+                                                var sync_id = $("#form-parse").find('select').val();
+						$(element).parent().find('input').val(json['code']);
+                                                $.post('index.php?route=extension/aruna/sellerparserlist/startParsing', {sync_id: sync_id, code: json['code']}, function (ok) {
+                                                    syncing_in_progress=false
+                                                    if (ok*1) {
+                                                        alert('{{text_loading_completed}}');
+                                                        $("#form-parse .btn-positive").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parse_completed}}');
+                                                        location = 'index.php?route=extension/aruna/sellersync&sync_id='+sync_id;
+                                                    } else {
+                                                        $("#form-parse .btn-positive").html('{{button_parse}}');
+                                                        alert("Error occured: "+ok);
+                                                    }
+                                                });
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		}
+	}, 500);
+});
 </script>
 {{ footer }}
