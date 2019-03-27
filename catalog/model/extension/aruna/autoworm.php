@@ -43,7 +43,6 @@ class ModelExtensionArunaAutoWorm extends Model {
         $this->start=time();
         $this->sync_id=$sync_id;
         $this->loadConfig();
-        $this->copyWhitelistedFilters();
         $this->startDigging();
         
     }
@@ -60,11 +59,13 @@ class ModelExtensionArunaAutoWorm extends Model {
         }
     }
     private function saveConfig(){
+        $this->copyWhitelistedFilters();
         $parser_config= json_encode($this->auto_worm_config, JSON_UNESCAPED_UNICODE);
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config='$parser_config' WHERE sync_id='$this->sync_id'");
     }
     
     private function copyWhitelistedFilters(){
+        $this->auto_worm_config['filters'] = [];
         foreach( $this->auto_worm_config['attributes'] as $attribute ){
             echo "\n<br> $attribute->name :";
             if( isset($this->filter_whitelist[$attribute->name]) ){
