@@ -67,7 +67,7 @@ class ModelExtensionArunaSetup extends Model {
             'manufacturer'=>'manufacturer'
         ],
         'glem'=>[
-             'exclusive_owner'=>[2],
+            'exclusive_owner'=>[2],
             'name'=>'Сайт женской одежды glem.com',
             'download_images'=>1,
             'attributes'=>[
@@ -336,6 +336,16 @@ class ModelExtensionArunaSetup extends Model {
                 ]
             ],
             'manufacturer'=>'manufacturer'
+        ],
+        'csv'=>[
+            'exclusive_owner'=>[51],
+            'csv_columns' => ['product_name','model','mpn','leftovers','manufacturer','price1'],
+            'required_field' => 'url',
+            'name'=>'Импорт CSV Автоальянс',
+            'attributes'=>[],
+            'options'=>[],
+            'filters'=>[],
+            'manufacturer'=>''
         ]
     ];
 
