@@ -1,6 +1,7 @@
 <?php
 class ModelExtensionArunaAutoWorm extends Model {
     private $sync_id=0;
+    private $timelimit=100;
     private $auto_worm_config = [
         'csv_columns' => ['product_name','model','mpn','leftovers','manufacturer','price1'],
         'required_field' => 'url',
@@ -37,10 +38,13 @@ class ModelExtensionArunaAutoWorm extends Model {
     ];
     
     public function init($sync_id){
+        header('Content-Type: text/html; charset=utf-8');
+        $this->start=time();
         $this->sync_id=$sync_id;
         $this->loadConfig();
         $this->copyWhitelistedFilters();
         $this->startDigging();
+        
         
         
                 print_r($this->auto_worm_config);
@@ -81,6 +85,11 @@ class ModelExtensionArunaAutoWorm extends Model {
             $product_info = $this->digProductInfo($next_product_model);
             $this->fillEntry($product_info, $next_product_model);
             $this->saveConfig();
+            
+            if( time()-$this->start > $this->timelimit ){
+                break;
+            }
+            //print_r($product_info);
         }
         $this->load->model('extension/aruna/parse');
         $this->model_extension_aruna_parse->groupEntriesByCategories ($this->sync_id);

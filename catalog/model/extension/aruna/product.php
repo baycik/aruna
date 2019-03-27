@@ -191,7 +191,16 @@ class ModelExtensionArunaProduct extends Model {
                 $this->db->query("INSERT INTO " . DB_PREFIX . "product_image SET product_id = '" . (int) $product_id . "', image = '" . $this->db->escape($product_image['image']) . "', sort_order = '" . (int) $product_image['sort_order'] . "'");
             }
         }
-        $this->db->query("DELETE FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . (int) $product_id . "'");
+        
+        
+        
+        if (isset($data['product_category'])) {
+            $this->property_sync(DB_PREFIX . "product_to_category","category_id",$product_id,$data['product_category']);
+        }
+        if (isset($data['product_filter'])) {
+            $this->property_sync(DB_PREFIX . "product_filter","filter_id",$product_id,$data['product_filter']);
+        }
+        /*$this->db->query("DELETE FROM " . DB_PREFIX . "product_to_category WHERE product_id = '" . (int) $product_id . "'");
 
         if (isset($data['product_category'])) {
             foreach ($data['product_category'] as $category_id) {
@@ -205,6 +214,32 @@ class ModelExtensionArunaProduct extends Model {
             foreach ($data['product_filter'] as $filter_id) {
                 $this->db->query("INSERT INTO " . DB_PREFIX . "product_filter SET product_id = '" . (int) $product_id . "', filter_id = '" . (int) $filter_id . "'");
             }
+        }*/
+    }
+    private function property_sync($table,$property_id_field,$product_id,$new_property_ids){
+        $old_property_ids=[];
+        $result=$this->db->query("SELECT GROUP_CONCAT($property_id_field) ids FROM $table WHERE product_id='$product_id'");
+        if( $result ){
+            $old_property_ids= explode(',',$result->row['ids']);
+        }
+        
+        echo '----------'.$table;
+        
+        print_r($old_property_ids);
+        foreach($new_property_ids as $property_id){
+            if ( ($index = array_search($property_id, $old_property_ids)) !== false ) {
+                unset($old_property_ids[$index]);
+                continue;
+            }
+            print_r($old_property_ids);
+            $this->db->query("INSERT INTO $table SET product_id = '" . (int) $product_id . "', $property_id_field = '" . (int) $property_id . "'");
+        }
+        if( count($old_property_ids)>0 ){
+            $csv_ids=implode(',',$old_property_ids);
+            if($csv_ids){
+                $this->db->query("DELETE FROM $table WHERE product_id = '" . (int) $product_id . "' AND $property_id_field IN ($csv_ids)");
+            }
+            
         }
     }
 
