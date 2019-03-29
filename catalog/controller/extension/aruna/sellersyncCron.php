@@ -71,7 +71,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'model'=>'extension/aruna/autoworm',
             'method'=>'init',
             'arguments'=>[11],
-            'interval'=>2*60
+            'interval'=>3*60*60
         ]
     ];
     public function index(){
