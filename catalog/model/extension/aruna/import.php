@@ -386,7 +386,7 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function composeProductAttributeObject($row) {      
-        if ($this->sync_config->attributes) {
+        if (!isset($this->sync_config->attributes)) {
             return [];
         }
         $product_attribute = [];

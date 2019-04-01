@@ -335,7 +335,7 @@ class ModelExtensionArunaImport extends Model {
         if (isset($this->manufacturerCache[$manufacturer_name])) {
             return $this->manufacturerCache[$manufacturer_name];
         }
-        $result = $this->db->query("SELECT manufacturer_id FROM " . DB_PREFIX . "manufacturer m WHERE name='$manufacturer_name'");
+        $result = $this->db->query("SELECT manufacturer_id FROM " . DB_PREFIX . "manufacturer m WHERE name='".$this->db->escape($manufacturer_name)."'");
         if( $result && $result->row['manufacturer_id'] ){
             $this->manufacturerCache[$manufacturer_name] = $result->row['manufacturer_id'];
             return $this->manufacturerCache[$manufacturer_name];
@@ -386,7 +386,7 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function composeProductAttributeObject($row) {      
-        if ($this->sync_config->attributes) {
+        if (!isset($this->sync_config->attributes)) {
             return [];
         }
         $product_attribute = [];
