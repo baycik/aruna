@@ -165,7 +165,7 @@ class ModelExtensionArunaParse extends Model {
             SET
                 sync_id = '$sync_id',  
                 product_name = @col3, 
-                model = @col1, 
+                model = @col1*1, 
                 mpn=@col2,
                 leftovers= ROUND(@col5),
                 manufacturer = @col4, 
