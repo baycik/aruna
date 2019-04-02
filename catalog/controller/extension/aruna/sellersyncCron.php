@@ -70,8 +70,13 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'id'=>'autoWorm',
             'model'=>'extension/aruna/autoworm',
             'method'=>'init',
-            'arguments'=>[11],
-            'interval'=>3*60*60
+            'arguments'=>[11]
+        ],
+        [
+            'id'=>'autoImport',
+            'model'=>'extension/aruna/import',
+            'method'=>'importSellerProduct',
+            'arguments'=>[51,11,null]
         ]
     ];
     public function index(){
