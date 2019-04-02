@@ -55,6 +55,18 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'arguments'=>[20,10,null]
         ],
         [
+            'id'=>'autoWorm',
+            'model'=>'extension/aruna/autoworm',
+            'method'=>'init',
+            'arguments'=>[11]
+        ],
+        [
+            'id'=>'autoImport',
+            'model'=>'extension/aruna/import',
+            'method'=>'importSellerProduct',
+            'arguments'=>[51,11,null]
+        ],
+        [
             'id'=>'deleteAbsentSellerProducts1',
             'model'=>'extension/aruna/import',
             'method'=>'deleteAbsentSellerProducts',
@@ -67,16 +79,10 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'arguments'=>[20]
         ],
         [
-            'id'=>'autoWorm',
-            'model'=>'extension/aruna/autoworm',
-            'method'=>'init',
-            'arguments'=>[11]
-        ],
-        [
-            'id'=>'autoImport',
+            'id'=>'deleteAbsentSellerProducts2',
             'model'=>'extension/aruna/import',
-            'method'=>'importSellerProduct',
-            'arguments'=>[51,11,null]
+            'method'=>'deleteAbsentSellerProducts',
+            'arguments'=>[51]
         ]
     ];
     public function index(){
