@@ -1,0 +1,1971 @@
+{
+    "csv_columns": ["product_name", "model", "mpn", "leftovers", "manufacturer", "price1"],
+    "required_field": "url",
+    "name": "Digger Worm",
+    "manufacturer": "manufacturer",
+    "options": [],
+    "attributes": [{
+            "field": "attribute_group",
+            "name": "Ширина, м",
+            "index": 0,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Высота, м",
+            "index": 1,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Длина, м",
+            "index": 2,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Вес, кг",
+            "index": 3,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Авто совместимость",
+            "index": 4,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Количество в упаковке",
+            "index": 5,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип амортизатора",
+            "index": 6,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Область применения",
+            "index": 7,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Внутренний диаметр",
+            "index": 8,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Внешний диаметр",
+            "index": 9,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Ширина",
+            "index": 10,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр диска (R)",
+            "index": 11,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Ширина диска (J)",
+            "index": 12,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип колесного диска",
+            "index": 13,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Болт колеса",
+            "index": 14,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Комплект заклепок, да/нет",
+            "index": 15,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Напряжение",
+            "index": 16,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Максимальное давление, атм",
+            "index": 17,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Напряжение",
+            "index": 18,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Сила тока",
+            "index": 19,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Мощность удельная, Вт/кг",
+            "index": 20,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Направление вращения вала (со стороны шкива)",
+            "index": 21,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Шкив, количество ручьев",
+            "index": 22,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Шкив, диаметр мм",
+            "index": 23,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Масса генератора без шкива, кг:",
+            "index": 24,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Мощность",
+            "index": 25,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Применяемость",
+            "index": 26,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр генератора, мм",
+            "index": 27,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Цвет",
+            "index": 28,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Материал",
+            "index": 29,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип",
+            "index": 30,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Количество граней",
+            "index": 31,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Квадрат",
+            "index": 32,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Грузоподъемность домкрата, т",
+            "index": 33,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Высота",
+            "index": 34,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Высота",
+            "index": 35,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип домкрата",
+            "index": 36,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Напряжение",
+            "index": 37,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Мощность",
+            "index": 38,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Цоколь",
+            "index": 39,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Маркировка ламп",
+            "index": 40,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Артикул для подбора",
+            "index": 41,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип ламп",
+            "index": 42,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Цветовая температура",
+            "index": 43,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Количество контактов",
+            "index": 44,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Количество светодиодов",
+            "index": 45,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Место установки",
+            "index": 46,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр ступицы (ЦО)",
+            "index": 47,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "PCD расстояний",
+            "index": 48,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Вылет диска (ET)",
+            "index": 49,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "PCD отверстий",
+            "index": 50,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация OEM",
+            "index": 51,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация API",
+            "index": 52,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Вязкость",
+            "index": 53,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация ACEA",
+            "index": 54,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Состав масла",
+            "index": 55,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Объем",
+            "index": 56,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Применяемость по марке машин",
+            "index": 57,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Комплекты свечей",
+            "index": 58,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Замок для двери:",
+            "index": 59,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип тормозной камеры",
+            "index": 60,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Вязкость масла (Тип)",
+            "index": 61,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр",
+            "index": 62,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип скотча",
+            "index": 63,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина рулона, м",
+            "index": 64,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Ширина",
+            "index": 65,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Мелодия",
+            "index": 66,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Компрессор",
+            "index": 67,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Мощность, дБ",
+            "index": 68,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Видео на Youtube",
+            "index": 69,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип сверла",
+            "index": 70,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Зернистость бумаги",
+            "index": 71,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Водостойкая бумага",
+            "index": 72,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Крепление бумаги",
+            "index": 73,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Допустимая нагрузка, т",
+            "index": 74,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Стандартная длина, м",
+            "index": 75,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Сторона щетки",
+            "index": 76,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Комплект щеток",
+            "index": 77,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина",
+            "index": 78,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Применяемость щетки",
+            "index": 79,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спойлер",
+            "index": 80,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип щетки стеклоочистителя",
+            "index": 81,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Напряжение",
+            "index": 82,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр лопастей, см",
+            "index": 83,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Решетка",
+            "index": 84,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация ZF TE-ML",
+            "index": 85,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Область монтажа",
+            "index": 86,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Система монтажа",
+            "index": 87,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Поддержка FM",
+            "index": 88,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Поддержка AM",
+            "index": 89,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Поддержка УКВ",
+            "index": 90,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Поддержка CB",
+            "index": 91,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Поддержка TV",
+            "index": 92,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип двигателя",
+            "index": 93,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Номинальная мощность, кВт (л.с) при частоте вращения к/вала об/мин",
+            "index": 94,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Частота вращения коленчатого вала минимальная, об/мин",
+            "index": 95,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Число и расположение цилиндров",
+            "index": 96,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр",
+            "index": 97,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Ход поршня",
+            "index": 98,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Рабочий объем цилиндров, л",
+            "index": 99,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Максимальный крутящий момент",
+            "index": 100,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Частота вращения коленчатого вала при макс.крутящем моменте",
+            "index": 101,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Минимальный удельный расход топлива, г/кВт·ч (г/лс·ч)",
+            "index": 102,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Топливный насос",
+            "index": 103,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип коробки передач",
+            "index": 104,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Система смазки и вместимость",
+            "index": 105,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип сцепления",
+            "index": 106,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Система охлаждения двигателя",
+            "index": 107,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип топлива",
+            "index": 108,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Расход масла (угар) % от топл.",
+            "index": 109,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Стандарты и Правила ЕЭК ООН",
+            "index": 110,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип стартера",
+            "index": 111,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Порядок работы цилиндров",
+            "index": 112,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Комплектация",
+            "index": 113,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Передний",
+            "index": 114,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Задний",
+            "index": 115,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Номинальная мощность, кВт",
+            "index": 116,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Ширина",
+            "index": 117,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Высота (профиль)",
+            "index": 118,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр посадочный",
+            "index": 119,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Индекс грузоподъемности",
+            "index": 120,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Индекс скорости",
+            "index": 121,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Сезонность",
+            "index": 122,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Шиповка",
+            "index": 123,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Камерная",
+            "index": 124,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Полярность R-прямая",
+            "index": 125,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Полярность Е-обратная",
+            "index": 126,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Емкость, Aч",
+            "index": 127,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Индикатор заряда",
+            "index": 128,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Клеммы евро (толстые)",
+            "index": 129,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Залитый",
+            "index": 130,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Обслуживаемый",
+            "index": 131,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Сила тока",
+            "index": 132,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Гарантия, мес",
+            "index": 133,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Марка аккумулятора",
+            "index": 134,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Сила тока",
+            "index": 135,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Концентрат",
+            "index": 136,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Товарная группа",
+            "index": 137,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Применяемость тормозного диска",
+            "index": 138,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина",
+            "index": 139,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Применяемость амортизатора подвески",
+            "index": 140,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Сторона автомобиля",
+            "index": 141,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр колпака",
+            "index": 142,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Набор",
+            "index": 143,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Внутренний диаметр",
+            "index": 144,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Наружний диаметр щеточного диска, мм",
+            "index": 145,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тормозная камера на тормоз",
+            "index": 146,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "размер заклепки max, мм",
+            "index": 147,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "размер заклепки min, мм",
+            "index": 148,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип крепления грузика",
+            "index": 149,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Назначение грузика",
+            "index": 150,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Передняя дверь",
+            "index": 151,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Задняя дверь",
+            "index": 152,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Дверь задка",
+            "index": 153,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Напряжение",
+            "index": 154,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Максимальный ток зарядки А",
+            "index": 155,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Максимальная емкость",
+            "index": 156,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Режим быстрой зарядки (Boost)",
+            "index": 157,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Число зубьев шестерни привода",
+            "index": 158,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Модуль шестерни привода, мм",
+            "index": 159,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Вес",
+            "index": 160,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Гайка колеса",
+            "index": 161,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Входное напряжение, В",
+            "index": 162,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Напряжение",
+            "index": 163,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Мощность",
+            "index": 164,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Кол-во обзоров",
+            "index": 165,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр",
+            "index": 166,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Рукоятки-чехлы",
+            "index": 167,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина",
+            "index": 168,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Вид применяемого огнетушащего вещества",
+            "index": 169,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Масса заряда, кг",
+            "index": 170,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип баллонного ключа",
+            "index": 171,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина баллонного ключа, мм",
+            "index": 172,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип клапана",
+            "index": 173,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Максимальная нагрузка, т",
+            "index": 174,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диэлектрическое покрытие",
+            "index": 175,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип ключей в наборе",
+            "index": 176,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Размер min",
+            "index": 177,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Размер max",
+            "index": 178,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Кол-во предметов в наборе",
+            "index": 179,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Трещотка, Есть/Нет",
+            "index": 180,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип наконечника",
+            "index": 181,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Цвет",
+            "index": 182,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация ATF",
+            "index": 183,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип предохранителя",
+            "index": 184,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Номинальный рабочий ток предохранителя, A",
+            "index": 185,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Комплект набора предохранителей, шт",
+            "index": 186,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Напряжение выключателя массы",
+            "index": 187,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Клеммы азия (тонкие)",
+            "index": 188,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Клеммы под гайку",
+            "index": 189,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Клеммы под болт",
+            "index": 190,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Клеммы америка (боковые)",
+            "index": 191,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Клеммы мото",
+            "index": 192,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация ILSAC",
+            "index": 193,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр колес, дюйм",
+            "index": 194,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Количество скоростей",
+            "index": 195,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Женский, для девочек",
+            "index": 196,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Возрастной диапазон",
+            "index": 197,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация JASO",
+            "index": 198,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип электрооборудования",
+            "index": 199,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Штатное",
+            "index": 200,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр",
+            "index": 201,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Цвет дополнительный",
+            "index": 202,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Размер min, мм",
+            "index": 203,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Размер max, мм",
+            "index": 204,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация ISO",
+            "index": 205,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация FMVSS 116",
+            "index": 206,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Класс (DOT)",
+            "index": 207,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр",
+            "index": 208,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Шаг резьбы",
+            "index": 209,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация",
+            "index": 210,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Максимальный ток запуска А",
+            "index": 211,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Пусковая мощность, кВт",
+            "index": 212,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр",
+            "index": 213,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Длина",
+            "index": 214,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Направление вращения",
+            "index": 215,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Объем",
+            "index": 216,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Запах",
+            "index": 217,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр",
+            "index": 218,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип клея",
+            "index": 219,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Производительность, л/мин",
+            "index": 220,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Время непрерывной работы, мин",
+            "index": 221,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Максимальный ток",
+            "index": 222,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Время накачки колеса R15, мин",
+            "index": 223,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Время накачки колеса R18, мин",
+            "index": 224,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Время накачки колеса R20, мин",
+            "index": 225,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Время накачки колеса R13, мин",
+            "index": 226,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Подключение",
+            "index": 227,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип насоса",
+            "index": 228,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Фильтр",
+            "index": 229,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип перекачиваемой жидкости",
+            "index": 230,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип/применяемость брызговиков",
+            "index": 231,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип крепления",
+            "index": 232,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тиски",
+            "index": 233,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Струбцина",
+            "index": 234,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Зажим",
+            "index": 235,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Захват",
+            "index": 236,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина",
+            "index": 237,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Длина троса",
+            "index": 238,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Усилие",
+            "index": 239,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип покрытия",
+            "index": 240,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Максимальный ток, А/ч",
+            "index": 241,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина проводов, м",
+            "index": 242,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Штатный",
+            "index": 243,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Макс. частота вращения/колебаний/скорость ленты в минуту",
+            "index": 244,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Шаг резьбы, мм",
+            "index": 245,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация DIN",
+            "index": 246,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Спецификация ASTM",
+            "index": 247,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "PCD2 расстояний",
+            "index": 248,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип заряжаемой батареи",
+            "index": 249,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Применяемость: Втулка стабилизатора переднего",
+            "index": 250,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Применяемость: Втулка стабилизатора заднего",
+            "index": 251,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Применяемость: другое",
+            "index": 252,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "С бортиком",
+            "index": 253,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Передаточное число усилителя крутящего момента",
+            "index": 254,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Максимальный крутящий момент",
+            "index": 255,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Размеры головок механического гайковерта",
+            "index": 256,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "",
+            "index": 257,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Условный диаметр выходного отверстия, мм",
+            "index": 258,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр",
+            "index": 259,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Высота",
+            "index": 260,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Рабочее избыточное внутреннее давление, кг/см2, не более",
+            "index": 261,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Расход воздуха, куб.м/ч",
+            "index": 262,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Мощность обогрева, кВт",
+            "index": 263,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Питание",
+            "index": 264,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип захвата",
+            "index": 265,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "max длина захвата, мм",
+            "index": 266,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Квадрат, дюйм",
+            "index": 267,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Количество предметов в наборе",
+            "index": 268,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Огнетушитель",
+            "index": 269,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Аптечка",
+            "index": 270,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Аварийный знак",
+            "index": 271,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Трос",
+            "index": 272,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Перчатки",
+            "index": 273,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Копмрессор",
+            "index": 274,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Провода для прикуривания",
+            "index": 275,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Количество зубцов",
+            "index": 276,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина",
+            "index": 277,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Толщина жгута для ремонта бк шин, мм",
+            "index": 278,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина",
+            "index": 279,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Ширина",
+            "index": 280,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип уровня",
+            "index": 281,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина",
+            "index": 282,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Размер",
+            "index": 283,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Разъем USB",
+            "index": 284,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Разъем SD/microSD",
+            "index": 285,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Дисплей",
+            "index": 286,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Пульт ДУ",
+            "index": 287,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Крутящий момент, Н·м",
+            "index": 288,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Патрон-квадрат, дюйм",
+            "index": 289,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Расход воздуха, л/мин",
+            "index": 290,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Частота вращения",
+            "index": 291,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Рабочее давление воздуха, бар",
+            "index": 292,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Высота",
+            "index": 293,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Объем",
+            "index": 294,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр заклепок min, мм",
+            "index": 295,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр заклепок max, мм",
+            "index": 296,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Объем",
+            "index": 297,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Галогенная лампа",
+            "index": 298,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Криптоновая лампа",
+            "index": 299,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Светодиоды",
+            "index": 300,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Водонепроницаемый корпус",
+            "index": 301,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Встроенный аккумулятор",
+            "index": 302,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Механическая зарядка",
+            "index": 303,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Налобный фонарь",
+            "index": 304,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Ручной прожектор",
+            "index": 305,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Число цилиндров",
+            "index": 306,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Манометр",
+            "index": 307,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Масса генератора, кг",
+            "index": 308,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "",
+            "index": 309,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Угол профиля зуба в градусах",
+            "index": 310,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Напряжение",
+            "index": 311,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Нагрузочное сопротивление вилки, А",
+            "index": 312,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "",
+            "index": 313,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Диапазон вольтметра вилки, В",
+            "index": 314,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Светоотражающий жилет",
+            "index": 315,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Обязательно жесткая упаковка при доставке",
+            "index": 316,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Мощность",
+            "index": 317,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Длина",
+            "index": 318,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Предел измерения, м",
+            "index": 319,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Длина шланга ВД, м",
+            "index": 320,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Максимальный ток",
+            "index": 321,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Run Flat, SSR",
+            "index": 322,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Сила тока",
+            "index": 323,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Сила тока",
+            "index": 324,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Диаметр",
+            "index": 325,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип кисти",
+            "index": 326,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Щетина",
+            "index": 327,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Назначение",
+            "index": 328,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Материал топорища",
+            "index": 329,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Комплектность",
+            "index": 330,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Заднее сиденье складывается",
+            "index": 331,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "С перемычкой",
+            "index": 332,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Продув с мундштуком",
+            "index": 333,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Тип сенсора",
+            "index": 334,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Диапазон измерений, промилле",
+            "index": 335,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Степень сжатия",
+            "index": 336,
+            "group_description": "Свойства товара"
+        }, {
+            "field": "attribute_group",
+            "name": "Напряжение, В",
+            "index": 337,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Мощность, Вт",
+            "index": 338,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Цоколь",
+            "index": 339,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Цветовая температура, K",
+            "index": 340,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }],
+    "filters": [{
+            "field": "attribute_group",
+            "name": "Ширина, м",
+            "index": 0,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Высота, м",
+            "index": 1,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Длина, м",
+            "index": 2,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Вес, кг",
+            "index": 3,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Авто совместимость",
+            "index": 4,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип амортизатора",
+            "index": 6,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Область применения",
+            "index": 7,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип колесного диска",
+            "index": 13,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Цвет",
+            "index": 28,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Материал",
+            "index": 29,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип домкрата",
+            "index": 36,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип ламп",
+            "index": 42,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип тормозной камеры",
+            "index": 60,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Число и расположение цилиндров",
+            "index": 96,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип крепления грузика",
+            "index": 149,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип ключей в наборе",
+            "index": 176,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Цвет",
+            "index": 182,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип электрооборудования",
+            "index": 199,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип насоса",
+            "index": 228,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип перекачиваемой жидкости",
+            "index": 230,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип крепления",
+            "index": 232,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Число цилиндров",
+            "index": 306,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Тип сенсора",
+            "index": 334,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Напряжение, В",
+            "index": 337,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Мощность, Вт",
+            "index": 338,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Цоколь",
+            "index": 339,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }, {
+            "field": "attribute_group",
+            "name": "Цветовая температура, K",
+            "index": 340,
+            "group_description": "Свойства товара",
+            "delimiter": ","
+        }]
+}

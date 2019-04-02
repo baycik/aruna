@@ -523,6 +523,7 @@ margin-bottom: 15px;
     max-height: 270px;
     margin: 0px; 
     overflow: hidden;
+    min-height: 240px;
 } 
 
 .product-image-container a img{

@@ -365,6 +365,7 @@ class ModelExtensionArunaImport extends Model {
         if (isset($this->attributeCache[$attribute_name])) {
             return $this->attributeCache[$attribute_name];
         }
+        $this->load_admin_model('catalog/attribute');
         
         $result = $this->db->query("SELECT attribute_id FROM " . DB_PREFIX . "attribute_description WHERE name='$attribute_name' AND language_id = '$this->language_id'");
         if( $result && $result->row['attribute_id'] ){
