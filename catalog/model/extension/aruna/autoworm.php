@@ -178,6 +178,7 @@ class ModelExtensionArunaAutoWorm extends Model {
             if( isset($this->filter_whitelist[$attribute->name]) ){
                 $attribute->delimiter=',';
                 $attribute->name=$this->filter_whitelist[$attribute->name];
+                $attribute->delimeter=',';
                 $this->auto_worm_config['filters'][]=$attribute;
                 echo "is filter & attribute!";
             } else {
