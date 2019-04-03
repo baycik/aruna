@@ -12,11 +12,13 @@ class ModelExtensionArunaAutoWorm extends Model {
         'attributes'=>[
             [
                 'field'=>'mpn',
-                'name'=>'Оригинальный каталожный номер (OEM)'
+                'name'=>'Оригинальный каталожный номер (OEM)',
+                'group_description'=>'Свойства товара'
             ],
             [
                 'field'=>'manufacturer',
-                'name'=>'Производитель'
+                'name'=>'Производитель',
+                'group_description'=>'Свойства товара'
             ]
         ],
         'filters'=>[
@@ -155,13 +157,13 @@ class ModelExtensionArunaAutoWorm extends Model {
             die("Sync config not found");
         }
         
+        $manual_attributes=$this->auto_worm_config['attributes'];
         $db_sync_config=json_decode($result->row['sync_config']);
         if( isset($db_sync_config->attributes) ){
-            function obj($arr){
-                return (object) $arr;
+            $this->auto_worm_config['attributes']= $db_sync_config->attributes;
+            foreach($manual_attributes as $mattribute){
+                $this->addAttribute( $mattribute['name'] );
             }
-            $manual_attributes=array_map('obj',$this->auto_worm_config['attributes']);
-            $this->auto_worm_config['attributes']= array_merge($manual_attributes, $db_sync_config->attributes);
         }
     }
     
@@ -458,12 +460,12 @@ class ModelExtensionArunaAutoWorm extends Model {
         $price4 = '';
         $description = '';
         
-        $image=isset($data['image'])?$this->proxy.$data['image']:'';
-        $image1=isset($data['image1'])?$this->proxy.$data['image1']:'';
-        $image2=isset($data['image2'])?$this->proxy.$data['image2']:'';
-        $image3=isset($data['image3'])?$this->proxy.$data['image3']:'';
-        $image4=isset($data['image4'])?$this->proxy.$data['image4']:'';
-        $image5=isset($data['image5'])?$this->proxy.$data['image5']:'';
+        $image=!empty($data['image'])?$this->proxy.$data['image']:'';
+        $image1=!empty($data['image1'])?$this->proxy.$data['image1']:'';
+        $image2=!empty($data['image2'])?$this->proxy.$data['image2']:'';
+        $image3=!empty($data['image3'])?$this->proxy.$data['image3']:'';
+        $image4=!empty($data['image4'])?$this->proxy.$data['image4']:'';
+        $image5=!empty($data['image5'])?$this->proxy.$data['image5']:'';
         
         $stock_count=0;
         $stock_status='7-9 дней';
