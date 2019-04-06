@@ -12,19 +12,27 @@ class ModelExtensionArunaImport extends Model {
         $this->start = microtime(1);
         $this->load->model('extension/aruna/product');
     }
+    
+    private function loadImportConfig(){
+        $result = $this->db->query("SELECT sync_config FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$this->sync_id'");
+        if (!$result->row || !$result->row['sync_config']) {
+            return false;
+        }
+        $this->sync_config = json_decode($result->row['sync_config'], false, 512, JSON_UNESCAPED_UNICODE);
+        //header("content-type:text/plain");print_r($this->sync_config);
+    }
 
     private function profile($msg) {
         echo "\n $msg " . round(microtime(1) - $this->start, 5);
     }
 
-    public function importSellerProduct($seller_id, $sync_id, $group_id = null) {
+    public function importStart($seller_id, $sync_id, $group_id = null) {
         $this->seller_id = $seller_id;
         $this->sync_id = $sync_id;
+        $this->loadImportConfig();
+        $this->createNeededProductProperties();
         
         $required_filter = '';
-        if( isset($this->sync_config->required_field) ){
-            $required_filter = " AND {$this->sync_config->required_field} IS NOT NULL  AND {$this->sync_config->required_field}<>'' ";
-        }
         $group_filter = '';
         if ($group_id) {
             $group_filter = "AND group_id = '$group_id'"; //if group_id is defined there will be only one row!
@@ -42,7 +50,6 @@ class ModelExtensionArunaImport extends Model {
                 destination_category_id IS NOT NULL
                 AND destination_category_id != 0
                 AND sync_id = '$sync_id'
-                $required_filter
                 $group_filter  
             ";
         $result = $this->db->query($sql);
@@ -58,6 +65,10 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function importSellerProductGroup($seller_id, $group_data) {
+        $required_field='';
+        if( isset($this->sync_config->required_field) ){
+            $required_field = " AND {$this->sync_config->required_field} IS NOT NULL  AND {$this->sync_config->required_field}<>'' ";
+        }
         $sql = "
             SELECT 
                 bse.*,
@@ -69,15 +80,16 @@ class ModelExtensionArunaImport extends Model {
                 AND category_lvl1 = '{$group_data['category_lvl1']}'
                 AND category_lvl2 = '{$group_data['category_lvl2']}'
                 AND category_lvl3 = '{$group_data['category_lvl3']}'
+                $required_field
             ";
         $rows = $this->db->query($sql)->rows;
         $this->profile("select entries");
         if (!count($rows)) {
             return 1;
         }
-        $this->createNeededProductProperties($this->sync_id);
         foreach ($rows as $row) {
             $product = $this->composeProductObject($row, $group_data['comission'], $group_data['destination_category_id']);
+            //header("content-type:text/plain");print_r(explode('|',$row['attribute_group']));print_r($product);die;
             if ($row['product_id']) {
                 $product_ids= explode(',', $row['product_id']);
                 foreach($product_ids as $product_id){
@@ -216,7 +228,7 @@ class ModelExtensionArunaImport extends Model {
                 }   else  {
                     $filter_names = [$filter_value];
                 } 
-                
+                              
                 foreach ($filter_names as $filter_name) {
                     if (!$filter_name) {
                         continue;
@@ -368,7 +380,7 @@ class ModelExtensionArunaImport extends Model {
         $this->load_admin_model('catalog/attribute');
         
         $result = $this->db->query("SELECT attribute_id FROM " . DB_PREFIX . "attribute_description WHERE name='$attribute_name' AND language_id = '$this->language_id'");
-        if( $result && $result->row['attribute_id'] ){
+        if( $result && isset($result->row['attribute_id']) ){
             $this->attributeCache[$attribute_name] = $result->row['attribute_id'];
             return $this->attributeCache[$attribute_name];
         }
@@ -621,12 +633,7 @@ class ModelExtensionArunaImport extends Model {
         }
     }
 
-    private function createNeededProductProperties($sync_id) {
-        $result = $this->db->query("SELECT sync_config FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$sync_id'");
-        if (!$result->row || !$result->row['sync_config']) {
-            return false;
-        }
-        $this->sync_config = json_decode($result->row['sync_config'], false, 512, JSON_UNESCAPED_UNICODE);
+    private function createNeededProductProperties() {
         if (isset($this->sync_config->filters)) {
             $this->load_admin_model('catalog/filter');
             foreach ($this->sync_config->filters as &$filter) {
@@ -649,6 +656,10 @@ class ModelExtensionArunaImport extends Model {
         if (isset($this->sync_config->attributes)) {
             $this->load_admin_model('catalog/attribute_group');
             foreach ($this->sync_config->attributes as &$attribute) {
+                if( !isset($attribute->group_description) ){
+                    $attribute->attribute_group_id=0;
+                    continue;
+                }
                 $row = $this->db->query("SELECT attribute_group_id FROM " . DB_PREFIX . "attribute_group_description WHERE name='{$attribute->group_description}'")->row;
                 if ($row && $row['attribute_group_id']) {
                     $attribute->attribute_group_id = $row['attribute_group_id'];

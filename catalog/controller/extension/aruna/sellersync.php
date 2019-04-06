@@ -164,15 +164,6 @@ class ControllerExtensionArunaSellersync extends Controller {
         }
 	echo 1;
     }
-
-    public function ______________importProduct(){
-        $seller_id=2;
-        $sync_id=3;
-        $group_id=782;
-        $this->load->model('extension/aruna/import');
-        //$this->model_extension_aruna_import->setImagesAlwaysDownload(true);
-	$ok=$this->model_extension_aruna_import->importSellerProduct($seller_id,$sync_id, $group_id);
-    }
     
     public function importUserProducts() {
 	if (!$this->customer->isLogged()) {
@@ -189,7 +180,7 @@ class ControllerExtensionArunaSellersync extends Controller {
         $group_id=$this->request->request['group_id'];
 	$seller_id = $this->customer->getId();
         $this->load->model('extension/aruna/import');
-	$ok=$this->model_extension_aruna_import->importSellerProduct($seller_id,$sync_id, $group_id);
+	$ok=$this->model_extension_aruna_import->importStart($seller_id,$sync_id, $group_id);
         die($ok);
     }
     

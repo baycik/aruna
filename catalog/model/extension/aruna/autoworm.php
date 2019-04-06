@@ -19,20 +19,14 @@ class ModelExtensionArunaAutoWorm extends Model {
                 'field'=>'manufacturer',
                 'name'=>'Производитель',
                 'group_description'=>'Свойства товара'
-            ]
-        ],
-        'filters'=>[
-            [
-                'field'=>'manufacturer',
-                'name'=>'Производитель',
-                'index'=>0
             ],
             [
                 'field'=>'stock_status',
                 'name'=>'Срок доставки',
-                'index'=>0
+                'group_description'=>'Доставка'
             ]
-        ]
+        ],
+        'filters'=>[]
     ];
     private $attribute_blacklist=[
         'Торговая марка',
@@ -44,6 +38,9 @@ class ModelExtensionArunaAutoWorm extends Model {
         'Нормализованный Артикул для связи с АК'
     ];
     private $filter_whitelist=[
+        'Срок доставки'=>'Срок доставки',
+        'Производитель'=>'Производитель',
+        'Тип Детали'=>' Тип Детали',
         'Область применения'=>'Область применения',
         'Авто совместимость'=>'Авто совместимость',
         'Высота искрогасителя, мм'=>'Высота, мм',
@@ -171,6 +168,7 @@ class ModelExtensionArunaAutoWorm extends Model {
         $this->copyWhitelistedFilters();
         $parser_config= json_encode($this->auto_worm_config, JSON_UNESCAPED_UNICODE);
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config='$parser_config' WHERE sync_id='$this->sync_id'");
+        print_r($this->auto_worm_config);
     }
     
     private function copyWhitelistedFilters(){
@@ -178,7 +176,6 @@ class ModelExtensionArunaAutoWorm extends Model {
         foreach( $this->auto_worm_config['attributes'] as $attribute ){
             echo "\n<br> $attribute->name :";
             if( isset($this->filter_whitelist[$attribute->name]) ){
-                $attribute->delimiter=',';
                 $attribute->name=$this->filter_whitelist[$attribute->name];
                 $attribute->delimeter=',';
                 $this->auto_worm_config['filters'][]=$attribute;
@@ -335,17 +332,23 @@ class ModelExtensionArunaAutoWorm extends Model {
                     if( $attribute_index === 'not_found' ){
                         $attribute_index = $this->addAttribute($attribute_name); 
                     }
-                    
-            
                     $attribute_group[$attribute_index] = ucwords($temp_object[$i]['value']);
                     break;
             }
         }
+        
         $target_auto_index = $this->getAttributeIndex('Авто совместимость');
         if( $target_auto_index === 'not_found' ){
             $target_auto_index = $this->addAttribute('Авто совместимость'); 
         }
         $attribute_group[$target_auto_index] = $this->getTargetAuto($product_name);
+
+        $attribute_index = $this->getAttributeIndex('Тип Детали');
+        if( $attribute_index === 'not_found' ){
+            $attribute_index = $this->addAttribute('Тип Детали'); 
+        }
+        $attribute_group[$attribute_index]=str_replace('"','',strtok($product_name, ' '));
+        
         $result_object['attribute_group'] = $attribute_group;
         return $result_object;
     }
@@ -370,7 +373,6 @@ class ModelExtensionArunaAutoWorm extends Model {
         }
         return 'not_found';
     }
-    
     
     public function getName($product_page_html) {
         $name_start = strpos($product_page_html, '<h1 id="pagetitle">');
@@ -431,7 +433,7 @@ class ModelExtensionArunaAutoWorm extends Model {
             return;
         }
     }
-
+    
     public function getCompatability($product_page_html) {
         if(strpos($product_page_html, '<h2>Применяемость</h2><noindex>') > -1){
             $compatability_start = strpos($product_page_html, '<h2>Применяемость</h2><noindex>');

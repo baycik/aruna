@@ -15,7 +15,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
         [
             'id'=>'happywearImport',
             'model'=>'extension/aruna/import',
-            'method'=>'importSellerProduct',
+            'method'=>'importStart',
             'arguments'=>[2,3,null]
         ],
         [
@@ -27,7 +27,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
         [
             'id'=>'glemImport',
             'model'=>'extension/aruna/import',
-            'method'=>'importSellerProduct',
+            'method'=>'importStart',
             'arguments'=>[2,5,null]
         ],
         [
@@ -39,7 +39,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
         [
             'id'=>'charuttiImport',
             'model'=>'extension/aruna/import',
-            'method'=>'importSellerProduct',
+            'method'=>'importStart',
             'arguments'=>[2,8,null]
         ],
         [
@@ -51,20 +51,22 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
         [
             'id'=>'isellImport',
             'model'=>'extension/aruna/import',
-            'method'=>'importSellerProduct',
+            'method'=>'importStart',
             'arguments'=>[20,10,null]
         ],
         [
             'id'=>'autoWorm',
             'model'=>'extension/aruna/autoworm',
             'method'=>'init',
-            'arguments'=>[11]
+            'arguments'=>[11],
+            'interval'=>1*60
         ],
         [
             'id'=>'autoImport',
             'model'=>'extension/aruna/import',
-            'method'=>'importSellerProduct',
-            'arguments'=>[51,11,null]
+            'method'=>'importStart',
+            'arguments'=>[51,11,null],
+            'interval'=>1*60
         ],
         [
             'id'=>'deleteAbsentSellerProducts1',
@@ -86,7 +88,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
         ]
     ];
     public function index(){
-        if( $this->secret != $this->request->get['secret'] ){
+        if( empty($this->request->get['secret']) || $this->secret != $this->request->get['secret'] ){
             die('access denied');
         }
         header('Content-Type: text/plain; charset=utf-8');
