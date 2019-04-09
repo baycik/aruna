@@ -2,7 +2,7 @@
 class ModelExtensionArunaAutoWorm extends Model {
     private $sync_id=0;
     private $timelimit=100;
-    private $proxy = './imgproxy.php?url='; 
+    private $proxy = './imgproxy/?url='; 
     private $auto_worm_config = [
         'csv_columns' => ['product_name','model','mpn','leftovers','manufacturer','price1'],
         'required_field' => 'url',
@@ -13,28 +13,20 @@ class ModelExtensionArunaAutoWorm extends Model {
             [
                 'field'=>'mpn',
                 'name'=>'Оригинальный каталожный номер (OEM)',
-                'delimeter'=>null
+                'group_description'=>'Свойства товара'
             ],
             [
                 'field'=>'manufacturer',
                 'name'=>'Производитель',
-                'delimeter'=>null
-            ]
-        ],
-        'filters'=>[
-            [
-                'field'=>'manufacturer',
-                'name'=>'Производитель',
-                'index'=>0,
-                'delimeter'=>null
+                'group_description'=>'Свойства товара'
             ],
             [
                 'field'=>'stock_status',
                 'name'=>'Срок доставки',
-                'index'=>0,
-                'delimeter'=>null
+                'group_description'=>'Доставка'
             ]
-        ]
+        ],
+        'filters'=>[]
     ];
     private $attribute_blacklist=[
         'Торговая марка',
@@ -46,6 +38,9 @@ class ModelExtensionArunaAutoWorm extends Model {
         'Нормализованный Артикул для связи с АК'
     ];
     private $filter_whitelist=[
+        'Срок доставки'=>'Срок доставки',
+        'Производитель'=>'Производитель',
+        'Тип Детали'=>' Тип Детали',
         'Область применения'=>'Область применения',
         'Авто совместимость'=>'Авто совместимость',
         'Высота искрогасителя, мм'=>'Высота, мм',
@@ -146,29 +141,34 @@ class ModelExtensionArunaAutoWorm extends Model {
     ];
     
     public function init($sync_id){
-        header('Content-Type: text/html; charset=utf-8');
         $this->start=time();
         $this->sync_id=$sync_id;
         $this->loadConfig();
         $this->startDigging();
         
     }
+    
     private function loadConfig(){
         $result=$this->db->query("SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$this->sync_id'");
         if( !$result ){
             die("Sync config not found");
         }
         
-       
+        $manual_attributes=$this->auto_worm_config['attributes'];
         $db_sync_config=json_decode($result->row['sync_config']);
         if( isset($db_sync_config->attributes) ){
-            $this->auto_worm_config['attributes']= array_merge($this->auto_worm_config['attributes'], $db_sync_config->attributes);
+            $this->auto_worm_config['attributes']= $db_sync_config->attributes;
+            foreach($manual_attributes as $mattribute){
+                $this->addAttribute( $mattribute['name'] );
+            }
         }
     }
+    
     private function saveConfig(){
         $this->copyWhitelistedFilters();
         $parser_config= json_encode($this->auto_worm_config, JSON_UNESCAPED_UNICODE);
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config='$parser_config' WHERE sync_id='$this->sync_id'");
+        print_r($this->auto_worm_config);
     }
     
     private function copyWhitelistedFilters(){
@@ -176,8 +176,8 @@ class ModelExtensionArunaAutoWorm extends Model {
         foreach( $this->auto_worm_config['attributes'] as $attribute ){
             echo "\n<br> $attribute->name :";
             if( isset($this->filter_whitelist[$attribute->name]) ){
-                $attribute->delimiter=',';
                 $attribute->name=$this->filter_whitelist[$attribute->name];
+                $attribute->delimeter=',';
                 $this->auto_worm_config['filters'][]=$attribute;
                 echo "is filter & attribute!";
             } else {
@@ -332,17 +332,23 @@ class ModelExtensionArunaAutoWorm extends Model {
                     if( $attribute_index === 'not_found' ){
                         $attribute_index = $this->addAttribute($attribute_name); 
                     }
-                    
-            
                     $attribute_group[$attribute_index] = ucwords($temp_object[$i]['value']);
                     break;
             }
         }
+        
         $target_auto_index = $this->getAttributeIndex('Авто совместимость');
         if( $target_auto_index === 'not_found' ){
             $target_auto_index = $this->addAttribute('Авто совместимость'); 
         }
         $attribute_group[$target_auto_index] = $this->getTargetAuto($product_name);
+
+        $attribute_index = $this->getAttributeIndex('Тип Детали');
+        if( $attribute_index === 'not_found' ){
+            $attribute_index = $this->addAttribute('Тип Детали'); 
+        }
+        $attribute_group[$attribute_index]=str_replace('"','',strtok($product_name, ' '));
+        
         $result_object['attribute_group'] = $attribute_group;
         return $result_object;
     }
@@ -367,7 +373,6 @@ class ModelExtensionArunaAutoWorm extends Model {
         }
         return 'not_found';
     }
-    
     
     public function getName($product_page_html) {
         $name_start = strpos($product_page_html, '<h1 id="pagetitle">');
@@ -428,7 +433,7 @@ class ModelExtensionArunaAutoWorm extends Model {
             return;
         }
     }
-
+    
     public function getCompatability($product_page_html) {
         if(strpos($product_page_html, '<h2>Применяемость</h2><noindex>') > -1){
             $compatability_start = strpos($product_page_html, '<h2>Применяемость</h2><noindex>');
@@ -457,12 +462,12 @@ class ModelExtensionArunaAutoWorm extends Model {
         $price4 = '';
         $description = '';
         
-        $image=isset($data['image'])?$this->proxy.$data['image']:'';
-        $image1=isset($data['image1'])?$this->proxy.$data['image1']:'';
-        $image2=isset($data['image2'])?$this->proxy.$data['image2']:'';
-        $image3=isset($data['image3'])?$this->proxy.$data['image3']:'';
-        $image4=isset($data['image4'])?$this->proxy.$data['image4']:'';
-        $image5=isset($data['image5'])?$this->proxy.$data['image5']:'';
+        $image=!empty($data['image'])?$this->proxy.$data['image']:'';
+        $image1=!empty($data['image1'])?$this->proxy.$data['image1']:'';
+        $image2=!empty($data['image2'])?$this->proxy.$data['image2']:'';
+        $image3=!empty($data['image3'])?$this->proxy.$data['image3']:'';
+        $image4=!empty($data['image4'])?$this->proxy.$data['image4']:'';
+        $image5=!empty($data['image5'])?$this->proxy.$data['image5']:'';
         
         $stock_count=0;
         $stock_status='7-9 дней';
@@ -521,4 +526,3 @@ class ModelExtensionArunaAutoWorm extends Model {
         $this->db->query($sql);
     }
 }
-

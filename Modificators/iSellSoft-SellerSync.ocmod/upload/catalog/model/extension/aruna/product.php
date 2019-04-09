@@ -223,15 +223,15 @@ class ModelExtensionArunaProduct extends Model {
             $old_property_ids= explode(',',$result->row['ids']);
         }
         
-        echo '----------'.$table;
+        //echo '----------'.$table;
         
-        print_r($old_property_ids);
+        //print_r($old_property_ids);
         foreach($new_property_ids as $property_id){
             if ( ($index = array_search($property_id, $old_property_ids)) !== false ) {
                 unset($old_property_ids[$index]);
                 continue;
             }
-            print_r($old_property_ids);
+            //print_r($old_property_ids);
             $this->db->query("INSERT INTO $table SET product_id = '" . (int) $product_id . "', $property_id_field = '" . (int) $property_id . "'");
         }
         if( count($old_property_ids)>0 ){
