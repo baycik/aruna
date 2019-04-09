@@ -157,13 +157,16 @@ class ModelExtensionArunaAutoWorm extends Model {
             die("Sync config not found");
         }
         
-        //$manual_attributes=$this->auto_worm_config['attributes'];
+        $manual_attributes=$this->auto_worm_config['attributes'];
         $db_sync_config=json_decode($result->row['sync_config']);
         if( isset($db_sync_config->attributes) ){
             $this->auto_worm_config['attributes']= $db_sync_config->attributes;
-            /*foreach($manual_attributes as $mattribute){
-                $this->addAttribute( $mattribute['name'] );
-            }*/
+            foreach($manual_attributes as $mattribute){
+                $is_there_attribute = $this->getAttributeIndex($mattribute['name']);
+                if( $is_there_attribute === 'not_found' ){
+                    $this->addAttribute($mattribute['name']); 
+                }
+            }
         }
     }
     
@@ -177,17 +180,17 @@ class ModelExtensionArunaAutoWorm extends Model {
     private function copyWhitelistedFilters(){
         $this->auto_worm_config['filters'] = [];
         foreach( $this->auto_worm_config['attributes'] as $attribute ){
-            //echo "\n<br> $attribute->name :";
+            echo "\n<br> $attribute->name :";
             if( isset($this->filter_whitelist[$attribute->name]) ){
                 $this->auto_worm_config['filters'][]=[
                     'field'=>$attribute->field,
                     'name' => $attribute->name,
-                    'index' => $attribute->index,
+                    'index' => (isset($attribute->index)) ? $attribute->index : '',
                     'delimeter' => ','
                 ];
-                //echo "is filter & attribute!";
+                echo "is filter & attribute!";
             } else {
-                //echo "attribute";
+                echo "attribute";
             }
         }
     }
