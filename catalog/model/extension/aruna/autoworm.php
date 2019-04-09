@@ -5,7 +5,7 @@ class ModelExtensionArunaAutoWorm extends Model {
     private $proxy = './imgproxy/?url='; 
     private $auto_worm_config = [
         'csv_columns' => ['product_name','model','mpn','leftovers','manufacturer','price1'],
-        'required_field' => 'url',
+        'required_field' => 'attribute_group',
         'name'=>'Digger Worm',
         'manufacturer'=>'manufacturer',
         'options'=>[],
