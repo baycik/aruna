@@ -146,6 +146,9 @@ class ModelExtensionArunaAutoWorm extends Model {
         $this->loadConfig();
         $this->startDigging();
         
+        $result=$this->db->query("SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$this->sync_id'");
+        $db_sync_config=json_decode($result->row['sync_config']);
+        print_r($db_sync_config);
     }
     
     private function loadConfig(){
@@ -154,13 +157,13 @@ class ModelExtensionArunaAutoWorm extends Model {
             die("Sync config not found");
         }
         
-        $manual_attributes=$this->auto_worm_config['attributes'];
+        //$manual_attributes=$this->auto_worm_config['attributes'];
         $db_sync_config=json_decode($result->row['sync_config']);
         if( isset($db_sync_config->attributes) ){
             $this->auto_worm_config['attributes']= $db_sync_config->attributes;
-            foreach($manual_attributes as $mattribute){
+            /*foreach($manual_attributes as $mattribute){
                 $this->addAttribute( $mattribute['name'] );
-            }
+            }*/
         }
     }
     
@@ -168,20 +171,23 @@ class ModelExtensionArunaAutoWorm extends Model {
         $this->copyWhitelistedFilters();
         $parser_config= json_encode($this->auto_worm_config, JSON_UNESCAPED_UNICODE);
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config='$parser_config' WHERE sync_id='$this->sync_id'");
-        print_r($this->auto_worm_config);
+        //print_r($this->auto_worm_config);
     }
     
     private function copyWhitelistedFilters(){
         $this->auto_worm_config['filters'] = [];
         foreach( $this->auto_worm_config['attributes'] as $attribute ){
-            echo "\n<br> $attribute->name :";
+            //echo "\n<br> $attribute->name :";
             if( isset($this->filter_whitelist[$attribute->name]) ){
-                $attribute->name=$this->filter_whitelist[$attribute->name];
-                $attribute->delimeter=',';
-                $this->auto_worm_config['filters'][]=$attribute;
-                echo "is filter & attribute!";
+                $this->auto_worm_config['filters'][]=[
+                    'field'=>$attribute->field,
+                    'name' => $attribute->name,
+                    'index' => $attribute->index,
+                    'delimeter' => ','
+                ];
+                //echo "is filter & attribute!";
             } else {
-                echo "attribute";
+                //echo "attribute";
             }
         }
     }
@@ -337,17 +343,19 @@ class ModelExtensionArunaAutoWorm extends Model {
             }
         }
         
+        $detail_attribute_index = $this->getAttributeIndex('Тип Детали');
+        if( $detail_attribute_index === 'not_found' ){
+            $detail_attribute_index = $this->addAttribute('Тип Детали'); 
+        }
+        $attribute_group[$detail_attribute_index]=str_replace('"','',strtok($product_name, ' '));
+        
         $target_auto_index = $this->getAttributeIndex('Авто совместимость');
         if( $target_auto_index === 'not_found' ){
             $target_auto_index = $this->addAttribute('Авто совместимость'); 
         }
         $attribute_group[$target_auto_index] = $this->getTargetAuto($product_name);
 
-        $attribute_index = $this->getAttributeIndex('Тип Детали');
-        if( $attribute_index === 'not_found' ){
-            $attribute_index = $this->addAttribute('Тип Детали'); 
-        }
-        $attribute_group[$attribute_index]=str_replace('"','',strtok($product_name, ' '));
+        
         
         $result_object['attribute_group'] = $attribute_group;
         return $result_object;
@@ -367,7 +375,7 @@ class ModelExtensionArunaAutoWorm extends Model {
     private function getAttributeIndex($needle) {
         $haystack=$this->auto_worm_config['attributes'];
         for($i = 0; $i<count($haystack); $i++){
-            if( $haystack[$i]->name == $needle ){
+            if( $haystack[$i]->name === $needle ){
                 return $haystack[$i]->index;
             }
         }
