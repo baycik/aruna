@@ -99,7 +99,7 @@ class ControllerExtensionModuleIssFilter extends Controller {
                     $this->db->query("ALTER TABLE `oc_product_filter` ADD INDEX `iss_index1` (`product_id` ASC);");
                 }
                 if( !$this->checkKey('oc_product', 'iss_fti1') ){
-                    $this->db->query("ALTER TABLE `oc_product` ADD FULLTEXT INDEX `iss_fti1` (model,sku,upc,ean,jan,isbn,mpn);");
+                    $this->db->query("ALTER TABLE `oc_product` ADD FULLTEXT INDEX `iss_fti1` (`model` ASC, `ean` ASC, `jan` ASC, `isbn` ASC, `mpn` ASC, `upc` ASC, `sku` ASC);");
                 }
                 if( !$this->checkKey('oc_product_description', 'iss_fti2') ){
                     $this->db->query("ALTER TABLE `oc_product_description` 
