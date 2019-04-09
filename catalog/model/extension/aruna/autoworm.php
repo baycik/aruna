@@ -146,9 +146,9 @@ class ModelExtensionArunaAutoWorm extends Model {
         $this->loadConfig();
         $this->startDigging();
         
-        $result=$this->db->query("SELECT * FROM " . DB_PREFIX . "baycik_sync_list WHERE sync_id='$this->sync_id'");
-        $db_sync_config=json_decode($result->row['sync_config']);
-        print_r($db_sync_config);
+        $this->copyWhitelistedFilters();
+        $this->saveConfig();
+        print_r($this->auto_worm_config);
     }
     
     private function loadConfig(){
@@ -171,10 +171,8 @@ class ModelExtensionArunaAutoWorm extends Model {
     }
     
     private function saveConfig(){
-        $this->copyWhitelistedFilters();
         $parser_config= json_encode($this->auto_worm_config, JSON_UNESCAPED_UNICODE);
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config='$parser_config' WHERE sync_id='$this->sync_id'");
-        //print_r($this->auto_worm_config);
     }
     
     private function copyWhitelistedFilters(){
@@ -204,7 +202,6 @@ class ModelExtensionArunaAutoWorm extends Model {
             if( time()-$this->start > $this->timelimit ){
                 break;
             }
-            //print_r($product_info);
         }
         $this->load->model('extension/aruna/parse');
         $this->model_extension_aruna_parse->groupEntriesByCategories ($this->sync_id);
