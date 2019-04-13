@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']       = 'Улучшенная система поиска';
+$_['heading_title']       = 'Супер Фильтр';
 
 // Text
 $_['text_extension']      = 'Расширения';
