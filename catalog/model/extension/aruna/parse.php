@@ -442,6 +442,7 @@ class ModelExtensionArunaParse extends Model {
             die("Downloading failed");
         };
 	$sync_id = $sync['sync_id'];
+        $this->copyIsellConfig($sync_id);
 	$sql = "
             LOAD DATA LOCAL INFILE 
                 '$tmpfile'
@@ -496,6 +497,13 @@ class ModelExtensionArunaParse extends Model {
 	unlink($tmpfile);
     }
     
+    private function copyIsellConfig($sync_id) {
+        $isell_config = json_decode(file_get_contents('http://91.210.179.105:2080/public/attribute_config.json'));
+        $this->sync_config->attributes = array_merge($this->sync_config->attributes, $isell_config->attributes);
+        $this->sync_config->filters = array_merge($this->sync_config->filters, $isell_config->filters);
+        $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config = '".json_encode($this->sync_config, JSON_UNESCAPED_UNICODE )."' WHERE sync_id='$sync_id'");
+        return;
+    }
     
     public function addSync($seller_id, $sync_source){
         $sql = "
