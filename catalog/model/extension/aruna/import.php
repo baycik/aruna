@@ -18,8 +18,11 @@ class ModelExtensionArunaImport extends Model {
         if (!$result->row || !$result->row['sync_config']) {
             return false;
         }
-        $this->sync_config = json_decode($result->row['sync_config'], false, 512, JSON_UNESCAPED_UNICODE);
-        //header("content-type:text/plain");print_r($this->sync_config);
+        
+        
+        $json=preg_replace('/[[:cntrl:]]/', '',$result->row['sync_config'] );
+        $this->sync_config = json_decode($json, false, 512, JSON_UNESCAPED_UNICODE);
+        //header("content-type:text/plain");print_r($this->sync_config);die(json_last_error_msg());
     }
 
     private function profile($msg) {
