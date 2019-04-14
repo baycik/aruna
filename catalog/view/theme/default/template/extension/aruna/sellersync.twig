@@ -173,7 +173,11 @@
 		    $('#spinner_icon').hide();
 		    $(".btn-secondary").attr('disabled', null);
 		    alert('Импорт завершен успешно!');
-		});
+		}).fail(function(){
+                    $('.progress-header').html('Импорт завершен с замечаниями!');
+		    $('#spinner_icon').hide();
+		    $(".btn-secondary").attr('disabled', null);
+                });
 		return;
 	    }
 	    $.post('index.php?route=extension/aruna/sellersync/importUserProducts', {sync_id: sync_id, group_id: totalCategories.groups[0]}).done(function (ok) {
