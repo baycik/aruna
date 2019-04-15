@@ -61,7 +61,6 @@ class ModelExtensionArunaImport extends Model {
             $this->importSellerProductGroup($seller_id, $group_data);
         }
         $this->reorderOptions();
-        //$this->assignFiltersToCategory($product['product_category']);
         $this->profile("finish");
         return true;
     }
@@ -104,6 +103,7 @@ class ModelExtensionArunaImport extends Model {
             $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_entries SET is_changed=0 WHERE sync_entry_id='{$row['sync_entry_id']}'");
         }
         $this->profile("import entries");
+        $this->assignFiltersToCategory($product['product_category']);
         return 1;
     }
 

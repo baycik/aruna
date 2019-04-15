@@ -161,11 +161,13 @@ class ModelExtensionArunaAutoWorm extends Model {
         $db_sync_config=json_decode($result->row['sync_config']);
         if( isset($db_sync_config->attributes) ){
             $this->auto_worm_config['attributes']= $db_sync_config->attributes;
-            foreach($manual_attributes as $mattribute){
-                $is_there_attribute = $this->getAttributeIndex($mattribute['name']);
-                if( $is_there_attribute === 'not_found' ){
-                    $this->addAttribute($mattribute['name']); 
-                }
+        } else {
+            $this->auto_worm_config['attributes'] = [];
+        }
+        foreach($manual_attributes as $mattribute){
+            $is_there_attribute = $this->getAttributeIndex($mattribute['name']);
+            if( $is_there_attribute === 'not_found' ){
+                $this->addAttribute($mattribute['name']); 
             }
         }
     }
@@ -301,9 +303,10 @@ class ModelExtensionArunaAutoWorm extends Model {
         $attribute_group = array_fill(0, count($this->auto_worm_config['attributes']),'');
         
         for($i = 1; $i<count($division); $i++){
-            $division[$i] = explode('<div class="dp_right"><span>',$division[$i]);
-            $temp_object[$i]['attribute_name'] = rtrim(strip_tags($division[$i][0]));
-            $temp_object[$i]['value'] = rtrim(strip_tags($division[$i][1]));
+            $division[$i] = explode('<div class="dp_right">',$division[$i]);
+            $temp_object[$i]['attribute_name'] = trim(strip_tags($division[$i][0]));
+            $temp_object[$i]['value'] = trim(strip_tags($division[$i][1]));
+            
             if( in_array($temp_object[$i]['attribute_name'], $this->attribute_blacklist) ){
                 continue;
             }
