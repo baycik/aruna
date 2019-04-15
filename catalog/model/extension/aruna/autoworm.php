@@ -198,6 +198,9 @@ class ModelExtensionArunaAutoWorm extends Model {
     private function startDigging(){
         while( $next_product_model = $this->getNextProductModel() ){
             $product_info = $this->digProductInfo($next_product_model);
+            if(!$product_info){
+                continue;
+            }
             $this->fillEntry($product_info, $next_product_model);
             $this->saveConfig();
             
@@ -258,6 +261,9 @@ class ModelExtensionArunaAutoWorm extends Model {
         
         $product_obj['name'] = $this->getName($product_page_html);
         $details = $this->parseDetailsSection($product_page_html, $product_obj['name']);
+        if($details == 'skip_product'){
+            return false;
+        }
         $product_obj['attribute_group'] = implode('|',$details['attribute_group']);
         $product_obj['category_path'] = $details['category_path'];
         $product_obj['articles'] = $details['articles'];
@@ -305,8 +311,11 @@ class ModelExtensionArunaAutoWorm extends Model {
         for($i = 1; $i<count($division); $i++){
             $division[$i] = explode('<div class="dp_right">',$division[$i]);
             $temp_object[$i]['attribute_name'] = trim(strip_tags($division[$i][0]));
-            $temp_object[$i]['value'] = trim(strip_tags($division[$i][1]));
-            
+            if(isset($division[$i][1])){
+                $temp_object[$i]['value'] = trim(strip_tags($division[$i][1]));
+            } else {
+                return 'skip_product';
+            }
             if( in_array($temp_object[$i]['attribute_name'], $this->attribute_blacklist) ){
                 continue;
             }
