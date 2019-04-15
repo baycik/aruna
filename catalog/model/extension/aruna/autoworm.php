@@ -156,9 +156,9 @@ class ModelExtensionArunaAutoWorm extends Model {
         if( !$result ){
             die("Sync config not found");
         }
-        
         $manual_attributes=$this->auto_worm_config['attributes'];
-        $db_sync_config=json_decode($result->row['sync_config']);
+        $json=preg_replace('/[[:cntrl:]]/', '',$result->row['sync_config'] );
+        $db_sync_config=json_decode($json);
         if( isset($db_sync_config->attributes) ){
             $this->auto_worm_config['attributes']= $db_sync_config->attributes;
         } else {
