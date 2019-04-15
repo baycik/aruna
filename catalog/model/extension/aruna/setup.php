@@ -223,7 +223,6 @@ class ModelExtensionArunaSetup extends Model {
             'manufacturer'=>'manufacturer'
         ],
         'isell'=>[
-            'exclusive_owner'=>[20],
             'name'=>'Электротовары NilsonCrimea',
             'download_images'=>1,
             'options'=>[],

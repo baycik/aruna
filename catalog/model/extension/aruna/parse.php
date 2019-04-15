@@ -467,18 +467,7 @@ class ModelExtensionArunaParse extends Model {
                 min_order_size = '1', 
                 stock_status=IF(@col8>0,'в наличии','под заказ'),
                 stock_count=@col8,
-                attribute1 = @col21,
-                attribute2 = @col22,
-                attribute3 = @col23,
-                attribute4 = @col24,
-                attribute5 = @col25,
-                attribute6 = @col26,
-                attribute7 = @col27,
-                attribute8 = @col28,
-                attribute9 = @col29,
-                attribute10 = @col30,
-                attribute11 = @col31,
-                attribute12 = @col32,
+                attribute_group = SUBSTR(@col20 , 1, LENGTH(@col20) - 1), 
                 option1 = '', 
                 option2 = '', 
                 option3 = '', 
@@ -499,10 +488,25 @@ class ModelExtensionArunaParse extends Model {
     
     private function copyIsellConfig($sync_id) {
         $isell_config = json_decode(file_get_contents('http://91.210.179.105:2080/public/attribute_config.json'));
-        $this->sync_config->attributes = array_merge($this->sync_config->attributes, $isell_config->attributes);
-        $this->sync_config->filters = array_merge($this->sync_config->filters, $isell_config->filters);
+        $this->sync_config->attributes = $this->verifyIsellConfig($this->sync_config->attributes, $isell_config->attributes);
+        $this->sync_config->filters = $this->verifyIsellConfig($this->sync_config->filters, $isell_config->filters);
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config = '".json_encode($this->sync_config, JSON_UNESCAPED_UNICODE )."' WHERE sync_id='$sync_id'");
         return;
+    }
+    
+    private function verifyIsellConfig($db_config, $isell_config){
+        if(empty($db_config)){
+            die ('sync_not_found!');
+        }
+        foreach($db_config as $db_config_key){
+            foreach($isell_config as $isell_config_key){
+                if($db_config_key->name == $isell_config_key->name){
+                    continue;
+                }
+                array_push($db_config,$isell_config_key);
+            }
+        }
+        return $db_config;
     }
     
     public function addSync($seller_id, $sync_source){

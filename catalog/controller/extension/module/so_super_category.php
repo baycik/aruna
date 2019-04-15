@@ -136,7 +136,6 @@ class ControllerExtensionModuleSosupercategory extends Controller {
 		$data['theme_config']	= $this->config->get('theme_default_directory');
 		$data['tag'] 			= 'cat_slider_' . rand() . time();
 		$data['instance']		= rand() . time();
-		
 		if (isset($setting['module_description'][$this->config->get('config_language_id')])) {
 			$data['head_name'] = html_entity_decode($setting['module_description'][$this->config->get('config_language_id')]['head_name'], ENT_QUOTES, 'UTF-8');
 		}else{
@@ -345,7 +344,6 @@ class ControllerExtensionModuleSosupercategory extends Controller {
 				$aritles['title'] = $this->getLabel($filter);
 				array_unshift($articles_filter, $aritles);
 			}
-		
 			foreach ($articles_filter as $filter) {
 				if ($filter['count'] > 0) {
 					if ($filter['category_id'] == $filter_preload) {
@@ -360,6 +358,7 @@ class ControllerExtensionModuleSosupercategory extends Controller {
 			$data['tabs'] = $tabs;
 		}
 
+		
 		$array = array();
 		foreach ($data['tabs'] as $index=>$items) {
 			$array[] = $items['count'];
