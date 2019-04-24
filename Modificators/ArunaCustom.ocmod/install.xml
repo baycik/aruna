@@ -18,6 +18,12 @@
 	    <add offset="0" position="replace"><![CDATA[$implode[] = "pd.name LIKE '%" . $this->db->escape($word) . "%' OR p.model LIKE '%" . $this->db->escape($word) . "%']]></add>
 	</operation>
     </file>
+    <file path="catalog/model/catalog/review.php">
+	<operation error="skip"> 
+	    <search><![CDATA[ $this->db->query("INSERT INTO " . DB_PREFIX . "review SET author = '" . $this->db->escape($data['name']) . "', customer_id = '" . (int)$this->customer->getId() . "', product_id = '" . (int)$product_id . "', text = '" . $this->db->escape($data['text']) . "', rating = '" . (int)$data['rating'] . "', date_added = NOW()"); ]]></search>
+	    <add offset="0" position="replace"><![CDATA[ $this->db->query("INSERT INTO " . DB_PREFIX . "review SET author = '" . $this->db->escape($data['name']) . "', customer_id = '" . (int)$this->customer->getId() . "', status = '1', product_id = '" . (int)$product_id . "', text = '" . $this->db->escape($data['text']) . "', rating = '" . (int)$data['rating'] . "', date_added = NOW()");]]></add>
+	</operation>
+    </file>
     <file path="catalog/controller/common/header.php">
 	<operation error="skip"> 
 	    <search><![CDATA[return $this->load->view('common/header', $data);]]></search>

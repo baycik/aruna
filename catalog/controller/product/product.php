@@ -284,7 +284,6 @@ class ControllerProductProduct extends Controller {
 			} else {
 				$data['special'] = false;
 			}
-
 			if ($this->config->get('config_tax')) {
 				$data['tax'] = $this->currency->format((float)$product_info['special'] ? $product_info['special'] : $product_info['price'], $this->session->data['currency']);
 			} else {

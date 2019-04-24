@@ -181,12 +181,15 @@ class ModelExtensionArunaAutoWorm extends Model {
         foreach( $this->auto_worm_config['attributes'] as $attribute ){
             echo "\n<br> $attribute->name :";
             if( isset($this->filter_whitelist[$attribute->name]) ){
-                $this->auto_worm_config['filters'][]=[
+                $filter_object = [
                     'field'=>$attribute->field,
-                    'name' => $attribute->name,
-                    'index' => (isset($attribute->index)) ? $attribute->index : '',
-                    'delimeter' => ','
+                    'name' => $attribute->name
                 ];
+                if(isset($attribute->index)){
+                    $filter_object['index'] = $attribute->index;
+                    $filter_object['delimeter'] = ',';
+                };
+                $this->auto_worm_config['filters'][]=$filter_object;
                 echo "is filter & attribute!";
             } else {
                 echo "attribute";
@@ -372,22 +375,47 @@ class ModelExtensionArunaAutoWorm extends Model {
         return $result_object;
     }
     
+    
     private function addAttribute( $attribute_name ){
         $attribute_object=new stdClass();
-        $attribute_object->field='attribute_group';
-        $attribute_object->name=$attribute_name;
-        $attribute_object->index=count($this->auto_worm_config['attributes']);
-        $attribute_object->group_description='Свойства товара';
+        if($attribute_name == 'Оригинальный каталожный номер (OEM)' ){
+            $attribute_object->field='mpn';
+            $attribute_object->name=$attribute_name;
+            $attribute_object->group_description='Свойства товара';
+            $this->auto_worm_config['attributes'][]=$attribute_object;
+            return true;
+        }else if($attribute_name == 'Производитель' ){
+            $attribute_object->field='manufacturer';
+            $attribute_object->name=$attribute_name;
+            $attribute_object->group_description='Свойства товара';
+            $this->auto_worm_config['attributes'][]=$attribute_object;
+            return true;
+        }  else if($attribute_name == 'Срок доставки' ){
+            $attribute_object->field='stock_status';
+            $attribute_object->name=$attribute_name;
+            $attribute_object->group_description='Доставка';
+            $this->auto_worm_config['attributes'][]=$attribute_object;
+            return true;
+        } else {
+            $attribute_object->field='attribute_group';
+            $attribute_object->name=$attribute_name;
+            $attribute_object->index=count($this->auto_worm_config['attributes']);
+            $attribute_object->group_description='Свойства товара';
 
-        $this->auto_worm_config['attributes'][]=$attribute_object;
-        return $attribute_object->index;
+            $this->auto_worm_config['attributes'][]=$attribute_object;
+            return $attribute_object->index;
+        }
     }
     
     private function getAttributeIndex($needle) {
         $haystack=$this->auto_worm_config['attributes'];
         for($i = 0; $i<count($haystack); $i++){
             if( $haystack[$i]->name === $needle ){
-                return $haystack[$i]->index;
+                if(isset($haystack[$i]->index)){
+                   return $haystack[$i]->index;
+                } else {
+                    return true;
+                }
             }
         }
         return 'not_found';

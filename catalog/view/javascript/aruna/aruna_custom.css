@@ -886,6 +886,9 @@ SOCIAL LOGIN
     height: 2.2em;
 }
 
+.mobilelayout-1.extension-mobile-home .product-grid .product-item-container .left-block{
+    max-height: 135px;
+}
 .mobilelayout-1.extension-mobile-home .navbar-menu,
 .mobilelayout-1.extension-mobile-home .header-link.pull-right{
     display:none;

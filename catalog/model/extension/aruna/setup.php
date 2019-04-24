@@ -349,6 +349,7 @@ class ModelExtensionArunaSetup extends Model {
              " . DB_PREFIX . "baycik_sync_groups
             SET
                 comission = ". (int) $data['category_comission']. ",
+                retail_comission = ". (int) $data['category_retail_comission']. ",
                 destination_category_id = ". (int) $data['destination_category_id']. " 
                     
             WHERE group_id = ". (int) $data['group_id'];

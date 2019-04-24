@@ -24,6 +24,7 @@ $_['text_yes']          	=	"Да";
 $_['text_no']          	=	"Нет";
 $_['text_confirm']          	=	"Подтвердить *";
 $_['text_all']                      =   "Все";		
+$_['text_retail']               =       "Оптовая наценка";
 //button		
 $_['button_parse']          	=	"Загрузка";
 $_['button_parsing']          	=	"Загружаем";

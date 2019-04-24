@@ -92,6 +92,13 @@ class ControllerExtensionArunaSellerparserList extends Controller {
     }
     
        
+    public function worm(){
+        $this->load->model('extension/aruna/autoworm');
+        echo $this->model_extension_aruna_autoworm->init(13);
+        header("Refresh:0");
+    }
+    
+       
     public function addParser(){
 	if (!$this->customer->isLogged()) {
 	    $this->session->data['redirect'] = $this->url->link('extension/aruna/sellerparserlist', '', true);

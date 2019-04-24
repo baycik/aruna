@@ -172,9 +172,40 @@ class ModelExtensionArunaParse extends Model {
                 price1 = REPLACE(REPLACE(@col6, ' ', ''), ',', '.')
             ";
 	$this->db->query($sql);
+        if(!$this->validateData()){
+            print_r('Неверный порядок полей! Проверьте: Код товара, Артикул, Название товара, Производитель, Количество, Цена');
+            die; 
+        };
 	unlink($tmpfile);
     }  
     
+    public function validateData(){
+        $presql = "
+            DELETE FROM
+                 baycik_tmp_current_sync
+            WHERE
+                manufacturer REGEXP '[0-9\",]+'
+            ";
+        $this->db->query($presql);
+        $sql = "
+            SELECT *
+            FROM
+                baycik_tmp_current_sync
+            WHERE 
+		product_name REGEXP '.+' AND product_name != ''
+                AND model REGEXP '[0-9]+' AND model != ''
+                AND mpn REGEXP '.+' AND mpn != ''
+                AND leftovers NOT REGEXP '[A-Za-zА-Яа-я.-]+' AND leftovers != ''
+		AND manufacturer NOT REGEXP '[0-9\",]+' AND manufacturer != ''
+                AND price1 NOT REGEXP '[A-Za-zА-Яа-я.-]+'  AND price1 != ''
+            LIMIT 5
+            OFFSET 0
+            ";
+        if($this->db->query($sql)->num_rows>0){
+            return true;
+    }
+        return false;
+    }
     
     public function parse_glem($sync) {
         $source_file="https://glem.com.ua/eshop/xml.php?user=54d71a1bb5b13bb04f18565d4a4bc121";
@@ -299,7 +330,7 @@ class ModelExtensionArunaParse extends Model {
                         SET
                             sync_id = '$sync_id',
                             is_changed=1,     
-                            product_name = CONCAT(UCASE(MID('". (string)$product->typePrefix."',1,1)),MID('". (string)$product->typePrefix."',2),' ".(string)$product->model."'), 
+                            product_name = CONCAT(UCASE(MID('". addslashes((string)$product->typePrefix)."',1,1)),MID('". addslashes((string)$product->typePrefix)."',2),' ".addslashes((string)$product->model)."'), 
                             model = 'ÇAR".$product_model."', 
                             mpn= '".$product_model."',
                             manufacturer = CONCAT(UCASE(MID('".(string)$product->vendor."',1,1)),MID('".(string)$product->vendor."',2)),  

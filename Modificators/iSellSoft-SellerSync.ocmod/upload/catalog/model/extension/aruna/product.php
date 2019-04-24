@@ -71,7 +71,8 @@ class ModelExtensionArunaProduct extends Model {
                 $this->db->query("INSERT INTO " . DB_PREFIX . "product_special SET product_id = '" . (int) $product_id . "', customer_group_id = '" . (int) $product_special['customer_group_id'] . "', priority = '" . (int) $product_special['priority'] . "', price = '" . (float) $product_special['price'] . "', date_start = '" . $this->db->escape($product_special['date_start']) . "', date_end = '" . $this->db->escape($product_special['date_end']) . "'");
             }
         }
-
+        
+        
         if (isset($data['product_image'])) {
             foreach ($data['product_image'] as $product_image) {
                 $this->db->query("INSERT INTO " . DB_PREFIX . "product_image SET product_id = '" . (int) $product_id . "', image = '" . $this->db->escape($product_image['image']) . "', sort_order = '" . (int) $product_image['sort_order'] . "'");
@@ -192,7 +193,13 @@ class ModelExtensionArunaProduct extends Model {
             }
         }
         
+        $this->db->query("DELETE FROM " . DB_PREFIX . "product_special WHERE product_id = '" . (int) $product_id . "'");
         
+        if (isset($data['product_special'])) {
+            foreach ($data['product_special'] as $product_special) {
+                $this->db->query("INSERT INTO " . DB_PREFIX . "product_special SET product_id = '" . (int) $product_id . "', customer_group_id = '" . (int) $product_special['customer_group_id'] . "', priority = '" . (int) $product_special['priority'] . "', price = '" . (float) $product_special['price'] . "', date_start = '" . $this->db->escape($product_special['date_start']) . "', date_end = '" . $this->db->escape($product_special['date_end']) . "'");
+            }
+        }
         
         if (isset($data['product_category'])) {
             $this->property_sync(DB_PREFIX . "product_to_category","category_id",$product_id,$data['product_category']);
@@ -434,15 +441,19 @@ class ModelExtensionArunaProduct extends Model {
     }
     
     public function deleteProductImages($product_id){
-        $find_unused_sql="
-            SELECT image FROM
-                ((SELECT image FROM oc_product WHERE product_id=$product_id AND image NOT LIKE 'http%')
+        $find_unused_sql="SELECT p1.image,p2.image,p3.image,c1.image FROM
+                ((SELECT product_id,image FROM " . DB_PREFIX . "product WHERE product_id=$product_id AND image NOT LIKE '%http%')
                  UNION
-                (SELECT image FROM oc_product_image WHERE product_id=$product_id AND image NOT LIKE 'http%') ) t
-            WHERE 
-                    image NOT IN (SELECT image FROM oc_product WHERE product_id<>$product_id AND image IS NOT NULL)
-                AND image NOT IN (SELECT image FROM oc_product_image WHERE product_id<>$product_id AND image IS NOT NULL)
-                AND image NOT IN (SELECT image FROM oc_category WHERE image IS NOT NULL)";
+                (SELECT product_id,image FROM " . DB_PREFIX . "product_image WHERE product_id=$product_id AND image NOT LIKE '%http%') ) p1
+			LEFT JOIN
+				" . DB_PREFIX . "product p2 ON p1.image=p2.image AND p2.product_id<>$product_id
+			LEFT JOIN
+				" . DB_PREFIX . "product_image p3 ON p1.image=p3.image AND p3.product_id<>$product_id
+			LEFT JOIN
+				" . DB_PREFIX . "category c1 ON p1.image=c1.image
+			WHERE 
+				p1.product_id=$product_id
+			HAVING p2.image IS NULL AND p3.image IS NULL AND c1.image IS NULL";
         $result=$this->db->query($find_unused_sql);
         if( $result->rows ){
             foreach($result->rows as $row){
@@ -450,7 +461,7 @@ class ModelExtensionArunaProduct extends Model {
             }
         }
     }
-
+    
     public function deleteProduct($product_id) {
         $this->deleteProductImages($product_id);
         $this->db->query("DELETE FROM " . DB_PREFIX . "product WHERE product_id = '" . (int) $product_id . "'");

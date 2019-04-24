@@ -104,7 +104,6 @@ class ControllerExtensionArunaSellersync extends Controller {
 	$this->load->model('extension/aruna/setup');
 	$data['categories_total'] = $categories_total = $this->model_extension_aruna_setup->getCategoriesTotal($filter_data);
 	$data['categories'] = $categories = $this->model_extension_aruna_setup->getCategoryList($filter_data);
-        
 	$data['destination_categories'] = $this->getDestCategories();
 	$data['filter_name'] = $filter_name;
 	

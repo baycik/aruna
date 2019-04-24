@@ -77,6 +77,7 @@
                                     <td style="" class="text-center" colspan="3">{{text_category_name}}</td>
                                     <td style="" class="text-left">{{text_total_products}}</td>
                                     <td class="text-left">{{text_comission}}</td>
+                                    <td class="text-left">{{text_retail}}</td>
                                     <td class="text-left">{{text_dest_cat}}</td>
                                 </tr>
                             </thead>
@@ -91,6 +92,9 @@
                                             <td class="text-left">{{ category.total_products }}</td>
                                             <td class="text-left">
                                                 <input style=""  type="text" name="category_comission" value="{{ category.comission }}" placeholder="%" id="input-quantity" class="pts-form-control" />
+                                            </td>
+                                            <td class="text-left">
+                                                <input style=""  type="text" name="category_retail_comission" value="{{ category.retail_comission }}" placeholder="%" id="input-retail" class="pts-form-control" />
                                             </td>
                                             <td class="text-left">
                                                 <select name="destination_category" >
@@ -130,6 +134,7 @@
 	    var item = {
 		group_id: row_node.find('input[name=group_id]').val(),
 		category_comission: row_node.find('input[name=category_comission]').val().replace(/[^\d\.]/g, ''),
+                category_retail_comission: row_node.find('input[name=category_retail_comission]').val().replace(/[^\d\.]/g, ''),
 		destination_category_id: row_node.find('select[name=destination_category]').val()
 	    };
 

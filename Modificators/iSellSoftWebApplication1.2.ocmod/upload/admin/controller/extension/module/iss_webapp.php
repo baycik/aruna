@@ -182,6 +182,9 @@ class ControllerExtensionModuleIssWebapp extends controller {
             ]]></search>
 	    <add offset="0" position="before"><![CDATA[
                         $og_title=$data['price'];
+                        if(!empty($data['special'])){
+                            $og_title=$data['special'];
+                        }
                         if( !empty($product_option_value_data) ){
                             $og_title.=' ('.implode(', ',array_column($product_option_value_data, 'name')).')';
                         }
