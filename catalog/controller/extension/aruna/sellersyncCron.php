@@ -2,16 +2,24 @@
 
 class ControllerExtensionArunaSellersyncCron extends Controller {
     private $jobs_file='baycik_sellersync_crondata.json';
-    private $intervalHours=3;
+    private $intervalHours=8;
     private $secret="tabarakasmuk";
     private $doneJobs=[];
     private $tasklist=[
+        [
+            'id'=>'autoWorm',
+            'model'=>'extension/aruna/autoworm',
+            'method'=>'init',
+            'arguments'=>[13],
+            'interval'=>10*60
+        ],
         [
             'id'=>'happywearParse',
             'model'=>'extension/aruna/parse',
             'method'=>'initParser',
             'arguments'=>[3,'detect_unchanged_entries']
         ],
+        
         [
             'id'=>'happywearImport',
             'model'=>'extension/aruna/import',
@@ -46,7 +54,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'id'=>'isellParse',
             'model'=>'extension/aruna/parse',
             'method'=>'initParser',
-            'arguments'=>[10,'detect_unchanged_entries']
+            'arguments'=>[10,'update_all_entries']
         ],
         [
             'id'=>'isellImport',
@@ -55,17 +63,10 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'arguments'=>[20,10,null]
         ],
         [
-            'id'=>'autoWorm',
-            'model'=>'extension/aruna/autoworm',
-            'method'=>'init',
-            'arguments'=>[11],
-            'interval'=>10*60
-        ],
-        [
             'id'=>'autoImport',
             'model'=>'extension/aruna/import',
             'method'=>'importStart',
-            'arguments'=>[51,11,null]
+            'arguments'=>[51,13,null]
         ],
         [
             'id'=>'deleteAbsentSellerProducts1',
