@@ -11,7 +11,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'model'=>'extension/aruna/autoworm',
             'method'=>'init',
             'arguments'=>[13],
-            'interval'=>10*60
+            'interval'=>30*60
         ],
         [
             'id'=>'happywearParse',
@@ -19,7 +19,6 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'method'=>'initParser',
             'arguments'=>[3,'detect_unchanged_entries']
         ],
-        
         [
             'id'=>'happywearImport',
             'model'=>'extension/aruna/import',
