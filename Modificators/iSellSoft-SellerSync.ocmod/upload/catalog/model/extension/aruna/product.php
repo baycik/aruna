@@ -71,7 +71,8 @@ class ModelExtensionArunaProduct extends Model {
                 $this->db->query("INSERT INTO " . DB_PREFIX . "product_special SET product_id = '" . (int) $product_id . "', customer_group_id = '" . (int) $product_special['customer_group_id'] . "', priority = '" . (int) $product_special['priority'] . "', price = '" . (float) $product_special['price'] . "', date_start = '" . $this->db->escape($product_special['date_start']) . "', date_end = '" . $this->db->escape($product_special['date_end']) . "'");
             }
         }
-
+        
+        
         if (isset($data['product_image'])) {
             foreach ($data['product_image'] as $product_image) {
                 $this->db->query("INSERT INTO " . DB_PREFIX . "product_image SET product_id = '" . (int) $product_id . "', image = '" . $this->db->escape($product_image['image']) . "', sort_order = '" . (int) $product_image['sort_order'] . "'");
@@ -192,7 +193,13 @@ class ModelExtensionArunaProduct extends Model {
             }
         }
         
+        $this->db->query("DELETE FROM " . DB_PREFIX . "product_special WHERE product_id = '" . (int) $product_id . "'");
         
+        if (isset($data['product_special'])) {
+            foreach ($data['product_special'] as $product_special) {
+                $this->db->query("INSERT INTO " . DB_PREFIX . "product_special SET product_id = '" . (int) $product_id . "', customer_group_id = '" . (int) $product_special['customer_group_id'] . "', priority = '" . (int) $product_special['priority'] . "', price = '" . (float) $product_special['price'] . "', date_start = '" . $this->db->escape($product_special['date_start']) . "', date_end = '" . $this->db->escape($product_special['date_end']) . "'");
+            }
+        }
         
         if (isset($data['product_category'])) {
             $this->property_sync(DB_PREFIX . "product_to_category","category_id",$product_id,$data['product_category']);

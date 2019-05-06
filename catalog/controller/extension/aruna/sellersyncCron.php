@@ -62,6 +62,16 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'arguments'=>[20,10,null]
         ],
         [
+<<<<<<< HEAD
+=======
+            'id'=>'autoWorm',
+            'model'=>'extension/aruna/autoworm',
+            'method'=>'init',
+            'arguments'=>[13],
+            'interval'=>10*60
+        ],
+        [
+>>>>>>> origin/master
             'id'=>'autoImport',
             'model'=>'extension/aruna/import',
             'method'=>'importStart',
