@@ -7,13 +7,6 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
     private $doneJobs=[];
     private $tasklist=[
         [
-            'id'=>'autoWorm',
-            'model'=>'extension/aruna/autoworm',
-            'method'=>'init',
-            'arguments'=>[13],
-            'interval'=>30*60
-        ],
-        [
             'id'=>'happywearParse',
             'model'=>'extension/aruna/parse',
             'method'=>'initParser',
@@ -53,7 +46,7 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'id'=>'isellParse',
             'model'=>'extension/aruna/parse',
             'method'=>'initParser',
-            'arguments'=>[10,'update_all_entries']
+            'arguments'=>[10,'detect_unchanged_entries']
         ],
         [
             'id'=>'isellImport',
@@ -62,8 +55,6 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'arguments'=>[20,10,null]
         ],
         [
-<<<<<<< HEAD
-=======
             'id'=>'autoWorm',
             'model'=>'extension/aruna/autoworm',
             'method'=>'init',
@@ -71,7 +62,6 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'interval'=>10*60
         ],
         [
->>>>>>> origin/master
             'id'=>'autoImport',
             'model'=>'extension/aruna/import',
             'method'=>'importStart',

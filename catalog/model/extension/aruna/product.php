@@ -450,7 +450,7 @@ class ModelExtensionArunaProduct extends Model {
         $result=$this->db->query($find_unused_sql);
         if( $result->rows ){
             foreach($result->rows as $row){
-                file_exists(DIR_IMAGE .$row['image']) && unlink(DIR_IMAGE .$row['image']);
+                is_file(DIR_IMAGE .$row['image']) && unlink(DIR_IMAGE .$row['image']);
             }
         }
     }
