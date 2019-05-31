@@ -544,7 +544,7 @@ class ModelExtensionArunaImport extends Model {
             'priority'=> 1,
             'price' => $price,
             'date_start' => date("Y-m-d"),
-            'date_end'=> date('Y-m-d', strtotime("+5 days"))
+            'date_end'=> date('Y-m-d', strtotime("+2 years"))
         ];
         return $product_special_object;
     }
