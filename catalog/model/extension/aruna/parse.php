@@ -172,9 +172,40 @@ class ModelExtensionArunaParse extends Model {
                 price1 = REPLACE(REPLACE(@col6, ' ', ''), ',', '.')
             ";
 	$this->db->query($sql);
+        if(!$this->validateData()){
+            print_r('Неверный порядок полей! Проверьте: Код товара, Артикул, Название товара, Производитель, Количество, Цена');
+            die; 
+        };
 	unlink($tmpfile);
     }  
     
+    public function validateData(){
+        $presql = "
+            DELETE FROM
+                 baycik_tmp_current_sync
+            WHERE
+                manufacturer REGEXP '[0-9\",]+'
+            ";
+        $this->db->query($presql);
+        $sql = "
+            SELECT *
+            FROM
+                baycik_tmp_current_sync
+            WHERE 
+		product_name REGEXP '.+' AND product_name != ''
+                AND model REGEXP '[0-9]+' AND model != ''
+                AND mpn REGEXP '.+' AND mpn != ''
+                AND leftovers NOT REGEXP '[A-Za-zА-Яа-я.-]+' AND leftovers != ''
+		AND manufacturer NOT REGEXP '[0-9\",]+' AND manufacturer != ''
+                AND price1 NOT REGEXP '[A-Za-zА-Яа-я.-]+'  AND price1 != ''
+            LIMIT 5
+            OFFSET 0
+            ";
+        if($this->db->query($sql)->num_rows>0){
+            return true;
+    }
+        return false;
+    }
     
     public function parse_glem($sync) {
         $source_file="https://glem.com.ua/eshop/xml.php?user=54d71a1bb5b13bb04f18565d4a4bc121";
@@ -299,7 +330,7 @@ class ModelExtensionArunaParse extends Model {
                         SET
                             sync_id = '$sync_id',
                             is_changed=1,     
-                            product_name = CONCAT(UCASE(MID('". (string)$product->typePrefix."',1,1)),MID('". (string)$product->typePrefix."',2),' ".(string)$product->model."'), 
+                            product_name = CONCAT(UCASE(MID('". addslashes((string)$product->typePrefix)."',1,1)),MID('". addslashes((string)$product->typePrefix)."',2),' ".addslashes((string)$product->model)."'), 
                             model = 'ÇAR".$product_model."', 
                             mpn= '".$product_model."',
                             manufacturer = CONCAT(UCASE(MID('".(string)$product->vendor."',1,1)),MID('".(string)$product->vendor."',2)),  
@@ -467,18 +498,7 @@ class ModelExtensionArunaParse extends Model {
                 min_order_size = '1', 
                 stock_status=IF(@col8>0,'в наличии','под заказ'),
                 stock_count=@col8,
-                attribute1 = @col21,
-                attribute2 = @col22,
-                attribute3 = @col23,
-                attribute4 = @col24,
-                attribute5 = @col25,
-                attribute6 = @col26,
-                attribute7 = @col27,
-                attribute8 = @col28,
-                attribute9 = @col29,
-                attribute10 = @col30,
-                attribute11 = @col31,
-                attribute12 = @col32,
+                attribute_group = SUBSTR(@col20 , 1, LENGTH(@col20) - 1), 
                 option1 = '', 
                 option2 = '', 
                 option3 = '', 
@@ -499,10 +519,25 @@ class ModelExtensionArunaParse extends Model {
     
     private function copyIsellConfig($sync_id) {
         $isell_config = json_decode(file_get_contents('http://91.210.179.105:2080/public/attribute_config.json'));
-        $this->sync_config->attributes = array_merge($this->sync_config->attributes, $isell_config->attributes);
-        $this->sync_config->filters = array_merge($this->sync_config->filters, $isell_config->filters);
+        $this->sync_config->attributes = $this->verifyIsellConfig($this->sync_config->attributes, $isell_config->attributes);
+        $this->sync_config->filters = $this->verifyIsellConfig($this->sync_config->filters, $isell_config->filters);
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config = '".json_encode($this->sync_config, JSON_UNESCAPED_UNICODE )."' WHERE sync_id='$sync_id'");
         return;
+    }
+    
+    private function verifyIsellConfig($db_config, $isell_config){
+        if(empty($db_config)){
+            die ('sync_not_found!');
+        }
+        foreach($db_config as $db_config_key){
+            foreach($isell_config as $isell_config_key){
+                if($db_config_key->name == $isell_config_key->name){
+                    continue;
+                }
+                array_push($db_config,$isell_config_key);
+            }
+        }
+        return $db_config;
     }
     
     public function addSync($seller_id, $sync_source){

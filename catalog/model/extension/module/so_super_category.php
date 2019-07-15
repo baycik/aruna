@@ -122,20 +122,10 @@ class ModelExtensionModuleSosupercategory extends Model {
 				break;
 			}
 		}
-		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
-			if ($data['sort'] == 'pd.name' || $data['sort'] == 'p.model') {
-				$sql .= " ORDER BY LCASE(" . $data['sort'] . ")";
-			} else {
-				$sql .= " ORDER BY " . $data['sort'];
-			}
-		} else {
-			$sql .= " ORDER BY p.sort_order";
-		}
-
 		if (isset($data['order']) && ($data['order'] == 'DESC')) {
-			$sql .= " DESC, LCASE(pd.name) DESC";
+			$sql .= " ORDER BY p.sort_order DESC";
 		} else {
-			$sql .= " ASC, LCASE(pd.name) ASC";
+			$sql .= " ORDER BY p.sort_order ASC";
 		}
 
 		if (isset($data['start']) || isset($data['limit'])) {
@@ -151,7 +141,6 @@ class ModelExtensionModuleSosupercategory extends Model {
 		}
 
 		$product_data = array();
-
 		$query = $this->db->query($sql);
 		foreach ($query->rows as $result) {
 			$product_data[$result['product_id']] = $this->model_catalog_product->getProduct($result['product_id']);
@@ -210,6 +199,7 @@ class ModelExtensionModuleSosupercategory extends Model {
 	}
 	
 	public function getTotalProducts_super_category($data = array()) {
+                return 200;
 		$sql = "SELECT COUNT(DISTINCT p.product_id) AS total";
 
 		if (!empty($data['filter_category_id'])) {
@@ -295,9 +285,7 @@ class ModelExtensionModuleSosupercategory extends Model {
 		if (!empty($data['filter_manufacturer_id'])) {
 			$sql .= " AND p.manufacturer_id = '" . (int)$data['filter_manufacturer_id'] . "'";
 		}
-
 		$query = $this->db->query($sql);
-
 		return $query->row['total'];
 	}
 }

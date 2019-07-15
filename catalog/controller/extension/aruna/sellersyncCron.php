@@ -2,7 +2,7 @@
 
 class ControllerExtensionArunaSellersyncCron extends Controller {
     private $jobs_file='baycik_sellersync_crondata.json';
-    private $intervalHours=3;
+    private $intervalHours=8;
     private $secret="tabarakasmuk";
     private $doneJobs=[];
     private $tasklist=[
@@ -58,14 +58,14 @@ class ControllerExtensionArunaSellersyncCron extends Controller {
             'id'=>'autoWorm',
             'model'=>'extension/aruna/autoworm',
             'method'=>'init',
-            'arguments'=>[11],
+            'arguments'=>[13],
             'interval'=>10*60
         ],
         [
             'id'=>'autoImport',
             'model'=>'extension/aruna/import',
             'method'=>'importStart',
-            'arguments'=>[51,11,null]
+            'arguments'=>[51,13,null]
         ],
         [
             'id'=>'deleteAbsentSellerProducts1',
