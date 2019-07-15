@@ -18,8 +18,11 @@ class ModelExtensionArunaImport extends Model {
         if (!$result->row || !$result->row['sync_config']) {
             return false;
         }
-        $this->sync_config = json_decode($result->row['sync_config'], false, 512, JSON_UNESCAPED_UNICODE);
-        //header("content-type:text/plain");print_r($this->sync_config);
+        
+        
+        $json=preg_replace('/[[:cntrl:]]/', '',$result->row['sync_config'] );
+        $this->sync_config = json_decode($json, false, 512, JSON_UNESCAPED_UNICODE);
+        //header("content-type:text/plain");print_r($this->sync_config);die(json_last_error_msg());
     }
 
     private function profile($msg) {
@@ -60,6 +63,8 @@ class ModelExtensionArunaImport extends Model {
         foreach ($result->rows as $group_data) {
             $this->importSellerProductGroup($seller_id, $group_data);
         }
+        $this->reorderOptions();
+        //$this->assignFiltersToCategory($product['product_category']);
         $this->profile("finish");
         return true;
     }
@@ -89,7 +94,7 @@ class ModelExtensionArunaImport extends Model {
         }
         foreach ($rows as $row) {
             $product = $this->composeProductObject($row, $group_data['comission'], $group_data['destination_category_id']);
-            //header("content-type:text/plain");print_r(explode('|',$row['attribute_group']));print_r($product);die;
+            //header("content-type:text/plain");print_r($product);die;
             if ($row['product_id']) {
                 $product_ids= explode(',', $row['product_id']);
                 foreach($product_ids as $product_id){
@@ -102,8 +107,6 @@ class ModelExtensionArunaImport extends Model {
             $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_entries SET is_changed=0 WHERE sync_entry_id='{$row['sync_entry_id']}'");
         }
         $this->profile("import entries");
-        $this->reorderOptions();
-        $this->assignFiltersToCategory($product['product_category']);
         return 1;
     }
 
@@ -134,8 +137,10 @@ class ModelExtensionArunaImport extends Model {
 
     public function deleteAbsentSellerProducts($seller_id) {
         set_time_limit(300);
+        $this->profile("start deleting absent ");
         $sql = "SELECT 
-		    p.product_id
+		    p.product_id,
+                    p.model
 		FROM
 		    " . DB_PREFIX . "product p
 			JOIN
@@ -147,16 +152,17 @@ class ModelExtensionArunaImport extends Model {
 		WHERE
 		    bse.sync_id IS NULL
 		    OR destination_category_id=0
+                LIMIT 10000
 		";
         $result = $this->db->query($sql);
-        if (!$result->num_rows) {
-            return true;
+        $this->profile("selecting absent");
+        if ( $result->num_rows ) {
+            $this->load->model('extension/aruna/product');
+            foreach ($result->rows as $product) {
+                $this->productDelete($product['product_id']);
+            }
         }
-        
-        $this->load->model('extension/aruna/product');
-        foreach ($result->rows as $product) {
-            $this->productDelete($product['product_id']);
-        }
+        $this->profile("start deleting absent filters&attributes ");
         $this->deleteAbsentFiltersAndAttributes();
         return true;
     }
@@ -477,6 +483,10 @@ class ModelExtensionArunaImport extends Model {
     }
 
     private function remoteFileExists($url){
+        if( strpos($url, 'http')!==0 ){
+            //http not at the beginning of $url
+            return true;
+        }
         stream_context_set_default(
             [
                 'http' => [
@@ -492,7 +502,7 @@ class ModelExtensionArunaImport extends Model {
         if(empty($url)){
             return null;
         }
-        if( empty($this->sync_config->download_images)){
+        if( empty($this->sync_config->download_images) ){
             return $this->remoteFileExists($url)?$url:null;
         }
         $ext = pathinfo($url, PATHINFO_EXTENSION);
