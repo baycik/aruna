@@ -519,12 +519,6 @@ class ModelExtensionArunaParse extends Model {
     
     private function copyIsellConfig($sync_id) {
         $isell_config = json_decode(file_get_contents('http://91.210.179.105:2080/public/attribute_config.json'));
-<<<<<<< HEAD
-        $this->sync_config->attributes = array_merge($this->sync_config->attributes, $isell_config->attributes);
-        $this->sync_config->filters = array_merge($this->sync_config->filters, $isell_config->filters);
-        $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config = '".json_encode($this->sync_config, JSON_UNESCAPED_UNICODE )."' WHERE sync_id='$sync_id'");
-        return;
-=======
         $this->sync_config->attributes = $this->verifyIsellConfig($this->sync_config->attributes, $isell_config->attributes);
         $this->sync_config->filters = $this->verifyIsellConfig($this->sync_config->filters, $isell_config->filters);
         $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_list SET sync_config = '".json_encode($this->sync_config, JSON_UNESCAPED_UNICODE )."' WHERE sync_id='$sync_id'");
@@ -544,7 +538,6 @@ class ModelExtensionArunaParse extends Model {
             }
         }
         return $db_config;
->>>>>>> origin/master
     }
     
     public function addSync($seller_id, $sync_source){

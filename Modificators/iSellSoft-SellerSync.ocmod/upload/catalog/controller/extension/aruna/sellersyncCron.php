@@ -2,7 +2,7 @@
 
 class ControllerExtensionArunaSellersyncCron extends Controller {
     private $jobs_file='baycik_sellersync_crondata.json';
-    private $intervalHours=3;
+    private $intervalHours=8;
     private $secret="tabarakasmuk";
     private $doneJobs=[];
     private $tasklist=[

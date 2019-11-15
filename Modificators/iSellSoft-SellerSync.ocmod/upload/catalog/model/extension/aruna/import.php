@@ -62,10 +62,6 @@ class ModelExtensionArunaImport extends Model {
             $this->importSellerProductGroup($seller_id, $group_data);
         }
         $this->reorderOptions();
-<<<<<<< HEAD
-        //$this->assignFiltersToCategory($product['product_category']);
-=======
->>>>>>> origin/master
         $this->profile("finish");
         return true;
     }
@@ -94,12 +90,8 @@ class ModelExtensionArunaImport extends Model {
             return 1;
         }
         foreach ($rows as $row) {
-<<<<<<< HEAD
-            $product = $this->composeProductObject($row, $group_data['comission'], $group_data['destination_category_id']);
-=======
             $product = $this->composeProductObject($row, $group_data['comission'], $group_data['retail_comission'], $group_data['destination_category_id']);
             
->>>>>>> origin/master
             //header("content-type:text/plain");print_r($product);die;
             if ($row['product_id']) {
                 $product_ids= explode(',', $row['product_id']);
@@ -113,10 +105,7 @@ class ModelExtensionArunaImport extends Model {
             $this->db->query("UPDATE " . DB_PREFIX . "baycik_sync_entries SET is_changed=0 WHERE sync_entry_id='{$row['sync_entry_id']}'");
         }
         $this->profile("import entries");
-<<<<<<< HEAD
-=======
         $this->assignFiltersToCategory($product['product_category']);
->>>>>>> origin/master
         return 1;
     }
 
@@ -555,7 +544,7 @@ class ModelExtensionArunaImport extends Model {
             'priority'=> 1,
             'price' => $price,
             'date_start' => date("Y-m-d"),
-            'date_end'=> date('Y-m-d', strtotime("+5 days"))
+            'date_end'=> date('Y-m-d', strtotime("+2 years"))
         ];
         return $product_special_object;
     }

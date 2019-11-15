@@ -157,16 +157,15 @@ class ModelExtensionArunaAutoWorm extends Model {
             die("Sync config not found");
         }
         $manual_attributes=$this->auto_worm_config['attributes'];
-        $db_sync_config=json_decode($result->row['sync_config']);
+        $json=preg_replace('/[[:cntrl:]]/', '',$result->row['sync_config'] );
+        $db_sync_config=json_decode($json);
         if( isset($db_sync_config->attributes) ){
             $this->auto_worm_config['attributes']= $db_sync_config->attributes;
-        } else {
-            $this->auto_worm_config['attributes'] = [];
-        }
-        foreach($manual_attributes as $mattribute){
-            $is_there_attribute = $this->getAttributeIndex($mattribute['name']);
-            if( $is_there_attribute === 'not_found' ){
-                $this->addAttribute($mattribute['name']); 
+            foreach($manual_attributes as $mattribute){
+                $is_there_attribute = $this->getAttributeIndex($mattribute['name']);
+                if( $is_there_attribute === 'not_found' ){
+                    $this->addAttribute($mattribute['name']); 
+                }
             }
         }
     }
@@ -181,15 +180,12 @@ class ModelExtensionArunaAutoWorm extends Model {
         foreach( $this->auto_worm_config['attributes'] as $attribute ){
             echo "\n<br> $attribute->name :";
             if( isset($this->filter_whitelist[$attribute->name]) ){
-                $filter_object = [
+                $this->auto_worm_config['filters'][]=[
                     'field'=>$attribute->field,
-                    'name' => $attribute->name
+                    'name' => $attribute->name,
+                    'index' => (isset($attribute->index)) ? $attribute->index : '',
+                    'delimeter' => ','
                 ];
-                if(isset($attribute->index)){
-                    $filter_object['index'] = $attribute->index;
-                    $filter_object['delimeter'] = ',';
-                };
-                $this->auto_worm_config['filters'][]=$filter_object;
                 echo "is filter & attribute!";
             } else {
                 echo "attribute";
@@ -200,9 +196,6 @@ class ModelExtensionArunaAutoWorm extends Model {
     private function startDigging(){
         while( $next_product_model = $this->getNextProductModel() ){
             $product_info = $this->digProductInfo($next_product_model);
-            if(!$product_info){
-                continue;
-            }
             $this->fillEntry($product_info, $next_product_model);
             $this->saveConfig();
             
@@ -263,9 +256,6 @@ class ModelExtensionArunaAutoWorm extends Model {
         
         $product_obj['name'] = $this->getName($product_page_html);
         $details = $this->parseDetailsSection($product_page_html, $product_obj['name']);
-        if($details == 'skip_product'){
-            return false;
-        }
         $product_obj['attribute_group'] = implode('|',$details['attribute_group']);
         $product_obj['category_path'] = $details['category_path'];
         $product_obj['articles'] = $details['articles'];
@@ -311,13 +301,9 @@ class ModelExtensionArunaAutoWorm extends Model {
         $attribute_group = array_fill(0, count($this->auto_worm_config['attributes']),'');
         
         for($i = 1; $i<count($division); $i++){
-            $division[$i] = explode('<div class="dp_right">',$division[$i]);
-            $temp_object[$i]['attribute_name'] = trim(strip_tags($division[$i][0]));
-            if(isset($division[$i][1])){
-                $temp_object[$i]['value'] = trim(strip_tags($division[$i][1]));
-            } else {
-                return 'skip_product';
-            }
+            $division[$i] = explode('<div class="dp_right"><span>',$division[$i]);
+            $temp_object[$i]['attribute_name'] = rtrim(strip_tags($division[$i][0]));
+            $temp_object[$i]['value'] = rtrim(strip_tags($division[$i][1]));
             if( in_array($temp_object[$i]['attribute_name'], $this->attribute_blacklist) ){
                 continue;
             }
@@ -375,47 +361,22 @@ class ModelExtensionArunaAutoWorm extends Model {
         return $result_object;
     }
     
-    
     private function addAttribute( $attribute_name ){
         $attribute_object=new stdClass();
-        if($attribute_name == 'Оригинальный каталожный номер (OEM)' ){
-            $attribute_object->field='mpn';
-            $attribute_object->name=$attribute_name;
-            $attribute_object->group_description='Свойства товара';
-            $this->auto_worm_config['attributes'][]=$attribute_object;
-            return true;
-        }else if($attribute_name == 'Производитель' ){
-            $attribute_object->field='manufacturer';
-            $attribute_object->name=$attribute_name;
-            $attribute_object->group_description='Свойства товара';
-            $this->auto_worm_config['attributes'][]=$attribute_object;
-            return true;
-        }  else if($attribute_name == 'Срок доставки' ){
-            $attribute_object->field='stock_status';
-            $attribute_object->name=$attribute_name;
-            $attribute_object->group_description='Доставка';
-            $this->auto_worm_config['attributes'][]=$attribute_object;
-            return true;
-        } else {
-            $attribute_object->field='attribute_group';
-            $attribute_object->name=$attribute_name;
-            $attribute_object->index=count($this->auto_worm_config['attributes']);
-            $attribute_object->group_description='Свойства товара';
+        $attribute_object->field='attribute_group';
+        $attribute_object->name=$attribute_name;
+        $attribute_object->index=count($this->auto_worm_config['attributes']);
+        $attribute_object->group_description='Свойства товара';
 
-            $this->auto_worm_config['attributes'][]=$attribute_object;
-            return $attribute_object->index;
-        }
+        $this->auto_worm_config['attributes'][]=$attribute_object;
+        return $attribute_object->index;
     }
     
     private function getAttributeIndex($needle) {
         $haystack=$this->auto_worm_config['attributes'];
         for($i = 0; $i<count($haystack); $i++){
             if( $haystack[$i]->name === $needle ){
-                if(isset($haystack[$i]->index)){
-                   return $haystack[$i]->index;
-                } else {
-                    return true;
-                }
+                return $haystack[$i]->index;
             }
         }
         return 'not_found';
