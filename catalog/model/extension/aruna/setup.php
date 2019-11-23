@@ -56,6 +56,11 @@ class ModelExtensionArunaSetup extends Model {
                     'delimeter'=>['|',' ','.','-','_','/',',']
                 ],
                 [
+                    'field'=>'attribute1',
+                    'name'=>'Расцветка',
+                    'delimeter'=>['|',' ','.','-','_','/',',']
+                ],
+                [
                     'field'=>'origin_country',
                     'name'=>'Страна'
                 ],
