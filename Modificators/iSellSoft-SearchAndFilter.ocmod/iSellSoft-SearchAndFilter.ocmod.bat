@@ -11,5 +11,5 @@ ROBOCOPY "../../admin/view/template/extension/module/" "./upload/admin/view/temp
 ROBOCOPY "../../admin/controller/extension/module/" "./upload/admin/controller/extension/module/"  iss_filter.php
 
 
-"%ProgramFiles%\WinRAR\WinRAR.exe" a -afzip -ep1 -ibck -r -y -x*.bat -x*.zip "../../../iSellSoft-SearchAndFilter-1.1.ocmod.zip" "./*"
+"%ProgramFiles%\WinRAR\WinRAR.exe" a -afzip -ep1 -ibck -r -y -x*.bat -x*.zip "../../../iSellSoft-SearchAndFilter-1.2.ocmod.zip" "./*"
 PAUSE
