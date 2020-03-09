@@ -46,7 +46,30 @@ class ControllerExtensionModuleIsellsoftWebApplication extends controller{
 	var staticPattern=<?php echo $staticPattern?>;
 	this.addEventListener('install', function (event) {
 	    console.log('iSellSoft Service Worker installed!!!');
+            event.waitUntil(
+              caches.keys().then(function(keyList) {
+                return Promise.all(keyList.map(function(key) {
+                  if (cacheVersion!==key) {
+                    console.log('iSellSoft Cache purged: '+key);
+                    return caches.delete(key);
+                  }
+                }));
+              })
+            );
 	});
+        this.addEventListener('activate', function(event) {
+            console.log('iSellSoft Service Worker activated!!!');
+            event.waitUntil(
+              caches.keys().then(function(keyList) {
+                return Promise.all(keyList.map(function(key) {
+                  if (cacheVersion!==key) {
+                    console.log('iSellSoft Cache purged: '+key);
+                    return caches.delete(key);
+                  }
+                }));
+              })
+            );
+        });
 	this.addEventListener('message', function(event){
 	    var message=event.data;
 	    if( message==='clear_cache' ){
