@@ -125,7 +125,8 @@
                     'description'=>5
                 ];
                 $words= explode(" ", $search_query);
-                $suggestion_search_query='';
+                $suggestion_search_query=$search_query.' ';
+                $fallback_search_query='';
                 foreach($words as $word){
                     $length=mb_strlen($word);
                     if($length>7){
@@ -133,13 +134,14 @@
                     } else if($length>4){
                         $length_of_root=4;
                     } else {
+                        $fallback_search_query.="$word%";
                         continue;
                     }
                     $suggestion_search_query.=" >".mb_substr($word, 0,$length_of_root)."*";
                 }
                 $relevance_treshold=5;
                 $search_rankings="
-                     {$relevance['code']} *MATCH (model,sku,upc,ean,jan,isbn,mpn)  AGAINST ('$search_query' IN BOOLEAN MODE)
+                     {$relevance['code']} *MATCH (model,sku,upc,ean,jan,isbn,mpn)  AGAINST ('$suggestion_search_query' IN BOOLEAN MODE)
                     +{$relevance['tag']} *MATCH (pd.tag)  AGAINST ('$suggestion_search_query' IN BOOLEAN MODE) 
                     +{$relevance['name']} *MATCH (pd.name)  AGAINST ('$suggestion_search_query' IN BOOLEAN MODE) 
                     ";
@@ -148,7 +150,16 @@
                         +{$relevance['description']} *MATCH (pd.description)  AGAINST ('$suggestion_search_query' IN BOOLEAN MODE)";
                 }
                 $sql_select.=",($search_rankings) rank";
-                $sql_where.=" AND ($search_rankings)>$relevance_treshold";
+                $sql_where.=" AND ( ($search_rankings)>$relevance_treshold ";
+                if( $fallback_search_query ){
+                    $fallback_description_search_query='';
+                    if( !empty($data['filter_description']) ){
+                        $fallback_description_search=" OR pd.description LIKE '%$fallback_search_query'";
+                        
+                    }
+                    $sql_where.=" OR (model LIKE '%$fallback_search_query' OR pd.name  LIKE '%$fallback_search_query' $fallback_description_search )";
+                }
+                $sql_where.=")";
             }
             /////////////////////////////////////////////////////
             //CATEGORY
