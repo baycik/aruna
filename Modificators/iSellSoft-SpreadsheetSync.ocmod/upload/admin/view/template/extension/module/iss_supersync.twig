@@ -1,0 +1,285 @@
+<style>
+    .input-group.mb-10 form{
+        display: flex;
+        margin-bottom: 10px; 
+        margin-top: 10px;
+        border: 2px solid lightgray;
+    }
+
+    input{
+        background-color:white;
+    }
+    tbody form {
+        background-color: white;
+        border: 2px solid lightgray;
+    }
+    tbody form select{
+        background-color: white;
+        border: 2px solid lightgray; 
+        width: 100%;
+    }
+    .btn.btn-outline-secondary{
+        border-radius:0px;
+    }
+    .table-bordered input, .table-bordered select{
+        border: 1px solid #d0d0d0;
+        width: 100%;
+    }
+    .category_lvl{
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: 1px solid lightgray  !important;
+    }
+
+
+</style>
+
+{{ header }}{{ column_left }}
+
+<div id="content" >
+    <div class="page-header">
+        <div class="container-fluid">
+          <h1>{{ heading_title }}</h1>
+          <ul class="breadcrumb">
+            {% for breadcrumb in breadcrumbs %}
+                <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+        </ul>
+        </div>
+    </div>
+    
+    <div class="successdiv">
+        {% if success %}
+            <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>
+        {% endif %}
+    </div>
+    <div class="errordiv">
+        {% if error_warning %}
+            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="row">
+        {% if column_left and column_right %}
+            {% set class = 'col-sm-6' %}
+        {% elseif column_left or column_right %}
+            {% set class = 'col-sm-9' %}
+        {% else %}
+            {% set class = 'col-sm-12' %}
+        {% endif %}
+        <div class="container-fluid">
+            <div id="content" class="panel panel-default">{{ content_top }}
+                <div class="panel-heading">
+                    <button style="margin: 10px 0" class="btn btn-default"><a href="{{back_link}}"><i class="fa fa-backward"></i> {{text_select_parser}}</a></button>
+                    <button style="width:100%" type="button" id="button-import" class="btn btn-primary"><i style="display: none"  id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i> {{button_import}}</button>  
+                    <div class="progress-header" style="margin-top: 15px; margin-bottom:15px"></div>
+                    <div class="progress" style="height: 10px">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <hr>
+                <div class="panel-body">
+                    <form method="post" action="{{url}}"> 
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="width:100%; ">
+                                    <input type="text" class="form-control" name="filter_name" value="{{ filter_name }}" placeholder="{{text_input_category}}" style="display:inline-block;width: 96%;"/>
+                                    <button class="btn btn-primary" style="width:3%;padding: 11px;display:inline-block;"><i class="fa fa-search"></i></button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                    <div class="form-group"> 
+                        <form action="" method="post" enctype="multipart/form-data" id="form-import">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" style="font-size: 13px;">
+                                    <thead>
+                                        <tr>
+                                            <td style="" class="text-center" colspan="3">{{text_category_name}}</td>
+                                            <td style="" class="text-left">{{text_total_products}}</td>
+                                            <td class="text-left">{{text_comission}}</td>
+                                            <td class="text-left">{{text_dest_cat}}</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if categories %}
+                                            {% for category in categories %}
+                                                <tr class="x-form-row {% if category.destination_categories %}selected-row{% endif %}">
+                                                    <td class="text-left category_lvl" >{% if category.category_lvl1 %}{{ category.category_lvl1 }}/{% endif %}</td>
+                                                    <td class="text-left category_lvl">{% if category.category_lvl2 %}{{ category.category_lvl2 }}/{% endif %}</td>
+
+                                                    <td class="text-left category_lvl">{% if category.category_lvl3 %}{{ category.category_lvl3 }}/{% endif %}</td>
+                                                    <td class="text-left">{{ category.total_products }}</td>
+                                                    <td class="text-left">
+                                                        <input style=""  type="text" name="category_comission" value="{{ category.comission }}" placeholder="%" id="input-quantity" class="pts-form-control" />
+                                                    </td>
+                                                    <td class="text-left">
+                                                        <div class="col-sm-10">
+                                                                <input type="text" name="category" value="" placeholder="{{ entry_category }}" id="{{ category.group_id }}" class="form-control"/>
+                                                                <div class="destination-category-panel" class="well well-sm" style="overflow: auto;"> 
+                                                                    {% set destination_category_list = category.destination_categories|split('||') %}
+                                                                    {% for destination_category in  destination_category_list %}
+                                                                        {% for allowed_category in all_categories %}
+                                                                           {% if destination_category == allowed_category.category_id %} 
+                                                                            <div id="category_{{ allowed_category.category_id }}">
+                                                                                <i class="fa fa-minus-circle" id="{{allowed_category.category_id}}_{{ category.group_id }}"></i> 
+                                                                                {{ allowed_category.name }}
+                                                                            </div>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                        </div>
+                                                        <input autocomplete="off" type="hidden" id="destination_categories_{{ category.group_id }}" name="destination_category" value="|{{ category.destination_categories }}|"/>
+                                                        <input autocomplete="off" type="hidden" name="group_id" value="{{ category.group_id }}"/>
+                                                        
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td class="text-center" colspan="10">{{ text_no_results }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                        <div class="row">
+                            <div class="col-sm-6 text-left">{{ pagination }}</div>
+                            <div class="col-sm-6 text-right">{{ results }}</div>
+
+                        </div>{{ content_bottom }}
+                    </div>
+                    </div>
+            </div>
+            {{ column_right }}</div>
+    </div>
+    <script type="text/javascript">
+	var sync_id = "{{sync_id}}";
+	var seller_id = "{{seller_id}}";
+	$("#form-import input,#form-import input[name='destination_category']").on('change', function (e) {
+	    e.preventDefault();
+	    savePrefs(e.target);
+	});
+        
+        function savePrefs(e){
+            var row_node = $(e).parent().parent();
+	    var item = {
+		group_id: row_node.find('input[name=group_id]').val(),
+		category_comission: row_node.find('input[name=category_comission]').val().replace(/[^\d\.]/g, ''),
+		destination_categories: row_node.find('input[name=destination_category]').val().substring(1).slice(0,-1) 
+	    };
+	    if (item.destination_categories !== "") {
+		row_node.addClass('selected-row');
+	    } else {
+		row_node.removeClass('selected-row');
+	    }
+	    $.post('index.php?route=extension/module/iss_supersync/saveImportPrefs&user_token={{ user_token }}', {data: JSON.stringify(item)}, function (ok) {
+		if (!ok * 1) {
+		    alert("Возникла ошибка сохранения");
+		}
+		;
+	    });
+        }
+        
+	var step_size = 0;
+	var current_progress = 0;
+
+	$("#button-import").on('click', function () {
+	    if (confirm('Вы уверены, что готовы начать импорт?')) {
+		$('.progress-header').html('Начинаем импортировать...');
+		$('#spinner_icon').show();
+		$(".btn-secondary").attr('disabled', '');
+		$.post('index.php?route=extension/module/iss_supersync/getTotalImportCategories&user_token={{ user_token }}', {sync_id: sync_id}, function (total) {
+		    var totalCategories = JSON.parse(total);
+		    step_size = 100 / totalCategories.total_rows;
+		    $('.progress-header').val('Идет процесс импорта товаров...Импортировано ' + Math.round(current_progress) + '% товаров');
+		    continueImport(totalCategories);
+		});
+	    }
+	});
+
+	function continueImport(totalCategories) {
+	    if (totalCategories.total_rows == 0) {
+                current_progress=0;
+		$('.progress-bar').width('100%');
+		$('.progress-header').html('Удаление отсутствующих товаров...');
+		$.post('index.php?route=extension/module/iss_supersync/deleteAbsentProducts&user_token={{ user_token }}').done(function(){
+		    $('.progress-header').html('Импорт завершен');
+		    $('#spinner_icon').hide();
+		    $(".btn-secondary").attr('disabled', null);
+		    alert('Импорт завершен успешно!');
+		});
+		return;
+	    }
+	    $.post('index.php?route=extension/module/iss_supersync/importUserProducts&user_token={{ user_token }}', {sync_id: sync_id, group_id: totalCategories.groups[0]}).done(function (ok) {
+		if (ok && totalCategories.total_rows > 0) {
+		    current_progress += step_size;
+		    totalCategories.total_rows -= 1;
+		    totalCategories.groups.shift()
+		    $('.progress-header').html('Идет процесс импорта товаров...Импортировано ' + Math.round(current_progress) + '% товаров');
+		    $('.progress-bar').width(current_progress + '%');
+		    continueImport(totalCategories);
+		} else {
+                    current_progress=0;
+		    $('#spinner_icon').hide();
+		    $(".btn-secondary").attr('disabled', null);
+		    alert('Ошибка импорта!');
+		}
+	    }).fail(function(){
+                //timeout???
+                continueImport(totalCategories);
+            });
+	}
+        // Category
+          $('input[name=\'category\']').autocomplete({
+                'source': function(request, response) {
+                    $.ajax({
+                        url: 'index.php?route=extension/module/iss_supersync/autocompleteCategories&user_token={{ user_token }}&filter_name=' + encodeURIComponent(request),
+                        dataType: 'json',
+                        success: function(json) {
+                                response($.map(json, function(item) {
+                                        return {
+                                                label: item['name'],
+                                                value: item['category_id']
+                                        }
+                                }));
+                        }
+                    });
+                },
+                'select': function(item) {
+                    var group_id = $(this).attr('id');
+                    var input_value =  $('#destination_categories_'+group_id).val();
+                    
+                    
+                    var in_the_middle = ((input_value.indexOf('|'+item['value']+'|') > -1));
+                    
+                    if(in_the_middle){
+                        return;
+                    }    
+                    
+                    $('#destination_categories_'+group_id).val(input_value+'|'+item['value']+'|');
+                    $('#'+group_id).next().next().append('<div id="category' + item['value'] + '"><i class="fa fa-minus-circle" id="'+item['value']+'_'+group_id+'"></i> ' + item['label'] + '</div>');
+                    savePrefs(this.parentElement);
+                }
+          });
+
+          $('.destination-category-panel').delegate('.fa-minus-circle', 'click', function() {
+                console.log(this);
+                var category_id = $(this).attr('id').split('_')[0];
+                var group_id = $(this).attr('id').split('_')[1];
+                var input_value = $('#destination_categories_'+group_id).val();
+                $('#destination_categories_'+group_id).val(input_value.replace('|'+category_id+'|',''));
+                savePrefs(this.parentElement.parentElement.parentElement);
+                $(this).parent().remove();
+          });
+    </script>
+    <style>
+        .selected-row{
+            background-color:#ffc
+        }
+    </style>
+</div>
+{{ footer }}

@@ -1,0 +1,218 @@
+<style>
+    #form-parse .form-control {
+        background-color: white;
+        width: 100%;
+    }
+
+    #form-parse .but.col{
+        padding-left: 24%;
+    }
+
+    #form-parse .btn.btn-primary {
+        margin-left: auto;
+        margin-right: auto; 
+        width: 70%;
+    }
+    
+    .btn-csv-positive{
+        width: 50%;
+    } 
+
+    .progress-container .progress{
+        height: 15px;
+    } 
+    #content {
+        min-height: 600px;
+    }
+
+</style>
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+          
+          <h1>{{ heading_title }}</h1>
+          <ul class="breadcrumb">
+            {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+    </div>
+    <div class="successdiv">
+        {% if success %}
+            <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }}</div>
+        {% endif %}
+    </div>
+    <div class="errordiv">
+        {% if error_warning %}
+            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="container-fluid">
+        <div id="content" class="panel panel-default">{{ content_top }}
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_add_parser_title }}</h3>
+            </div>
+            <div class="panel-body">
+            <form action="index.php?route=extension/module/iss_superparserlist/addparser&user_token={{ user_token }}" method="post">
+                <input type="hidden" name="parser_id">
+                {% for id, parser in parser_list %}
+                    <button class="btn btn-primary" onclick="$('input[name=parser_id]').val('{{id}}')">
+                        <i class="fa fa-plus"></i>
+                         {{ button_add_parser_item }} "{{parser.name}}"
+                    </button>
+                {% endfor %}
+            </form>
+            {% if  sync_list  %}
+            <div class="panel-body">
+                <form id='form-parse'>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label>{{ text_select_parser }}</label>
+                                <select class="form-control"  >
+                                    {% for sync in sync_list %}
+                                        <option value="{{sync.sync_id}}">{{sync.sync_name}} 
+                                            (
+                                            {% if  sync.sync_last_started %} 
+                                                {{text_last_download}}: {{sync.sync_last_started}}
+                                            {% else %}
+                                                {{text_was_no_download}}
+                                            {% endif %}
+                                            )
+                                            </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="but col" > 
+                            <button type="button" class="btn btn-primary btn-csv-positive" style="width:50%"><i class="fa fa-upload"></i> {{ button_upload }}</button>
+                            <button type="submit" class="btn btn-primary btn-positive" style="width:50%"><i class="fa fa-download"></i> {{button_parse}}</button>
+			    <button type="button" class="btn btn-default btn-secondary"><i class="fa fa-eye"></i> {{ button_open_parser }}</button>
+                            <button type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
+                        </div>
+                    </div>    
+                </form>
+            </div>
+             {% endif %}
+             </div>
+            {{ content_bottom }}</div>
+        {{ column_right }}</div>
+</div>
+<script type="text/javascript">
+
+    $(document).on('ready', function(){
+        var sync_id = $('#form-parse select').find('option[value='+$('#form-parse select').val()+']').html();
+        console.log(sync_id);
+        if(sync_id.indexOf('Импорт CSV')>-1 ){  
+            $(".btn.btn-csv-positive").show();
+            $(".btn.btn-positive").hide();
+        } else {
+            $(".btn.btn-positive").show();
+            $(".btn.btn-csv-positive").hide();
+        }
+    });
+    
+    $('#form-parse select').on('change', function(){
+        var sync_id = $('#form-parse select').find('option[value='+$('#form-parse select').val()+']').html();
+        if(sync_id.indexOf('Импорт CSV')>-1){  
+            $(".btn.btn-csv-positive").show();
+            $(".btn.btn-positive").hide();
+        } else {
+            $(".btn.btn-positive").show();
+            $(".btn.btn-csv-positive").hide();
+        }
+    });
+    
+    $("#form-parse .btn-danger").click(function(){
+        if( confirm("Удалить источник из списка доступных") ){
+            var sync_id = $('#form-parse select').val();
+            $.post('index.php?route=extension/module/iss_superparserlist/deleteparser&user_token={{ user_token }}', {sync_id: sync_id}, function (ok) {
+                location.reload();
+            });
+        }
+    });
+    $("#form-parse .btn-secondary").click(function(){
+	var sync_id = $('#form-parse select').val();
+	location = 'index.php?route=extension/module/iss_supersync&sync_id='+sync_id+'&user_token={{ user_token }}';
+    });
+
+    var syncing_in_progress=false;
+    $("#form-parse").on('submit', function (e) {
+        var sync_id = $(this).find('select').val();
+        if( syncing_in_progress || !sync_id ){
+            return;
+        }
+        syncing_in_progress=true;
+        $("#form-parse .btn-positive").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parsing}}');
+        e.preventDefault();
+        $.post('index.php?route=extension/module/iss_superparserlist/startParsing&user_token={{ user_token }}', {sync_id: sync_id}, function (ok) {
+            syncing_in_progress=false
+            if (ok*1) {
+                alert('{{text_loading_completed}}');
+                $("#form-parse .btn-positive").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parse_completed}}');
+                location = 'index.php?route=extension/aruna/sellersync&sync_id='+sync_id+'&user_token={{ user_token }}';
+            } else {
+                $("#form-parse .btn-positive").html('{{button_parse}}');
+                alert("Error occured: "+ok);
+            }
+        });
+    });
+    
+$('button.btn-csv-positive').on('click', function() {
+	var element = this;
+	$('#form-upload').remove();
+	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+	$('#form-upload input[name=\'file\']').trigger('click');
+	if (typeof timer != 'undefined') {
+            clearInterval(timer);
+	}
+	timer = setInterval(function() {
+		if ($('#form-upload input[name=\'file\']').val() != '') {
+			clearInterval(timer);
+			$.ajax({
+				url: 'index.php?route=tool/upload/upload&user_token={{ user_token }}',
+				type: 'post',
+				dataType: 'json',
+				data: new FormData($('#form-upload')[0]),
+				cache: false,
+				contentType: false,
+				processData: false,
+				beforeSend: function() {
+					$(element).button('loading');
+				},
+				complete: function() {
+					$(element).button('reset');
+				},
+				success: function(json) {
+					$(element).parent().find('.text-danger').remove();
+					if (json['error']) {
+						$(element).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
+					}
+					if (json['success']) {
+                                                var sync_id = $("#form-parse").find('select').val();
+						$(element).parent().find('input').val(json['code']);
+                                                $.post('index.php?route=extension/module/iss_superparserlist/startParsing&user_token={{ user_token }}', {sync_id: sync_id, code: json['code']}, function (ok) {
+                                                    syncing_in_progress=false
+                                                    if (ok*1) {
+                                                        alert('{{ text_loading_completed }}');
+                                                        $("#form-parse .btn-positive").html('<i id="spinner_icon" class="fa fa-circle-o-notch fa-spin"></i>{{button_parse_completed}}');
+                                                        location = 'index.php?route=extension/module/iss_supersync&sync_id='+sync_id+'&user_token={{ user_token }}';
+                                                    } else {
+                                                        $("#form-parse .btn-positive").html('{{button_parse}}');
+                                                        alert("{{ text_error_while_parsing }}: "+ok);
+                                                    }
+                                                });
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		}
+	}, 500);
+});
+</script>
+{{ footer }}
